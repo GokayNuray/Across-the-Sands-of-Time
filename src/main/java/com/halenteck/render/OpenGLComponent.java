@@ -8,6 +8,7 @@ import org.lwjgl.opengl.awt.GLData;
 
 import javax.swing.*;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL.setCapabilities;
@@ -30,7 +31,7 @@ public class OpenGLComponent extends AWTGLCanvas {
     private int vPMatrixHandle;
     private int positionHandle;
     private int colorHandle;
-    private int TextureCoordinateHandle;
+    private int textureCoordinateHandle;
 
     private final Matrix4f projectionMatrix = new Matrix4f();
 
@@ -47,44 +48,47 @@ public class OpenGLComponent extends AWTGLCanvas {
         aspect = (float) width / height;
         glViewport(0, 0, width, height);
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+
         String vertexShaderCode = "uniform mat4 u_MVPMatrix;" +
                 "attribute vec4 a_Position;" +
                 "attribute vec4 a_Color;" +
-                //"attribute vec2 a_TexCoordinate;" +
+                "attribute vec2 a_TexCoordinate;" +
                 "varying vec4 v_Color;" +
-                //"varying vec2 v_TexCoordinate;" +
+                "varying vec2 v_TexCoordinate;" +
                 "void main()" +
                 "{" +
                 "v_Color = a_Color;" +
-                //"v_TexCoordinate = a_TexCoordinate;" +
+                "v_TexCoordinate = a_TexCoordinate;" +
                 "gl_Position = u_MVPMatrix * a_Position;" +
                 "}";
         int vertexShader = OpenGLUtils.loadShader(GL_VERTEX_SHADER, vertexShaderCode);
         String fragmentShaderCode = "precision mediump float;" +
-                //"uniform sampler2D u_Texture;" +
+                "uniform sampler2D u_Texture;" +
                 "varying vec4 v_Color;" +
-                //"varying vec2 v_TexCoordinate;" +
+                "varying vec2 v_TexCoordinate;" +
                 "void main() {" +
-                //"vec4 val = v_Color * texture2D(u_Texture, v_TexCoordinate);" +
-                //"if(val.a < 0.25){ discard; }" +
-                "gl_FragColor = v_Color;" +
+                "vec4 val = v_Color * texture2D(u_Texture, v_TexCoordinate);" +
+                "if(val.a < 0.25){ discard; }" +
+                "gl_FragColor = val;" +
                 "}";
         int fragShader = OpenGLUtils.loadShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
-        programHandle = OpenGLUtils.createAndLinkProgram(vertexShader, fragShader, new String[]{"a_Position", "a_Color"/*, "a_TexCoordinate"*/});
+        programHandle = OpenGLUtils.createAndLinkProgram(vertexShader, fragShader, new String[]{"a_Position", "a_Color", "a_TexCoordinate"});
 
         glUseProgram(programHandle);
 
         vPMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
         positionHandle = glGetAttribLocation(programHandle, "a_Position");
         colorHandle = glGetAttribLocation(programHandle, "a_Color");
-        //mTextureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+        textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
 
         projectionMatrix.setPerspective((float) Math.toRadians(45), aspect, 0.1f, 10.0f);
     }
 
     @Override
     public void paintGL() {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         Matrix4f viewMatrix = new Matrix4f().setLookAt(cameraPosition,
                 new Vector3f(directionVector).add(cameraPosition), new Vector3f(0, 1, 0));
@@ -115,7 +119,105 @@ public class OpenGLComponent extends AWTGLCanvas {
         glEnableVertexAttribArray(colorHandle);
         glVertexAttribPointer(colorHandle, 4, GL_FLOAT, false, 0, colorBuffer);
 
+        glBindTexture(GL_TEXTURE_2D, OpenGLUtils.loadTexture("/whiteSquare.png"));
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        float[] squareCoords = {
+                -1, -0.5f, -1,
+                1, -0.5f, -1,
+                1, -0.5f, 1,
+                -1, -0.5f, 1
+        };
+
+        float[] squareColor = {
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1
+        };
+
+        float[] textureCoords = {
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
+        };
+
+        int[] indices = {
+                0, 1, 2,
+                0, 2, 3
+        };
+
+        FloatBuffer squareVertexBuffer = BufferUtils.createFloatBuffer(squareCoords.length);
+        squareVertexBuffer.put(squareCoords).position(0);
+        glEnableVertexAttribArray(positionHandle);
+        glVertexAttribPointer(positionHandle, 3, GL_FLOAT, false, 0, squareVertexBuffer);
+
+        FloatBuffer squareColorBuffer = BufferUtils.createFloatBuffer(squareColor.length);
+        squareColorBuffer.put(squareColor).position(0);
+        glEnableVertexAttribArray(colorHandle);
+        glVertexAttribPointer(colorHandle, 4, GL_FLOAT, false, 0, squareColorBuffer);
+
+        glBindTexture(GL_TEXTURE_2D, OpenGLUtils.loadTexture("/test/clan.jpeg"));
+
+        FloatBuffer textureCoordinateBuffer = BufferUtils.createFloatBuffer(textureCoords.length);
+        textureCoordinateBuffer.put(textureCoords).position(0);
+        glEnableVertexAttribArray(textureCoordinateHandle);
+        glVertexAttribPointer(textureCoordinateHandle, 2, GL_FLOAT, false, 0, textureCoordinateBuffer);
+
+        IntBuffer indexBuffer = BufferUtils.createIntBuffer(indices.length);
+        indexBuffer.put(indices).position(0);
+
+        glDrawElements(GL_TRIANGLES, indexBuffer);
+
+        float[] squareCoords2 = {
+                -1, -1, 1,
+                1, -1, 1,
+                1, 1, 1,
+                -1, 1, 1
+        };
+
+        float[] squareColor2 = {
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1
+        };
+
+        float[] textureCoords2 = {
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
+        };
+
+        int[] indices2 = {
+                0, 1, 2,
+                0, 2, 3
+        };
+
+        FloatBuffer squareVertexBuffer2 = BufferUtils.createFloatBuffer(squareCoords2.length);
+        squareVertexBuffer2.put(squareCoords2).position(0);
+        glEnableVertexAttribArray(positionHandle);
+        glVertexAttribPointer(positionHandle, 3, GL_FLOAT, false, 0, squareVertexBuffer2);
+
+        FloatBuffer squareColorBuffer2 = BufferUtils.createFloatBuffer(squareColor2.length);
+        squareColorBuffer2.put(squareColor2).position(0);
+        glEnableVertexAttribArray(colorHandle);
+        glVertexAttribPointer(colorHandle, 4, GL_FLOAT, false, 0, squareColorBuffer2);
+
+        glBindTexture(GL_TEXTURE_2D, OpenGLUtils.loadTexture("/test/adsiz.png"));
+
+        FloatBuffer textureCoordinateBuffer2 = BufferUtils.createFloatBuffer(textureCoords2.length);
+        textureCoordinateBuffer2.put(textureCoords2).position(0);
+        glEnableVertexAttribArray(textureCoordinateHandle);
+        glVertexAttribPointer(textureCoordinateHandle, 2, GL_FLOAT, false, 0, textureCoordinateBuffer2);
+
+        IntBuffer indexBuffer2 = BufferUtils.createIntBuffer(indices2.length);
+        indexBuffer2.put(indices2).position(0);
+
+        glDrawElements(GL_TRIANGLES, indexBuffer2);
 
         swapBuffers();
 

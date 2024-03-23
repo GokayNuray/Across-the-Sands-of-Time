@@ -17,16 +17,17 @@ public class OpenGLComponent extends AWTGLCanvas {
     private int height;
     private float aspect;
 
-    private final Vector3f cameraPosition = new Vector3f(0, 0, 0);
+    private Vector3f cameraPosition = new Vector3f(0, 0, 0);
+    private Vector3f directionVector = new Vector3f(0, 0, -1);
 
-    private float yaw = 0;
+    private float yaw = -180;
     private float pitch = 0;
 
     private int programHandle;
     private int vPMatrixHandle;
     private int positionHandle;
     private int colorHandle;
-    private int mTextureCoordinateHandle;
+    private int TextureCoordinateHandle;
 
     private final Matrix4f projectionMatrix = new Matrix4f();
 
@@ -82,9 +83,9 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void paintGL() {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        Matrix4f viewMatrix = new Matrix4f().translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
-        Matrix4f viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix).
-                rotateY((float) Math.toRadians(yaw)).rotateX((float) Math.toRadians(pitch));
+        Matrix4f viewMatrix = new Matrix4f().setLookAt(cameraPosition,
+                new Vector3f(directionVector).add(cameraPosition), new Vector3f(0, 1, 0));
+        Matrix4f viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
         FloatBuffer vp = BufferUtils.createFloatBuffer(16);
         viewProjectionMatrix.get(vp);
         glUniformMatrix4fv(vPMatrixHandle, false, vp);
@@ -127,13 +128,40 @@ public class OpenGLComponent extends AWTGLCanvas {
         }
     }
 
-    public void move(float x, float y, float z) {
-        cameraPosition.add(x, y, z);
+    public void moveForward(float distance) {
+        cameraPosition.add(new Vector3f(directionVector).mul(distance));
     }
 
-    public void rotate(float yaw, float pitch) {
-        this.yaw += yaw;
-        this.pitch += pitch;
+    public void moveBackward(float distance) {
+        cameraPosition.sub(new Vector3f(directionVector).mul(distance));
+    }
+
+    public void moveRight(float distance) {
+        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
+        cameraPosition.add(right.mul(distance));
+    }
+
+    public void moveLeft(float distance) {
+        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
+        cameraPosition.sub(right.mul(distance));
+    }
+
+    public void moveUp(float distance) {
+        cameraPosition.add(new Vector3f(0, 1, 0).mul(distance));
+    }
+
+    public void moveDown(float distance) {
+        cameraPosition.sub(new Vector3f(0, 1, 0).mul(distance));
+    }
+
+
+    public void rotate(float dYaw, float dPitch) {
+        yaw += dYaw;
+        pitch += dPitch;
+        float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        float directionY = (float) Math.sin(Math.toRadians(pitch));
+        float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        directionVector = new Vector3f(directionX, directionY, directionZ);
     }
 
 

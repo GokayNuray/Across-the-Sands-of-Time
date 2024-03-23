@@ -32,7 +32,7 @@ public class RenderTester {
 
                     // Use dx and dy as the amount of movement
                     // For example, you can rotate the camera based on the mouse movement
-                    openGLComponent.rotate(dx, dy);
+                    openGLComponent.rotate(-dx, -dy);
                 }
 
                 lastX = currentX;
@@ -49,30 +49,31 @@ public class RenderTester {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_W) {
-                    openGLComponent.move(0, 0, -0.2f);
+                    openGLComponent.moveForward(0.2f);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_S) {
-                    openGLComponent.move(0, 0, 0.2f);
+                    openGLComponent.moveBackward(0.2f);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A) {
-                    openGLComponent.move(-0.2f, 0, 0);
+                    openGLComponent.moveLeft(0.2f);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_D) {
-                    openGLComponent.move(0.2f, 0, 0);
+                    openGLComponent.moveRight(0.2f);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    openGLComponent.move(0, 0.2f, 0);
+                    openGLComponent.moveUp(0.2f);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-                    openGLComponent.move(0, -0.2f, 0);
+                    openGLComponent.moveDown(0.2f);
                 }
             }
         });
         layeredPane.add(openGLComponent, JLayeredPane.DEFAULT_LAYER);
 
         JButton button = new JButton("Click me");
+        button.setFocusable(false);
         button.setBounds(10, 10, 100, 50);
-        layeredPane.add(button, JLayeredPane.POPUP_LAYER);
+        layeredPane.add(button, JLayeredPane.PALETTE_LAYER);
 
         frame.add(layeredPane);
         frame.setVisible(true);

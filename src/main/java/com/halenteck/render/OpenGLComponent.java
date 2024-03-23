@@ -6,6 +6,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.awt.AWTGLCanvas;
 import org.lwjgl.opengl.awt.GLData;
 
+import javax.swing.*;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL.createCapabilities;
@@ -16,6 +17,8 @@ public class OpenGLComponent extends AWTGLCanvas {
     private int width;
     private int height;
     private float aspect;
+
+    private int fps = 0;
 
     private Vector3f cameraPosition = new Vector3f(0, 0, 0);
     private Vector3f directionVector = new Vector3f(0, 0, -1);
@@ -115,6 +118,8 @@ public class OpenGLComponent extends AWTGLCanvas {
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         swapBuffers();
+
+        fps++;
     }
 
 
@@ -158,11 +163,19 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void rotate(float dYaw, float dPitch) {
         yaw += dYaw;
         pitch += dPitch;
+        if (pitch > 90) pitch = 90;
+        if (pitch < -90) pitch = -90;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         directionVector = new Vector3f(directionX, directionY, directionZ);
     }
 
+    public void setFpsText(JLabel fpsText) {
+        new Timer(1000, e -> {
+            fpsText.setText("FPS: " + fps);
+            fps = 0;
+        }).start();
+    }
 
 }

@@ -105,6 +105,8 @@ dependencies {
     runtimeOnly("org.lwjgl", "lwjgl-yoga", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-zstd", classifier = lwjglNatives)
     implementation("org.lwjglx", "lwjgl3-awt", `lwjgl3-awtVersion`)
+
+    implementation("org.joml:joml:1.10.5")
 }
 
 tasks.test {

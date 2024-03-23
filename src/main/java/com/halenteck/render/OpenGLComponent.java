@@ -13,21 +13,22 @@ import static org.lwjgl.opengl.GL.setCapabilities;
 import static org.lwjgl.opengl.GL20.*;
 
 public class OpenGLComponent extends AWTGLCanvas {
-    int width;
-    int height;
-    float aspect;
-    double turnSpeed = 0.001;
+    private int width;
+    private int height;
+    private float aspect;
 
-    Vector3f cameraPosition = new Vector3f(0, 0, 0);
-    Vector3f cameraDirection = new Vector3f(0, 0, -1);
+    private final Vector3f cameraPosition = new Vector3f(0, 0, 0);
 
-    int programHandle;
-    int vPMatrixHandle;
-    int positionHandle;
-    int colorHandle;
-    int mTextureCoordinateHandle;
+    private float yaw = 0;
+    private float pitch = 0;
 
-    Matrix4f projectionMatrix = new Matrix4f();
+    private int programHandle;
+    private int vPMatrixHandle;
+    private int positionHandle;
+    private int colorHandle;
+    private int mTextureCoordinateHandle;
+
+    private final Matrix4f projectionMatrix = new Matrix4f();
 
     public OpenGLComponent() {
         super(new GLData());
@@ -81,8 +82,9 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void paintGL() {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        Matrix4f viewMatrix = new Matrix4f().setLookAt(cameraPosition, cameraDirection, new Vector3f(0, 1, 0));
-        Matrix4f viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
+        Matrix4f viewMatrix = new Matrix4f().translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
+        Matrix4f viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix).
+                rotateY((float) Math.toRadians(yaw)).rotateX((float) Math.toRadians(pitch));
         FloatBuffer vp = BufferUtils.createFloatBuffer(16);
         viewProjectionMatrix.get(vp);
         glUniformMatrix4fv(vPMatrixHandle, false, vp);
@@ -125,8 +127,13 @@ public class OpenGLComponent extends AWTGLCanvas {
         }
     }
 
-    public void goForward() {
-        cameraPosition.z -= 0.2f;
+    public void move(float x, float y, float z) {
+        cameraPosition.add(x, y, z);
+    }
+
+    public void rotate(float yaw, float pitch) {
+        this.yaw += yaw;
+        this.pitch += pitch;
     }
 
 

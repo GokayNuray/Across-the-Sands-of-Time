@@ -9,6 +9,8 @@ import org.lwjgl.opengl.awt.GLData;
 import javax.swing.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL.setCapabilities;
@@ -34,6 +36,8 @@ public class OpenGLComponent extends AWTGLCanvas {
     private int textureCoordinateHandle;
 
     private final Matrix4f projectionMatrix = new Matrix4f();
+
+    private final List<Renderable> renderables = new ArrayList<>();
 
     public OpenGLComponent() {
         super(new GLData());
@@ -84,6 +88,8 @@ public class OpenGLComponent extends AWTGLCanvas {
         textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
 
         projectionMatrix.setPerspective((float) Math.toRadians(45), aspect, 0.1f, 10.0f);
+
+
     }
 
     @Override
@@ -97,142 +103,51 @@ public class OpenGLComponent extends AWTGLCanvas {
         viewProjectionMatrix.get(vp);
         glUniformMatrix4fv(vPMatrixHandle, false, vp);
 
-        float[] triangleCoords = {
-                0.0f, 0.622008459f, -2.0f,
-                -0.5f, -0.311004243f, -2.0f,
-                0.5f, -0.311004243f, -2.0f
-        };
 
-        float[] color = {
-                1.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f
-        };
-
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(triangleCoords.length);
-        vertexBuffer.put(triangleCoords).position(0);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, 3, GL_FLOAT, false, 0, vertexBuffer);
-
-        FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(color.length);
-        colorBuffer.put(color).position(0);
-        glEnableVertexAttribArray(colorHandle);
-        glVertexAttribPointer(colorHandle, 4, GL_FLOAT, false, 0, colorBuffer);
-
-        glBindTexture(GL_TEXTURE_2D, OpenGLUtils.loadTexture("/whiteSquare.png"));
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        float[] squareCoords = {
-                -1, -0.5f, -1,
-                1, -0.5f, -1,
-                1, -0.5f, 1,
-                -1, -0.5f, 1
-        };
-
-        float[] squareColor = {
-                1, 1, 1, 1,
-                1, 1, 1, 1,
-                1, 1, 1, 1,
-                1, 1, 1, 1
-        };
-
-        float[] textureCoords = {
-                0, 0,
-                0, 1,
-                1, 1,
-                1, 0
-        };
-
-        int[] indices = {
-                0, 1, 2,
-                0, 2, 3
-        };
-
-        FloatBuffer squareVertexBuffer = BufferUtils.createFloatBuffer(squareCoords.length);
-        squareVertexBuffer.put(squareCoords).position(0);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, 3, GL_FLOAT, false, 0, squareVertexBuffer);
-
-        FloatBuffer squareColorBuffer = BufferUtils.createFloatBuffer(squareColor.length);
-        squareColorBuffer.put(squareColor).position(0);
-        glEnableVertexAttribArray(colorHandle);
-        glVertexAttribPointer(colorHandle, 4, GL_FLOAT, false, 0, squareColorBuffer);
-
-        glBindTexture(GL_TEXTURE_2D, OpenGLUtils.loadTexture("/test/clan.jpeg"));
-
-        FloatBuffer textureCoordinateBuffer = BufferUtils.createFloatBuffer(textureCoords.length);
-        textureCoordinateBuffer.put(textureCoords).position(0);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, 2, GL_FLOAT, false, 0, textureCoordinateBuffer);
-
-        IntBuffer indexBuffer = BufferUtils.createIntBuffer(indices.length);
-        indexBuffer.put(indices).position(0);
-
-        glDrawElements(GL_TRIANGLES, indexBuffer);
-
-        float[] squareCoords2 = {
-                -1, -1, 1,
-                1, -1, 1,
-                1, 1, 1,
-                -1, 1, 1
-        };
-
-        float[] squareColor2 = {
-                1, 1, 1, 1,
-                1, 1, 1, 1,
-                1, 1, 1, 1,
-                1, 1, 1, 1
-        };
-
-        float[] textureCoords2 = {
-                0, 0,
-                0, 1,
-                1, 1,
-                1, 0
-        };
-
-        int[] indices2 = {
-                0, 1, 2,
-                0, 2, 3
-        };
-
-        FloatBuffer squareVertexBuffer2 = BufferUtils.createFloatBuffer(squareCoords2.length);
-        squareVertexBuffer2.put(squareCoords2).position(0);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, 3, GL_FLOAT, false, 0, squareVertexBuffer2);
-
-        FloatBuffer squareColorBuffer2 = BufferUtils.createFloatBuffer(squareColor2.length);
-        squareColorBuffer2.put(squareColor2).position(0);
-        glEnableVertexAttribArray(colorHandle);
-        glVertexAttribPointer(colorHandle, 4, GL_FLOAT, false, 0, squareColorBuffer2);
-
-        glBindTexture(GL_TEXTURE_2D, OpenGLUtils.loadTexture("/test/adsiz.png"));
-
-        FloatBuffer textureCoordinateBuffer2 = BufferUtils.createFloatBuffer(textureCoords2.length);
-        textureCoordinateBuffer2.put(textureCoords2).position(0);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, 2, GL_FLOAT, false, 0, textureCoordinateBuffer2);
-
-        IntBuffer indexBuffer2 = BufferUtils.createIntBuffer(indices2.length);
-        indexBuffer2.put(indices2).position(0);
-
-        glDrawElements(GL_TRIANGLES, indexBuffer2);
+        for (Renderable renderable : renderables) {
+            if (!renderable.isBuilt()) renderable.build();
+            renderRenderable(renderable);
+        }
 
         swapBuffers();
 
         fps++;
     }
 
+    private void renderRenderable(Renderable renderable) {
+        FloatBuffer[] buffers = renderable.getBuffers();
+        IntBuffer indicesBuffer = renderable.getIndicesBuffer();
+        int textureHandle = renderable.getTextureHandle();
+
+        glEnableVertexAttribArray(positionHandle);
+        glVertexAttribPointer(positionHandle, 3, GL_FLOAT, false, 0, buffers[0]);
+
+        glEnableVertexAttribArray(colorHandle);
+        glVertexAttribPointer(colorHandle, 4, GL_FLOAT, false, 0, buffers[1]);
+
+
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glEnableVertexAttribArray(textureCoordinateHandle);
+        glVertexAttribPointer(textureCoordinateHandle, 2, GL_FLOAT, false, 0, buffers[2]);
+
+        glDrawElements(GL_TRIANGLES, indicesBuffer);
+
+    }
+
+    public void addRenderable(Renderable renderable) {
+        renderables.add(renderable);
+    }
 
     public void startRender() {
-        while (true) {
-            if (!isValid()) {
-                setCapabilities(null);
-                return;
+        new Thread(() -> {
+            while (true) {
+                if (!isValid()) {
+                    setCapabilities(null);
+                    return;
+                }
+                render();
             }
-            render();
-        }
+        }).start();
     }
 
     public void moveForward(float distance) {

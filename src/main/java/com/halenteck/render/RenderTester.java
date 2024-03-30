@@ -142,5 +142,83 @@ public class RenderTester {
         frame.setVisible(true);
 
         openGLComponent.startRender();
+
+        float[] triangleCoords = {
+                0.0f, 0.622008459f, -2.0f,
+                -0.5f, -0.311004243f, -2.0f,
+                0.5f, -0.311004243f, -2.0f
+        };
+
+        float[] color = {
+                1.0f, 0.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f
+        };
+
+        int[] indices0 = {
+                0, 1, 2
+        };
+
+        Renderable renderable = new Renderable(triangleCoords, color, indices0);
+        openGLComponent.addRenderable(renderable);
+
+        float[] squareCoords = {
+                -1, -0.5f, -1,
+                1, -0.5f, -1,
+                1, -0.5f, 1,
+                -1, -0.5f, 1
+        };
+
+        float[] squareColor = {
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1
+        };
+
+        float[] textureCoords = {
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
+        };
+
+        int[] indices = {
+                0, 1, 2,
+                0, 2, 3
+        };
+
+        Renderable renderable2 = new Renderable(squareCoords, squareColor, textureCoords, indices, "/test/clan.jpeg");
+        openGLComponent.addRenderable(renderable2);
+
+        float[] squareCoords2 = {
+                -1, -1, 1,
+                1, -1, 1,
+                1, 1, 1,
+                -1, 1, 1
+        };
+
+        float[] squareColor2 = {
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1
+        };
+
+        float[] textureCoords2 = {
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
+        };
+
+        int[] indices2 = {
+                0, 1, 2,
+                0, 2, 3
+        };
+        Renderable renderable3 = new Renderable(squareCoords2, squareColor2, textureCoords2, indices2, "/test/adsiz.png");
+        openGLComponent.addRenderable(renderable3);
+
+
     }
 }

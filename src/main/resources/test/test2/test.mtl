@@ -1,0 +1,12 @@
+newmtl a
+map_Ka a.jpg
+map_Kd a.jpg
+newmtl b
+map_Ka b.jpg
+map_Kd b.jpg
+newmtl c
+map_Ka c.jpg
+map_Kd c.jpg
+newmtl d
+map_Ka d.png
+map_Kd d.png

@@ -103,10 +103,11 @@ public class OpenGLComponent extends AWTGLCanvas {
         viewProjectionMatrix.get(vp);
         glUniformMatrix4fv(vPMatrixHandle, false, vp);
 
-
-        for (Renderable renderable : renderables) {
-            if (!renderable.isBuilt()) renderable.build();
-            renderRenderable(renderable);
+        synchronized ("renderables") {
+            for (Renderable renderable : renderables) {
+                if (!renderable.isBuilt()) renderable.build();
+                renderRenderable(renderable);
+            }
         }
 
         swapBuffers();
@@ -135,7 +136,9 @@ public class OpenGLComponent extends AWTGLCanvas {
     }
 
     public void addRenderable(Renderable renderable) {
-        renderables.add(renderable);
+        synchronized ("renderables") {
+            renderables.add(renderable);
+        }
     }
 
     public void startRender() {

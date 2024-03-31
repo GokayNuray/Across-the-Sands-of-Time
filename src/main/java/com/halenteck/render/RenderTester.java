@@ -219,7 +219,7 @@ public class RenderTester {
         Renderable renderable3 = new Renderable(squareCoords2, squareColor2, textureCoords2, indices2, "/test/adsiz.png");
         openGLComponent.addRenderable(renderable3);
 
-        Renderable elgato = ModelLoader.loadModel("src/main/resources/test/elgato/12221_Cat_v1_l3.obj");
-        openGLComponent.addRenderable(elgato);
+        //ModelLoader.loadModel("src/main/resources/test/elgato/12221_Cat_v1_l3.obj").forEach(openGLComponent::addRenderable);
+        ModelLoader.loadModel("src/main/resources/test/test2/test2.obj").forEach(openGLComponent::addRenderable);
     }
 }

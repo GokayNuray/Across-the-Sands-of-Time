@@ -19,11 +19,13 @@ public final class ModelLoader {
     private ModelLoader() {
     }
 
-    public static Renderable loadModel(String filePath) {
+    public static List<Renderable> loadModel(String filePath) {
         return loadModel(filePath, FLAGS);
     }
 
-    public static Renderable loadModel(String filePath, int flags) {
+    public static List<Renderable> loadModel(String filePath, int flags) {
+
+        List<Renderable> renderables = new ArrayList<>();
 
         File file = new File(filePath);
         if (!file.exists()) {
@@ -35,22 +37,22 @@ public final class ModelLoader {
             throw new RuntimeException("Error loading model: " + filePath);
         }
 
+        List<String> texturePaths = new ArrayList<>();
         int numMaterials = aiScene.mNumMaterials();
         for (int i = 0; i < numMaterials; i++) {
             AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
 
             AIString path = AIString.calloc();
             aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, path, (IntBuffer) null, null, null, null, null, null);
-            System.out.println(path.dataString());
+            String texturePath = path.dataString();
+            texturePaths.add(texturePath);
         }
 
         int numMeshes = aiScene.mNumMeshes();
         PointerBuffer aiMeshes = aiScene.mMeshes();
-        System.out.println("Number of meshes: " + numMeshes);
         for (int i = 0; i < numMeshes; i++) {
             AIMesh aiMesh = AIMesh.create(aiMeshes.get(i));
             int numVertices = aiMesh.mNumVertices();
-            System.out.println("Number of vertices: " + numVertices);
 
             AIVector3D.Buffer aiVertices = aiMesh.mVertices();
             float[] vertices = new float[numVertices * 3];
@@ -61,7 +63,7 @@ public final class ModelLoader {
                 vertices[j * 3 + 2] = aiVertex.z() * 0.1f;
             }
 
-            AIVector3D.Buffer aiTexCoords = aiMesh.mTextureCoords(0);
+            AIVector3D.Buffer aiTexCoords = aiMesh.mTextureCoords(i);
             float[] texCoords = new float[numVertices * 2];
             if (aiTexCoords != null) {
                 for (int j = 0; j < numVertices; j++) {
@@ -90,11 +92,12 @@ public final class ModelLoader {
                 colors[j + 2] = 1.0f;
                 colors[j + 3] = 1.0f;
             }
-            return new Renderable(vertices, colors, texCoords, indices, "/test/elgato/Cat_diffuse.jpg");
+            String texturePath = (filePath.substring(0, filePath.lastIndexOf("/") + 1) + texturePaths.get(i + 1)).substring("src/main/resources/".length() - 1);
+            renderables.add(new Renderable(vertices, colors, texCoords, indices, texturePath));
 
         }
 
-        return null;
+        return renderables;
     }
 
 }

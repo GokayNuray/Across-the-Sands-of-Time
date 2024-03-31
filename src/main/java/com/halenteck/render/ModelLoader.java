@@ -63,7 +63,7 @@ public final class ModelLoader {
                 vertices[j * 3 + 2] = aiVertex.z() * 0.1f;
             }
 
-            AIVector3D.Buffer aiTexCoords = aiMesh.mTextureCoords(i);
+            AIVector3D.Buffer aiTexCoords = aiMesh.mTextureCoords(0);
             float[] texCoords = new float[numVertices * 2];
             if (aiTexCoords != null) {
                 for (int j = 0; j < numVertices; j++) {
@@ -92,7 +92,7 @@ public final class ModelLoader {
                 colors[j + 2] = 1.0f;
                 colors[j + 3] = 1.0f;
             }
-            String texturePath = (filePath.substring(0, filePath.lastIndexOf("/") + 1) + texturePaths.get(i + 1)).substring("src/main/resources/".length() - 1);
+            String texturePath = (filePath.substring(0, filePath.lastIndexOf("/") + 1) + texturePaths.get(aiMesh.mMaterialIndex())).substring("src/main/resources/".length() - 1);
             renderables.add(new Renderable(vertices, colors, texCoords, indices, texturePath));
 
         }

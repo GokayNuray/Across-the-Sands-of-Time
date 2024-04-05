@@ -22,7 +22,7 @@ public class LogInFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Create Login Panel
+        // Create Login Panell
         loginPanel = new JPanel();
         loginPanel.setLayout(new GridLayout(4, 2, 10, 10)); // Adjust spacing as needed
 

@@ -23,7 +23,7 @@ public class LogInFrame extends JFrame {
         centerPanel.setLayout(new GridLayout(4, 2));
 
         // Username Panel
-        JPanel usernamePanel = new JPanel(new GridLayout(2,0));
+        JPanel usernamePanel = new JPanel(new GridLayout(2, 0));
         JLabel usernameLabel = new JLabel("username", SwingConstants.LEFT);
         usernameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
         JTextField usernameField = new JTextField();
@@ -39,7 +39,7 @@ public class LogInFrame extends JFrame {
         centerPanel.add(usernameInfo);
 
         // Password Panel
-        JPanel passwordPanel = new JPanel(new GridLayout(2,0));
+        JPanel passwordPanel = new JPanel(new GridLayout(2, 0));
         JLabel passwordLabel = new JLabel("password", SwingConstants.LEFT);
         passwordLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
         JPasswordField passwordField = new JPasswordField();
@@ -78,7 +78,7 @@ public class LogInFrame extends JFrame {
         add(centerPanel, BorderLayout.CENTER);
 
         // Image Panel
-        ImageIcon imageIcon = new ImageIcon("C:\\Users\\ASUS\\Desktop\\CS102\\Across-the-Sands-of-Time\\src\\main\\resources\\com\\halenteck\\commonUI\\logo.jpg");
+        ImageIcon imageIcon = new ImageIcon(this.getClass().getResource("/logo.jpg"));
         Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);
@@ -107,15 +107,10 @@ public class LogInFrame extends JFrame {
 
                 if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(LogInFrame.this, "Please fill in the fields");
-                }
-
-                else if (!usernameChecker(usernameField.getText()) || !passwordChecker(passwordField.getText())) {
-                    JOptionPane.showMessageDialog( LogInFrame.this, "Illegal username or password!");
+                } else if (!usernameChecker(usernameField.getText()) || !passwordChecker(passwordField.getText())) {
+                    JOptionPane.showMessageDialog(LogInFrame.this, "Illegal username or password!");
                     return;
-                }
-
-
-                else {
+                } else {
 
                     userName = usernameField.getText();
 
@@ -127,9 +122,7 @@ public class LogInFrame extends JFrame {
                         // if not, show an error message
                         // JOptionPane.showMessageDialog(LogInFrame.this, "Wrong username or password!");
                         dispose();
-                    }
-
-                    else if (e.getSource() == registerButton) {
+                    } else if (e.getSource() == registerButton) {
                         // TODO
                         //  check if username is already in the database
                         // if it is, show an error message
@@ -151,19 +144,19 @@ public class LogInFrame extends JFrame {
         registerButton.addActionListener(new fieldChecker());
 
 
-
     }
 
     /**
      * Checks if the username is between 6 and 12 characters,
      * contains only English letters, numbers and special-case
      * character '_'
+     *
      * @param username the username to be checked
      * @return true if the username is valid, false otherwise
      */
     public boolean usernameChecker(String username) {
 
-        if ( 6 <= username.length() && username.length() <= 12) {
+        if (6 <= username.length() && username.length() <= 12) {
 
             for (int i = 0; i < username.length(); i++) {
                 if (!Character.isLetterOrDigit(username.charAt(i)) && username.charAt(i) != '_') {
@@ -181,39 +174,37 @@ public class LogInFrame extends JFrame {
      * Checks if the password is between 8 and 16 characters,
      * one uppercase, one lowercase, one numerical and one special-case
      * (*, !, ?, _, -) character
+     *
      * @param password the password to be checked
      * @return true if the password is valid, false otherwise
      */
     public boolean passwordChecker(String password) {
 
-            if (8 <= password.length() && password.length() <= 16) {
+        if (8 <= password.length() && password.length() <= 16) {
 
-                boolean hasUpper = false;
-                boolean hasLower = false;
-                boolean hasDigit = false;
-                boolean hasSpecial = false;
+            boolean hasUpper = false;
+            boolean hasLower = false;
+            boolean hasDigit = false;
+            boolean hasSpecial = false;
 
-                for (int i = 0; i < password.length(); i++) {
-                    if (Character.isUpperCase(password.charAt(i))) {
-                        hasUpper = true;
-                    }
-                    else if (Character.isLowerCase(password.charAt(i))) {
-                        hasLower = true;
-                    }
-                    else if (Character.isDigit(password.charAt(i))) {
-                        hasDigit = true;
-                    }
-                    else if (password.charAt(i) == '*' || password.charAt(i) == '!' || password.charAt(i) == '?'
-                            || password.charAt(i) == '_' || password.charAt(i) == '-') {
-                        hasSpecial = true;
-                    }
+            for (int i = 0; i < password.length(); i++) {
+                if (Character.isUpperCase(password.charAt(i))) {
+                    hasUpper = true;
+                } else if (Character.isLowerCase(password.charAt(i))) {
+                    hasLower = true;
+                } else if (Character.isDigit(password.charAt(i))) {
+                    hasDigit = true;
+                } else if (password.charAt(i) == '*' || password.charAt(i) == '!' || password.charAt(i) == '?'
+                        || password.charAt(i) == '_' || password.charAt(i) == '-') {
+                    hasSpecial = true;
                 }
-
-                return hasUpper && hasLower && hasDigit && hasSpecial;
             }
 
-            // length is not allowed
-            return false;
+            return hasUpper && hasLower && hasDigit && hasSpecial;
+        }
+
+        // length is not allowed
+        return false;
     }
 
 }

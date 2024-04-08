@@ -1,4 +1,4 @@
-package com.halenteck;
+package com.halenteck.commonUI;
 
 import com.halenteck.combatUI.ShopFrame;
 import com.halenteck.fpsUI.LobbyFrame;

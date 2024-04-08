@@ -1,4 +1,4 @@
-package com.halenteck;
+package com.halenteck.commonUI;
 
 import javax.swing.*;
 import java.awt.*;

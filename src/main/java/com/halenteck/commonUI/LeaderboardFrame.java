@@ -1,4 +1,4 @@
-package com.halenteck;
+package com.halenteck.commonUI;
 
 public class LeaderboardFrame {
 }

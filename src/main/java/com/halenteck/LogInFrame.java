@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
 
 public class LogInFrame extends JFrame {
 
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
+    protected static final int FRAME_WIDTH = 800;
+    protected static final int FRAME_HEIGHT = 500;
 
     LogInFrame() {
 
@@ -30,7 +30,11 @@ public class LogInFrame extends JFrame {
         usernamePanel.add(usernameLabel);
         usernamePanel.add(usernameField);
         centerPanel.add(usernamePanel);
-        JLabel usernameInfo = new JLabel("Username: 6-12 characters", SwingConstants.CENTER);
+
+        JTextArea usernameInfo = new JTextArea("username (6-12 digits) can only contain letters, numbers and '_' character.");
+        usernameInfo.setLineWrap(true); // Enable line wrapping
+        usernameInfo.setWrapStyleWord(true); // Wrap text at word boundaries (optional)
+        usernameInfo.setEditable(false);
         centerPanel.add(usernameInfo);
 
         // Password Panel
@@ -42,7 +46,12 @@ public class LogInFrame extends JFrame {
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
         centerPanel.add(passwordPanel);
-        JLabel passwordInfo = new JLabel("Password: 8-16 characters", SwingConstants.CENTER);
+
+        JTextArea passwordInfo = new JTextArea("password (8-16 digits) must contain 1 uppercase, 1 lowercase, " +
+                "1 numerical and 1 special-case (*,?,!,_,-) character.");
+        passwordInfo.setLineWrap(true); // Enable line wrapping
+        passwordInfo.setWrapStyleWord(true);
+        passwordInfo.setEditable(false);
         centerPanel.add(passwordInfo);
 
         centerPanel.add(new JPanel()); // empty panel
@@ -68,7 +77,7 @@ public class LogInFrame extends JFrame {
         add(centerPanel, BorderLayout.CENTER);
 
         // Image Panel
-        ImageIcon imageIcon = new ImageIcon("C:\\Users\\ASUS\\Desktop\\CS102\\Across-the-Sands-of-Time\\src\\main\\resources\\test\\logo.jpg");
+        ImageIcon imageIcon = new ImageIcon("C:\\Users\\ASUS\\Desktop\\CS102\\Across-the-Sands-of-Time\\src\\main\\resources\\commonUI\\logo.jpg");
         Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);
@@ -167,7 +176,7 @@ public class LogInFrame extends JFrame {
     /**
      * Checks if the password is between 8 and 16 characters,
      * one uppercase, one lowercase, one numerical and one special-case
-     * (*, !, ?) character
+     * (*, !, ?, _, -) character
      * @param password the password to be checked
      * @return true if the password is valid, false otherwise
      */
@@ -190,7 +199,8 @@ public class LogInFrame extends JFrame {
                     else if (Character.isDigit(password.charAt(i))) {
                         hasDigit = true;
                     }
-                    else if (password.charAt(i) == '*' || password.charAt(i) == '!' || password.charAt(i) == '?') {
+                    else if (password.charAt(i) == '*' || password.charAt(i) == '!' || password.charAt(i) == '?'
+                            || password.charAt(i) == '_' || password.charAt(i) == '-') {
                         hasSpecial = true;
                     }
                 }

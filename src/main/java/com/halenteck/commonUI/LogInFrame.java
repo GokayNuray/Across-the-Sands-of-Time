@@ -77,7 +77,7 @@ public class LogInFrame extends JFrame {
         add(centerPanel, BorderLayout.CENTER);
 
         // Image Panel
-        ImageIcon imageIcon = new ImageIcon("C:\\Users\\ASUS\\Desktop\\CS102\\Across-the-Sands-of-Time\\src\\main\\resources\\com.halenteck.commonUI\\logo.jpg");
+        ImageIcon imageIcon = new ImageIcon("C:\\Users\\ASUS\\Desktop\\CS102\\Across-the-Sands-of-Time\\src\\main\\resources\\com\\halenteck\\commonUI\\logo.jpg");
         Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);

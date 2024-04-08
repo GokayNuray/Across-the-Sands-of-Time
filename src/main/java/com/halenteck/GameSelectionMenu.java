@@ -8,8 +8,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GameSelectionMenu extends LogInFrame {
+public class GameSelectionMenu extends JFrame {
 
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIGHT = 500;
 
     GameSelectionMenu(String userName) {
 
@@ -104,7 +106,7 @@ public class GameSelectionMenu extends LogInFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open Stats Frame
-                new UserCard();
+                new UserCard(userName);
                 dispose();
             }
         });

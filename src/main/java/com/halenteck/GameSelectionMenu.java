@@ -147,8 +147,6 @@ public class GameSelectionMenu extends JFrame {
         add(statsPanel, BorderLayout.SOUTH);
 
 
-
-
         setVisible(true);
 
     }

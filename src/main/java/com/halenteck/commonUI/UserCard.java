@@ -49,7 +49,7 @@ public class UserCard extends JFrame {
         JButton characterButton = new JButton("View Character Collection");
         characterButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
         characterButton.addActionListener(e -> {
-            new CharacterCollection();
+//            new CharacterCollection();
             dispose();
         });
         characterPanel.add(characterButton);

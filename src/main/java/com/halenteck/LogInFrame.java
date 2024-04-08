@@ -9,6 +9,7 @@ public class LogInFrame extends JFrame {
 
     protected static final int FRAME_WIDTH = 800;
     protected static final int FRAME_HEIGHT = 500;
+    protected String userName = null;
 
     LogInFrame() {
 
@@ -115,6 +116,9 @@ public class LogInFrame extends JFrame {
 
 
                 else {
+
+                    userName = usernameField.getText();
+
                     if (e.getSource() == loginButton) {
                         // TODO
                         //  check if username and password are in the database
@@ -145,8 +149,6 @@ public class LogInFrame extends JFrame {
 
         loginButton.addActionListener(new fieldChecker());
         registerButton.addActionListener(new fieldChecker());
-
-
 
     }
 

@@ -1,8 +1,8 @@
 package com.halenteck;
 
-public class UserCard {
+public class UserCard extends LogInFrame {
 
-    UserCard(String userName) {
-        System.out.println("UserCard created for " + userName);
+    UserCard() {
+
     }
 }

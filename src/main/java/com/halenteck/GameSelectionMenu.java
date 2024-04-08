@@ -104,7 +104,7 @@ public class GameSelectionMenu extends LogInFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open Stats Frame
-                new UserCard(userName);
+                new UserCard();
                 dispose();
             }
         });

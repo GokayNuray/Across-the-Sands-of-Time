@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
 
 public class RenderTester {
 
@@ -220,6 +221,21 @@ public class RenderTester {
         openGLComponent.addRenderable(renderable3);
 
         //ModelLoader.loadModel("src/main/resources/test/elgato/12221_Cat_v1_l3.obj").forEach(openGLComponent::addRenderable);
-        ModelLoader.loadModel("src/main/resources/test/test2/test2.obj").forEach(openGLComponent::addRenderable);
+        List<Renderable> test2 = ModelLoader.loadModel("src/main/resources/test/test2/test2.obj");
+        for (Renderable renderable1 : test2) {
+            openGLComponent.addRenderable(renderable1);
+        }
+
+        while (true) {
+            for (Renderable r : test2) {
+                r.rotate(0.1f, 0, 1, 0);
+                r.translate(0, 0.01f, 0);
+            }
+            try {
+                Thread.sleep(1000 / 60);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

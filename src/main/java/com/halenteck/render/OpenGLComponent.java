@@ -106,6 +106,7 @@ public class OpenGLComponent extends AWTGLCanvas {
         synchronized ("renderables") {
             for (Renderable renderable : renderables) {
                 if (!renderable.isBuilt()) renderable.build();
+                if (renderable.isUpdated()) renderable.update();
                 renderRenderable(renderable);
             }
         }

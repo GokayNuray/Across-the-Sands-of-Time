@@ -1,5 +1,7 @@
 package com.halenteck.render;
 
+import org.joml.Matrix3f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -8,6 +10,7 @@ import java.nio.IntBuffer;
 public class Renderable {
 
     private boolean built = false;
+    private boolean updated = false;
 
     private float[] vertices;
     private float[] colors;
@@ -48,7 +51,6 @@ public class Renderable {
 
         textureHandle = OpenGLUtils.loadTexture(texturePath);
 
-        vertices = null;
         colors = null;
         texCoords = null;
         indices = null;
@@ -56,6 +58,50 @@ public class Renderable {
 
         built = true;
     }
+
+    //Recreate the vertex buffer with the new vertices
+    void update() {
+        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
+        vertexBuffer.put(vertices).flip();
+
+        buffers[0] = vertexBuffer;
+
+        updated = false;
+    }
+
+    void translate(float x, float y, float z) {
+        for (int i = 0; i < vertices.length; i += 3) {
+            vertices[i] += x;
+            vertices[i + 1] += y;
+            vertices[i + 2] += z;
+        }
+
+        updated = true;
+    }
+
+    void rotate(float angle, float x, float y, float z) {
+        for (int i = 0; i < vertices.length; i += 3) {
+            Vector3f vertex = new Vector3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+            Matrix3f rotationMatrix = new Matrix3f().rotate(angle, x, y, z);
+            rotationMatrix.transform(vertex);
+            vertices[i] = vertex.x;
+            vertices[i + 1] = vertex.y;
+            vertices[i + 2] = vertex.z;
+        }
+
+        updated = true;
+    }
+
+    void scale(float x, float y, float z) {
+        for (int i = 0; i < vertices.length; i += 3) {
+            vertices[i] *= x;
+            vertices[i + 1] *= y;
+            vertices[i + 2] *= z;
+        }
+
+        updated = true;
+    }
+
 
     public FloatBuffer[] getBuffers() {
         return buffers;
@@ -71,5 +117,9 @@ public class Renderable {
 
     public boolean isBuilt() {
         return built;
+    }
+
+    public boolean isUpdated() {
+        return updated;
     }
 }

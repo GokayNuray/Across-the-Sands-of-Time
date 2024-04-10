@@ -226,16 +226,7 @@ public class RenderTester {
             openGLComponent.addRenderable(renderable1);
         }
 
-        while (true) {
-            for (Renderable r : test2) {
-                r.rotate(0.1f, 0, 1, 0);
-                r.translate(0, 0.01f, 0);
-            }
-            try {
-                Thread.sleep(1000 / 60);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        Renderable cube = ModelLoader.createRectangularPrism(new float[]{-1, -1, -1}, new float[]{1, 1, 1});
+        openGLComponent.addRenderable(cube);
     }
 }

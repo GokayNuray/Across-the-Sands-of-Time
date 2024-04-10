@@ -100,4 +100,44 @@ public final class ModelLoader {
         return renderables;
     }
 
+    public static Renderable createRectangularPrism(float[] start, float[] end) {
+        float[] vertices = {
+                start[0], start[1], start[2],
+                end[0], start[1], start[2],
+                end[0], end[1], start[2],
+                start[0], end[1], start[2],
+                start[0], start[1], end[2],
+                end[0], start[1], end[2],
+                end[0], end[1], end[2],
+                start[0], end[1], end[2]
+        };
+
+        float[] colors = {
+                1, 0, 0, 1,
+                0, 1, 0, 1,
+                0, 0, 1, 1,
+                1, 1, 0, 1,
+                1, 0, 1, 1,
+                0, 1, 1, 1,
+                1, 1, 1, 1,
+                0, 0, 0, 1
+        };
+
+        int[] indices = {
+                0, 1, 2,
+                0, 2, 3,
+                0, 1, 5,
+                0, 5, 4,
+                1, 2, 6,
+                1, 6, 5,
+                2, 3, 7,
+                2, 7, 6,
+                3, 0, 4,
+                3, 4, 7,
+                4, 5, 6,
+                4, 6, 7
+        };
+
+        return new Renderable(vertices, colors, indices);
+    }
 }

@@ -20,17 +20,9 @@ public abstract class FPSWeapon {
     }
 
     public void fire() {
-        if (canFire())
-        {
-            ammoInMagazine--;
-        }
-        else
-        {
-            reload();
-        }
+        ammoInMagazine--;
     }
 
-    //TODO: Fully implement reload function.
     public void reload() {
         if (!isReloading)
         {

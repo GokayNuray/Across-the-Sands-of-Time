@@ -1,63 +1,160 @@
 package com.halenteck.fpsGame;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Player {
+    private final float SPEED = 5f;
+    private final float GRAVITY = -10;
+    private final float JUMP_FORCE = 20f;
+    private final float CROUCH_MULTIPLIER = 0.5f; // Units are subject to change.
+
     private String name;
     private int health;
     private int armor;
     private FPSWeapon weapon1;
     private FPSWeapon weapon2;
-    private float posX, posY, posZ;
+    private Vector3D position;
+    private Vector3D velocity;
+    private float speed;
     private FPSWeapon currentWeapon;
     private boolean isCrouching;
-    private float speed;
-    private final float CROUCH_MULTIPLIER = 0.5f;
+    private boolean isGrounded;
+    ArrayList<Bullet> bullets = new ArrayList<>();
 
-    public Player(String name, int health, FPSWeapon weapon1, FPSWeapon weapon2, float posX, float posY, float posZ, float speed) {
+    public Player(String name, int health, FPSWeapon weapon1, FPSWeapon weapon2, Vector3D startPosition) {
         this.name = name;
         this.health = health;
         this.weapon1 = weapon1;
         this.weapon2 = weapon2;
-        this.posX = posX;
-        this.posY = posY;
-        this.posZ = posZ;
-        this.speed = speed;
+        this.position = startPosition;
+        this.velocity = new Vector3D(0, 0, 0);
         isCrouching = false;
+        isGrounded = true;
 
         currentWeapon = weapon1;
+        speed = SPEED;
     }
 
-    public void move(Direction direction) {
+    public void update(float time) {
+        // Apply gravity if the player is not grounded
+        if (!isGrounded) {
+            velocity.add(new Vector3D(0, GRAVITY * time, 0));
+        }
 
-        if (this.getCrouchState())
+        // Update position of the player
+        Vector3D positionChange = new Vector3D(velocity.x, velocity.y, velocity.z);
+        positionChange.scale(time);
+        position.add(positionChange);
+
+        if (position.y <= 0) {
+            position.y = 0;
+            isGrounded = true;
+            velocity.y = 0;
+        }
+    }
+
+    public void jump() {
+        if (isGrounded) {
+            isGrounded = false;
+            velocity.y = JUMP_FORCE;
+        }
+    }
+
+    public void moveForward(float deltaTime) {
+        if (isCrouching)
         {
-            switch (direction) {
-                case FORWARD:  posZ += 1 * CROUCH_MULTIPLIER; break; //(W)
-                case BACKWARD: posZ -= 1 * CROUCH_MULTIPLIER; break; //(S)
-                case LEFT:     posX -= 1 * CROUCH_MULTIPLIER; break; //(A)
-                case RIGHT:    posX += 1 * CROUCH_MULTIPLIER; break; //(D)
+            position.z += SPEED * CROUCH_MULTIPLIER * deltaTime;
+        }
+        else
+        {
+            position.z += SPEED * deltaTime;
+        }
+    }
+
+    public void moveBackward(float deltaTime) {
+        if (isCrouching)
+        {
+            position.z -= SPEED * CROUCH_MULTIPLIER * deltaTime;
+        }
+        else
+        {
+            position.z -= SPEED * deltaTime;
+        }
+    }
+
+    public void moveLeft(float deltaTime) {
+        if (isCrouching)
+        {
+            position.x -= SPEED * CROUCH_MULTIPLIER * deltaTime;
+        }
+        else
+        {
+            position.x -= SPEED * deltaTime;
+        }
+    }
+
+    public void moveRight(float deltaTime) {
+        if (isCrouching)
+        {
+            position.x += SPEED * CROUCH_MULTIPLIER * deltaTime;
+        }
+        else
+        {
+            position.x += SPEED * deltaTime;
+        }
+    }
+
+    public void shoot(Vector3D direction) {
+        if (currentWeapon.canFire())
+        {
+            currentWeapon.fire();
+            Bullet newBullet = new Bullet(this.position, direction, currentWeapon.getDamage());
+            bullets.add(newBullet);
+        }
+        else if (currentWeapon.isReloading())
+        {
+            if (currentWeapon.isReloading())
+            {
+                return;
             }
         }
-
-        switch (direction) {
-            case FORWARD:  posZ += 1; break; //(W)
-            case BACKWARD: posZ -= 1; break; //(S)
-            case LEFT:     posX -= 1; break; //(A)
-            case RIGHT:    posX += 1; break; //(D)
+        else
+        {
+            currentWeapon.reload();
         }
     }
 
-    public enum Direction {
-        FORWARD, BACKWARD, LEFT, RIGHT
+    public void updateBullets(float time, ArrayList<Player> targets) {
+        Iterator<Bullet> bulletIterator = bullets.iterator();
+        while (bulletIterator.hasNext())
+        {
+            Bullet bullet = bulletIterator.next();
+            bullet.update(time);
+
+            for (Player target : targets)
+            {
+                if (isBulletHittingTarget(bullet, target))
+                {
+                    bulletIterator.remove();
+                    target.takeDamage(bullet.getDamage());
+                    break;
+                }
+            }
+        }
     }
 
-    public void shoot() {
-        currentWeapon.fire();
+    private boolean isBulletHittingTarget(Bullet bullet, Player target) {
+        float hitRadius = 1.0f; // Subject to change.
+        return bullet.getPosition().distanceTo(target.position) <= hitRadius;
     }
 
     public void reload() {
         if (currentWeapon.getAmmoInMagazine() < currentWeapon.magazineSize) {
             currentWeapon.reload();
-        } else {
+        }
+        else
+        {
             return;
         }
     }
@@ -101,7 +198,7 @@ public class Player {
         if (!isCrouching)
         {
             isCrouching = true;
-            speed = speed * CROUCH_MULTIPLIER;
+            speed = SPEED * CROUCH_MULTIPLIER;
         }
     }
 
@@ -109,13 +206,8 @@ public class Player {
         if (isCrouching)
         {
             isCrouching = false;
-            speed = speed / CROUCH_MULTIPLIER;
+            speed = SPEED / CROUCH_MULTIPLIER;
         }
-    }
-
-    public void jump() {
-        // TODO: Implement jump method.
-        System.out.println("jump() method will be implemented soon.");
     }
 
     public String getName() {
@@ -147,18 +239,26 @@ public class Player {
     }
 
     public float getX() {
-        return posX;
+        return this.position.x;
     }
 
     public float getY() {
-        return posY;
+        return this.position.y;
     }
 
     public float getZ() {
-        return posZ;
+        return this.position.z;
     }
 
     public boolean getCrouchState() {
         return isCrouching;
+    }
+
+    public Vector3D getPosition() {
+        return position;
+    }
+
+    public Vector3D getVelocity() {
+        return velocity;
     }
 }

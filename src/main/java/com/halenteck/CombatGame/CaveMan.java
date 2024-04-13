@@ -1,4 +1,4 @@
-package CombatGame;
+package com.halenteck.CombatGame;
 
 public class CaveMan extends Character {
 

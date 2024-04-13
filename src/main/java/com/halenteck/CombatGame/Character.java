@@ -1,4 +1,4 @@
-package CombatGame;
+package com.halenteck.CombatGame;
 
 public abstract class Character {
 

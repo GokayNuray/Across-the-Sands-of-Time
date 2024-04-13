@@ -1,4 +1,4 @@
-package CombatGame;
+package com.halenteck.CombatGame;
 
 public class Panzehir extends Character {
 

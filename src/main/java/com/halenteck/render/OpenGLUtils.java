@@ -8,7 +8,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public final class OpenGLUtils {
 
@@ -22,18 +22,12 @@ public final class OpenGLUtils {
         return shader;
     }
 
-    static int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes) {
+    static int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle) {
         int programHandle = glCreateProgram();
 
         if (programHandle != 0) {
             glAttachShader(programHandle, vertexShaderHandle);
             glAttachShader(programHandle, fragmentShaderHandle);
-            if (attributes != null) {
-                final int size = attributes.length;
-                for (int i = 0; i < size; i++) {
-                    glBindAttribLocation(programHandle, i, attributes[i]);
-                }
-            }
             glLinkProgram(programHandle);
         }
 

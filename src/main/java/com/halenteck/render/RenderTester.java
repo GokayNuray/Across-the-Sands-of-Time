@@ -226,7 +226,7 @@ public class RenderTester {
             openGLComponent.addRenderable(renderable1);
         }
 
-        Renderable cube = ModelLoader.createRectangularPrism(new float[]{-1, -1, -1}, new float[]{1, 1, 1});
+        Renderable cube = ModelLoader.createRectangularPrism(new float[]{-4, -1, -1}, new float[]{-2, 1, 1});
         openGLComponent.addRenderable(cube);
     }
 }

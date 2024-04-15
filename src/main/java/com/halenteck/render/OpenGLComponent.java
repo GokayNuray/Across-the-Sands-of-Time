@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL.setCapabilities;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class OpenGLComponent extends AWTGLCanvas {
     private int width;
@@ -55,12 +55,13 @@ public class OpenGLComponent extends AWTGLCanvas {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 
-        String vertexShaderCode = "uniform mat4 u_MVPMatrix;" +
-                "attribute vec4 a_Position;" +
-                "attribute vec4 a_Color;" +
-                "attribute vec2 a_TexCoordinate;" +
-                "varying vec4 v_Color;" +
-                "varying vec2 v_TexCoordinate;" +
+        String vertexShaderCode = "#version 130\n" +
+                "uniform mat4 u_MVPMatrix;" +
+                "in vec4 a_Position;" +
+                "in vec4 a_Color;" +
+                "in vec2 a_TexCoordinate;" +
+                "out vec4 v_Color;" +
+                "out vec2 v_TexCoordinate;" +
                 "void main()" +
                 "{" +
                 "v_Color = a_Color;" +
@@ -68,17 +69,18 @@ public class OpenGLComponent extends AWTGLCanvas {
                 "gl_Position = u_MVPMatrix * a_Position;" +
                 "}";
         int vertexShader = OpenGLUtils.loadShader(GL_VERTEX_SHADER, vertexShaderCode);
-        String fragmentShaderCode = "precision mediump float;" +
+        String fragmentShaderCode = "#version 130\n" +
+                "precision mediump float;" +
                 "uniform sampler2D u_Texture;" +
-                "varying vec4 v_Color;" +
-                "varying vec2 v_TexCoordinate;" +
+                "in vec4 v_Color;" +
+                "in vec2 v_TexCoordinate;" +
                 "void main() {" +
-                "vec4 val = v_Color * texture2D(u_Texture, v_TexCoordinate);" +
+                "vec4 val = v_Color * texture(u_Texture, v_TexCoordinate);" +
                 "if(val.a < 0.25){ discard; }" +
                 "gl_FragColor = val;" +
                 "}";
         int fragShader = OpenGLUtils.loadShader(GL_FRAGMENT_SHADER, fragmentShaderCode);
-        programHandle = OpenGLUtils.createAndLinkProgram(vertexShader, fragShader, new String[]{"a_Position", "a_Color", "a_TexCoordinate"});
+        programHandle = OpenGLUtils.createAndLinkProgram(vertexShader, fragShader);
 
         glUseProgram(programHandle);
 

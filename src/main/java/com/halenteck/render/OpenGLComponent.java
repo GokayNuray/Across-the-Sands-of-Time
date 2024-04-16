@@ -23,6 +23,10 @@ public class OpenGLComponent extends AWTGLCanvas {
 
     private int fps = 0;
 
+    public Vector3f getCameraPosition() {
+        return cameraPosition;
+    }
+
     private Vector3f cameraPosition = new Vector3f(0, 0, 0);
     private Vector3f directionVector = new Vector3f(0, 0, -1);
 
@@ -141,6 +145,12 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void addRenderable(Renderable renderable) {
         synchronized ("renderables") {
             renderables.add(renderable);
+        }
+    }
+
+    public void addEntity(Entity entity) {
+        synchronized ("renderables") {
+            entity.getRenderables(renderables);
         }
     }
 

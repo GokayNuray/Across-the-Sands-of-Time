@@ -7,7 +7,7 @@ import org.lwjgl.BufferUtils;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class Renderable {
+public class Renderable implements Cloneable {
 
     private boolean built = false;
     private boolean updated = false;
@@ -121,5 +121,21 @@ public class Renderable {
 
     public boolean isUpdated() {
         return updated;
+    }
+
+    @Override
+    public Renderable clone() {
+        try {
+            Renderable clone = (Renderable) super.clone();
+            clone.vertices = vertices.clone();
+            clone.colors = colors.clone();
+            clone.texCoords = texCoords.clone();
+            clone.indices = indices.clone();
+            clone.texturePath = texturePath;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -18,7 +18,7 @@ public class Player {
     private FPSWeapon weapon2;
     private Vector3f position;
     private Vector3f velocity;
-    private Vector3f directionVector;
+    private Vector3f directionVector = new Vector3f(0, 0, -1);
     private float speed;
     private FPSWeapon currentWeapon;
     private boolean isCrouching;
@@ -63,22 +63,22 @@ public class Player {
         }
     }
 
-    public void moveForward() {
-        position.add(new Vector3f(directionVector).mul(speed));
+    public void moveForward(float distance) {
+        position.add(new Vector3f(directionVector).mul(distance));
     }
 
-    public void moveBackward() {
-        position.sub(new Vector3f(directionVector).mul(speed));
+    public void moveBackward(float distance) {
+        position.sub(new Vector3f(directionVector).mul(distance));
     }
 
-    public void moveRight() {
+    public void moveRight(float distance) {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.add(right.mul(speed));
+        position.add(right.mul(distance));
     }
 
-    public void moveLeft() {
+    public void moveLeft(float distance) {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.sub(right.mul(speed));
+        position.sub(right.mul(distance));
     }
 
     public void shoot(Vector3f direction) {

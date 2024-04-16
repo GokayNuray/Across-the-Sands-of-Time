@@ -226,7 +226,22 @@ public class RenderTester {
             openGLComponent.addRenderable(renderable1);
         }
 
+        Entity entity = new Entity(Models.TEST2, 0, 0, 2, 180, 0, 0.5f);
+        openGLComponent.addEntity(entity);
+        new Thread(() -> {
+            while (true) {
+                entity.rotate(0.5f, 0);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
         Renderable cube = ModelLoader.createRectangularPrism(new float[]{-4, -1, -1}, new float[]{-2, 1, 1});
         openGLComponent.addRenderable(cube);
+
+
     }
 }

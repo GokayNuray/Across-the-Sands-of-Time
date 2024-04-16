@@ -1,5 +1,7 @@
 package com.halenteck.fpsGame;
 
+import org.joml.Vector3f;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -14,21 +16,22 @@ public class Player {
     private int armor;
     private FPSWeapon weapon1;
     private FPSWeapon weapon2;
-    private Vector3D position;
-    private Vector3D velocity;
+    private Vector3f position;
+    private Vector3f velocity;
+    private Vector3f directionVector;
     private float speed;
     private FPSWeapon currentWeapon;
     private boolean isCrouching;
     private boolean isGrounded;
     ArrayList<Bullet> bullets = new ArrayList<>();
 
-    public Player(String name, int health, FPSWeapon weapon1, FPSWeapon weapon2, Vector3D startPosition) {
+    public Player(String name, int health, FPSWeapon weapon1, FPSWeapon weapon2, Vector3f startPosition) {
         this.name = name;
         this.health = health;
         this.weapon1 = weapon1;
         this.weapon2 = weapon2;
         this.position = startPosition;
-        this.velocity = new Vector3D(0, 0, 0);
+        this.velocity = new Vector3f(0, 0, 0);
         isCrouching = false;
         isGrounded = true;
 
@@ -39,12 +42,11 @@ public class Player {
     public void update(float time) {
         // Apply gravity if the player is not grounded
         if (!isGrounded) {
-            velocity.add(new Vector3D(0, GRAVITY * time, 0));
+            velocity.add(new Vector3f(0, GRAVITY * time, 0));
         }
 
         // Update position of the player
-        Vector3D positionChange = new Vector3D(velocity.x, velocity.y, velocity.z);
-        positionChange.scale(time);
+        Vector3f positionChange = new Vector3f(velocity.x, velocity.y, velocity.z);
         position.add(positionChange);
 
         if (position.y <= 0) {
@@ -61,51 +63,25 @@ public class Player {
         }
     }
 
-    public void moveForward(float deltaTime) {
-        if (isCrouching)
-        {
-            position.z += SPEED * CROUCH_MULTIPLIER * deltaTime;
-        }
-        else
-        {
-            position.z += SPEED * deltaTime;
-        }
+    public void moveForward() {
+        position.add(new Vector3f(directionVector).mul(speed));
     }
 
-    public void moveBackward(float deltaTime) {
-        if (isCrouching)
-        {
-            position.z -= SPEED * CROUCH_MULTIPLIER * deltaTime;
-        }
-        else
-        {
-            position.z -= SPEED * deltaTime;
-        }
+    public void moveBackward() {
+        position.sub(new Vector3f(directionVector).mul(speed));
     }
 
-    public void moveLeft(float deltaTime) {
-        if (isCrouching)
-        {
-            position.x -= SPEED * CROUCH_MULTIPLIER * deltaTime;
-        }
-        else
-        {
-            position.x -= SPEED * deltaTime;
-        }
+    public void moveRight() {
+        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
+        position.add(right.mul(speed));
     }
 
-    public void moveRight(float deltaTime) {
-        if (isCrouching)
-        {
-            position.x += SPEED * CROUCH_MULTIPLIER * deltaTime;
-        }
-        else
-        {
-            position.x += SPEED * deltaTime;
-        }
+    public void moveLeft() {
+        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
+        position.sub(right.mul(speed));
     }
 
-    public void shoot(Vector3D direction) {
+    public void shoot(Vector3f direction) {
         if (currentWeapon.canFire())
         {
             currentWeapon.fire();
@@ -126,17 +102,14 @@ public class Player {
     }
 
     public void updateBullets(float time, ArrayList<Player> targets) {
-        Iterator<Bullet> bulletIterator = bullets.iterator();
-        while (bulletIterator.hasNext())
-        {
-            Bullet bullet = bulletIterator.next();
+        for (Bullet bullet : bullets) {
             bullet.update(time);
 
             for (Player target : targets)
             {
                 if (isBulletHittingTarget(bullet, target))
                 {
-                    bulletIterator.remove();
+                    bullets.remove(bullet);
                     target.takeDamage(bullet.getDamage());
                     break;
                 }
@@ -146,7 +119,7 @@ public class Player {
 
     private boolean isBulletHittingTarget(Bullet bullet, Player target) {
         float hitRadius = 1.0f; // Subject to change.
-        return bullet.getPosition().distanceTo(target.position) <= hitRadius;
+        return bullet.getPosition().distance(target.position) <= hitRadius;
     }
 
     public void reload() {
@@ -254,11 +227,11 @@ public class Player {
         return isCrouching;
     }
 
-    public Vector3D getPosition() {
+    public Vector3f getPosition() {
         return position;
     }
 
-    public Vector3D getVelocity() {
+    public Vector3f getVelocity() {
         return velocity;
     }
 }

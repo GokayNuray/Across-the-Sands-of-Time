@@ -1,8 +1,10 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.render.Entity;
 import org.joml.Vector3f;
 
 public class Bullet {
+    private Entity entity;
     private Vector3f position;
     private Vector3f velocity;
     private int damage;
@@ -15,8 +17,13 @@ public class Bullet {
         this.damage = damage;
     }
 
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
+
     public void update(float time) {
         position.add(new Vector3f(velocity.mul(time)));
+        entity.move(position.x, position.y, position.z);
     }
 
     public Vector3f getPosition() {

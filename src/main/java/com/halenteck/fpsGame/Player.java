@@ -1,9 +1,9 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.render.Entity;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Player {
     private final float SPEED = 5f;
@@ -11,6 +11,7 @@ public class Player {
     private final float JUMP_FORCE = 20f;
     private final float CROUCH_MULTIPLIER = 0.5f; // Units are subject to change.
 
+    private Entity entity;
     private String name;
     private int health;
     private int armor;
@@ -39,15 +40,16 @@ public class Player {
         speed = SPEED;
     }
 
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
+
     public void update(float time) {
         // Apply gravity if the player is not grounded
         if (!isGrounded) {
             velocity.add(new Vector3f(0, GRAVITY * time, 0));
+            position.add(velocity);
         }
-
-        // Update position of the player
-        Vector3f positionChange = new Vector3f(velocity.x, velocity.y, velocity.z);
-        position.add(positionChange);
 
         if (position.y <= 0) {
             position.y = 0;
@@ -63,22 +65,26 @@ public class Player {
         }
     }
 
-    public void moveForward(float distance) {
-        position.add(new Vector3f(directionVector).mul(distance));
+    public void moveForward() {
+        position.add(new Vector3f(directionVector).mul(speed));
+        entity.move(position.x, position.y, position.z);
     }
 
-    public void moveBackward(float distance) {
-        position.sub(new Vector3f(directionVector).mul(distance));
+    public void moveBackward() {
+        position.sub(new Vector3f(directionVector).mul(speed));
+        entity.move(position.x, position.y, position.z);
     }
 
-    public void moveRight(float distance) {
+    public void moveRight() {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.add(right.mul(distance));
+        position.add(right.mul(speed));
+        entity.move(position.x, position.y, position.z);
     }
 
-    public void moveLeft(float distance) {
+    public void moveLeft() {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.sub(right.mul(distance));
+        position.sub(right.mul(speed));
+        entity.move(position.x, position.y, position.z);
     }
 
     public void shoot(Vector3f direction) {

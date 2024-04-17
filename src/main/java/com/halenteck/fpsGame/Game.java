@@ -4,18 +4,14 @@ import java.util.ArrayList;
 
 public class Game {
     private ArrayList<Player> players;
-    private ArrayList<Player> team1;
-    private ArrayList<Player> team2;
-    private int team1Kills;
-    private int team2Kills;
+    private Team redTeam;
+    private Team blueTeam;
     private boolean isRunning;
 
     public Game() {
         this.players = new ArrayList<>();
-        this.team1 = new ArrayList<>();
-        this.team2 = new ArrayList<>();
-        team1Kills = 0;
-        team2Kills = 0;
+        this.redTeam = new Team();
+        this.blueTeam = new Team();
         this.isRunning = true;
     }
 
@@ -30,17 +26,20 @@ public class Game {
         if (players.size() < 10) {
             players.add(player);
 
-            if(team1.size() == team2.size() && team1.size() < 5)
+            if(redTeam.getTeamSize() == blueTeam.getTeamSize() && redTeam.getTeamSize() < 5)
             {
-                team1.add(player);
+                redTeam.addPlayer(player);
+                player.setTeam(redTeam);
             }
-            if (team1.size() < team2.size())
+            if (redTeam.getTeamSize() < blueTeam.getTeamSize())
             {
-                team1.add(player);
+                redTeam.addPlayer(player);
+                player.setTeam(redTeam);
             }
-            if(team2.size() < team1.size())
+            if(blueTeam.getTeamSize() < redTeam.getTeamSize())
             {
-                team2.add(player);
+                blueTeam.addPlayer(player);
+                player.setTeam(blueTeam);
             }
             System.out.println(player.getName() + " has joined the game.");
         }
@@ -48,5 +47,15 @@ public class Game {
 
     public void announceDeath(Player killed, Player killer) {
         System.out.println(killed.getName() + " has been killed by " + killer.getName());
+        killer.incrementKills();
+        killed.incrementDeaths();
+
+        if (killer.getTeam() == blueTeam) {
+            blueTeam.incrementScore();
+        }
+        else
+        {
+            redTeam.incrementScore();
+        }
     }
 }

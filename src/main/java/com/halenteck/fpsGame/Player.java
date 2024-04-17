@@ -1,20 +1,24 @@
 package com.halenteck.fpsGame;
 
 import com.halenteck.render.Entity;
+import com.halenteck.render.Models;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
 public class Player {
-    private final float SPEED = 5f;
+    private final float SPEED = 0.05f;
     private final float GRAVITY = -10;
     private final float JUMP_FORCE = 20f;
     private final float CROUCH_MULTIPLIER = 0.5f; // Units are subject to change.
 
     private Entity entity;
     private String name;
+    private Team team;
     private int health;
     private int armor;
+    private int kills;
+    private int deaths;
     private FPSWeapon weapon1;
     private FPSWeapon weapon2;
     private Vector3f position;
@@ -33,6 +37,8 @@ public class Player {
         this.weapon2 = weapon2;
         this.position = startPosition;
         this.velocity = new Vector3f(0, 0, 0);
+        kills = 0;
+        deaths = 0;
         isCrouching = false;
         isGrounded = true;
 
@@ -40,8 +46,12 @@ public class Player {
         speed = SPEED;
     }
 
-    public void setEntity(Entity entity) {
-        this.entity = entity;
+    public Player(Vector3f startPosition) {
+        this.position = startPosition;
+        this.velocity = new Vector3f(0, 0, 0);
+        isCrouching = false;
+        isGrounded = true;
+        speed = SPEED;
     }
 
     public void update(float time) {
@@ -66,24 +76,24 @@ public class Player {
     }
 
     public void moveForward() {
-        position.add(new Vector3f(directionVector).mul(speed));
+        position.sub(new Vector3f(directionVector).mul(speed));
         entity.move(position.x, position.y, position.z);
     }
 
     public void moveBackward() {
-        position.sub(new Vector3f(directionVector).mul(speed));
+        position.add(new Vector3f(directionVector).mul(speed));
         entity.move(position.x, position.y, position.z);
     }
 
     public void moveRight() {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.add(right.mul(speed));
+        position.sub(right.mul(speed));
         entity.move(position.x, position.y, position.z);
     }
 
     public void moveLeft() {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.sub(right.mul(speed));
+        position.add(right.mul(speed));
         entity.move(position.x, position.y, position.z);
     }
 
@@ -189,6 +199,22 @@ public class Player {
         }
     }
 
+    public void setEntity() {
+        entity = new Entity(Models.TEST2,0,0,0,0,0,1);
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
     public String getName() {
         return name;
     }
@@ -227,6 +253,22 @@ public class Player {
 
     public float getZ() {
         return this.position.z;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+
+    public void incrementKills() {
+        kills++;
+    }
+
+    public int getDeaths() {
+        return deaths;
+    }
+
+    public void incrementDeaths() {
+        deaths++;
     }
 
     public boolean getCrouchState() {

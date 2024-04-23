@@ -1,6 +1,8 @@
-public class River extends BattLocation{
+package com.halenteck.CombatGame;
+
+public class River extends BattLocation {
 
     public River(Player player) {
-        super(player, "River", new Fishman(player), "Water");    
+        super(player, "River", new Fishman(player), "Water");
     }
 }

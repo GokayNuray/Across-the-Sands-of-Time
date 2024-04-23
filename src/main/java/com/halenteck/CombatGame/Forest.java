@@ -1,3 +1,5 @@
+package com.halenteck.CombatGame;
+
 public class Forest extends BattLocation {
 
     public Forest(Player player) {

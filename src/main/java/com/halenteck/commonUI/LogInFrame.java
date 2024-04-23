@@ -1,5 +1,7 @@
 package com.halenteck.commonUI;
 
+import com.halenteck.server.Server;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -115,23 +117,19 @@ public class LogInFrame extends JFrame {
                     userName = usernameField.getText();
 
                     if (e.getSource() == loginButton) {
-                        // TODO
-                        //  check if username and password are in the database
-                        // if they are, open the game frame
-                        GameSelectionMenu gameSelectionMenu = new GameSelectionMenu(usernameField.getText());
-                        // if not, show an error message
-                        // JOptionPane.showMessageDialog(LogInFrame.this, "Wrong username or password!");
-                        dispose();
+                        if (Server.login(usernameField.getText(), passwordField.getText())) {
+                            GameSelectionMenu gameSelectionMenu = new GameSelectionMenu(usernameField.getText());
+                            dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(LogInFrame.this, "Wrong username or password!");
+                        }
                     } else if (e.getSource() == registerButton) {
-                        // TODO
-                        //  check if username is already in the database
-                        // if it is, show an error message
-                        // JOptionPane.showMessageDialog(LogInFrame.this, "Username already exists!");
-                        // TODO
-                        //  if not, add the username and password to the database
-                        // open the game frame
-                        GameSelectionMenu gameSelectionMenu = new GameSelectionMenu(usernameField.getText());
-                        dispose();
+                        if (Server.register(usernameField.getText(), passwordField.getText())) {
+                            GameSelectionMenu gameSelectionMenu = new GameSelectionMenu(usernameField.getText());
+                            dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(LogInFrame.this, "Username already exists!");
+                        }
                     }
                 }
 
@@ -197,8 +195,7 @@ public class LogInFrame extends JFrame {
                 } else if (password.charAt(i) == '*' || password.charAt(i) == '!' || password.charAt(i) == '?'
                         || password.charAt(i) == '_' || password.charAt(i) == '-') {
                     hasSpecial = true;
-                }
-                else { // password has illegal characters
+                } else { // password has illegal characters
                     return false;
                 }
             }

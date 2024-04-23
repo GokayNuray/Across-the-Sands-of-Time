@@ -198,6 +198,9 @@ public class LogInFrame extends JFrame {
                         || password.charAt(i) == '_' || password.charAt(i) == '-') {
                     hasSpecial = true;
                 }
+                else { // password has illegal characters
+                    return false;
+                }
             }
 
             return hasUpper && hasLower && hasDigit && hasSpecial;

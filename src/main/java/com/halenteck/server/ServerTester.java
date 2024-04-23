@@ -13,7 +13,7 @@ import java.awt.event.MouseMotionListener;
 public class ServerTester {
 
     public static void main(String[] args) {
-        FPSServer.connect();
+        Server.connect();
 
         JFrame frame = new JFrame("FPS Server");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -121,7 +121,7 @@ public class ServerTester {
                             openGLComponent.moveDown(0.03f);
                         }
                         if (isWPressed || isSPressed || isAPressed || isDPressed || isSpacePressed || isShiftPressed) {
-                            FPSServer.movePlayer(openGLComponent.getCameraPosition().x, openGLComponent.getCameraPosition().y - 1, openGLComponent.getCameraPosition().z, 0, 0);
+                            Server.movePlayer(openGLComponent.getCameraPosition().x, openGLComponent.getCameraPosition().y - 1, openGLComponent.getCameraPosition().z, 0, 0);
                         }
                         try {
                             Thread.sleep(10);
@@ -151,11 +151,11 @@ public class ServerTester {
         frame.setVisible(true);
 
         openGLComponent.startRender();
-        FPSServer.attachRenderer(openGLComponent);
+        Server.attachRenderer(openGLComponent);
 
         button.addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Enter player name:");
-            FPSServer.joinLobby(name);
+            Server.joinLobby(name);
         });
 
         Entity test2 = new Entity(Models.SQUARE_PRISM, 0, 0, 0, 0, 0, 1);

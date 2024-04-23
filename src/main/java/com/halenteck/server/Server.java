@@ -10,10 +10,11 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class FPSServer {
-    private static final String SERVER_IP = "34.147.226.117";
+public final class Server {
+    private static final String SERVER_IP = "34.105.208.236";
     private static final int SERVER_PORT = 37923;
 
+    private static final byte LOGIN = 0x00;
     private static final byte JOIN_LOBBY = 0x01;
     private static final byte ADD_PLAYER = 0x02;
     private static final byte MOVE_PLAYER = 0x10;
@@ -26,7 +27,9 @@ public final class FPSServer {
 
     private static OpenGLComponent renderer;
 
-    private FPSServer() {
+    private static UserData userData;
+
+    private Server() {
     }
 
     public static void connect() {
@@ -126,7 +129,76 @@ public final class FPSServer {
         }
     }
 
+    public record UserData(String playerName,
+                           boolean isFirstTime,
+                           byte level, short xp,
+                           int rankPoints,
+                           int money,
+                           byte unlockedCharacterCount, CharacterData[] characters,
+                           byte unlockedWeaponCount, byte[] unlockedWeapons,
+                           byte lastSelectedCharacter,
+                           byte combatLevelReached
+    ) {
+    }
+
+    public record CharacterData(byte characterId,
+                                byte level, short xp,
+                                boolean[] unlockedWeapons, byte lastSelectedWeapon,
+                                byte armorLevel,
+                                byte[] abilityLevels,
+                                boolean isSpecialAbilityUnlocked
+    ) {
+    }
+
     public static void attachRenderer(OpenGLComponent renderer) {
-        FPSServer.renderer = renderer;
+        Server.renderer = renderer;
+    }
+
+    public static boolean login(String name, String password) {
+        try {
+            out.writeByte(LOGIN);
+            out.writeUTF(name);
+            out.writeUTF(password);
+            if (!in.readBoolean()) {
+                return false;
+            }
+            String playerName = in.readUTF();
+            boolean isFirstTime = in.readBoolean();
+            byte level = in.readByte();
+            short xp = in.readShort();
+            int rankPoints = in.readInt();
+            int money = in.readInt();
+            byte unlockedCharacterCount = in.readByte();
+            CharacterData[] characters = new CharacterData[unlockedCharacterCount];
+            for (int i = 0; i < unlockedCharacterCount; i++) {
+                byte characterId = in.readByte();
+                byte characterLevel = in.readByte();
+                short characterXp = in.readShort();
+                boolean[] unlockedWeapons = new boolean[in.readByte()];
+                for (int j = 0; j < unlockedWeapons.length; j++) {
+                    unlockedWeapons[j] = in.readBoolean();
+                }
+                byte lastSelectedWeapon = in.readByte();
+                byte armorLevel = in.readByte();
+                byte[] abilityLevels = new byte[in.readByte()];
+                for (int j = 0; j < abilityLevels.length; j++) {
+                    abilityLevels[j] = in.readByte();
+                }
+                boolean isSpecialAbilityUnlocked = in.readBoolean();
+                characters[i] = new CharacterData(characterId, characterLevel, characterXp, unlockedWeapons, lastSelectedWeapon, armorLevel, abilityLevels, isSpecialAbilityUnlocked);
+            }
+            byte unlockedWeaponCount = in.readByte();
+            byte[] unlockedWeapons = new byte[unlockedWeaponCount];
+            for (int i = 0; i < unlockedWeaponCount; i++) {
+                unlockedWeapons[i] = in.readByte();
+            }
+            byte lastSelectedCharacter = in.readByte();
+            byte combatLevelReached = in.readByte();
+            userData = new UserData(playerName, isFirstTime, level, xp, rankPoints, money, unlockedCharacterCount, characters, unlockedWeaponCount, unlockedWeapons, lastSelectedCharacter, combatLevelReached);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

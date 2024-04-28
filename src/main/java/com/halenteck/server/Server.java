@@ -1,14 +1,8 @@
 package com.halenteck.server;
 
-import com.halenteck.render.Entity;
-import com.halenteck.render.Models;
-import com.halenteck.render.OpenGLComponent;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class Server {
     private static final String SERVER_IP = "34.105.208.236";
@@ -24,11 +18,7 @@ public final class Server {
     private static Socket socket;
     private static DataOutputStream out;
     private static DataInputStream in;
-
-    private static final Map<Byte, Entity> players = new HashMap<>(10);
-
-    private static OpenGLComponent renderer;
-
+    private static ServerListener listener;
     private static UserData userData;
 
     private Server() {
@@ -56,83 +46,39 @@ public final class Server {
             int lobbyName = in.readInt();
             int playerCount = in.readByte();
             System.out.println("Joined lobby: " + lobbyName + " Players: " + playerCount);
+            Object[][] playerData = new Object[playerCount][];
             for (int i = 0; i < playerCount; i++) {
+                String name = in.readUTF();
                 byte id = in.readByte();
                 float x = in.readFloat();
                 float y = in.readFloat();
                 float z = in.readFloat();
                 float yaw = in.readFloat();
                 float pitch = in.readFloat();
-                String name = in.readUTF();
+                boolean crouching = in.readBoolean();
+                int weapon = in.readInt();
+                byte health = in.readByte();
 
-                Entity player = new Entity(Models.TEST2, x, y, z, yaw, pitch, 0.5f);
-                players.put(id, player);
-                renderer.addEntity(player);
+                playerData[i] = new Object[]{id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health};
                 System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
             }
+            listener.onLobbyJoin(new PacketData(lobbyName, playerData));
 
-            new Thread(() -> {
-                try {
-                    while (true) {
-                        byte command = in.readByte();
-                        switch (command) {
-                            case MOVE_PLAYER: {
-                                byte id = in.readByte();
-                                float x = in.readFloat();
-                                float y = in.readFloat();
-                                float z = in.readFloat();
-                                float yaw = in.readFloat();
-                                float pitch = in.readFloat();
-                                Entity player = players.get(id);
-                                player.move(x, y, z);
-                                player.setRotation(yaw, pitch);
-                                //System.out.println("Player " + player.getName() + " moved to (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
-                                break;
-                            }
-                            case ADD_PLAYER: {
-                                byte id = in.readByte();
-                                float x = in.readFloat();
-                                float y = in.readFloat();
-                                float z = in.readFloat();
-                                float yaw = in.readFloat();
-                                float pitch = in.readFloat();
-                                String name = in.readUTF();
-                                Entity player = new Entity(Models.TEST2, x, y, z, yaw, pitch, 0.5f);
-                                players.put(id, player);
-                                renderer.addEntity(player);
-                                System.out.println("Player Added: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
-                                break;
-                            }
-
-                            default:
-                                System.out.println("Unknown command: " + command);
-                                socket.close();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            startServerPacketListenerThread();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void movePlayer(float x, float y, float z, float yaw, float pitch) {
+    public static void movePlayer(float x, float y, float z) {
         try {
             out.writeByte(MOVE_PLAYER);
             out.writeFloat(x);
             out.writeFloat(y);
             out.writeFloat(z);
-            out.writeFloat(yaw);
-            out.writeFloat(pitch);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void attachRenderer(OpenGLComponent renderer) {
-        Server.renderer = renderer;
     }
 
     public static boolean login(String name, String password) {
@@ -173,5 +119,55 @@ public final class Server {
         }
     }
 
+    public static String[] getLobbyList() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
+    public static void addServerListener(ServerListener listener) {
+        Server.listener = listener;
+    }
+
+    private static void startServerPacketListenerThread() {
+        new Thread(() -> {
+            try {
+                while (true) {
+                    byte command = in.readByte();
+                    switch (command) {
+                        case MOVE_PLAYER: {
+                            byte id = in.readByte();
+                            float x = in.readFloat();
+                            float y = in.readFloat();
+                            float z = in.readFloat();
+
+                            PacketData data = new PacketData(id, new float[]{x, y, z});
+                            listener.onPlayerMove(data);
+                            break;
+                        }
+                        case ADD_PLAYER: {
+                            String name = in.readUTF();
+                            byte id = in.readByte();
+                            float x = in.readFloat();
+                            float y = in.readFloat();
+                            float z = in.readFloat();
+                            float yaw = in.readFloat();
+                            float pitch = in.readFloat();
+                            boolean crouching = in.readBoolean();
+                            int weapon = in.readInt();
+                            byte health = in.readByte();
+
+                            PacketData data = new PacketData(id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health);
+                            listener.onPlayerJoin(data);
+                            break;
+                        }
+
+                        default:
+                            System.out.println("Unknown command: " + command);
+                            socket.close();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
 }

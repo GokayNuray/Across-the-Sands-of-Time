@@ -121,7 +121,7 @@ public class ServerTester {
                             openGLComponent.moveDown(0.03f);
                         }
                         if (isWPressed || isSPressed || isAPressed || isDPressed || isSpacePressed || isShiftPressed) {
-                            Server.movePlayer(openGLComponent.getCameraPosition().x, openGLComponent.getCameraPosition().y - 1, openGLComponent.getCameraPosition().z, 0, 0);
+                            Server.movePlayer(openGLComponent.getCameraPosition().x, openGLComponent.getCameraPosition().y - 1, openGLComponent.getCameraPosition().z);
                         }
                         try {
                             Thread.sleep(10);
@@ -151,7 +151,6 @@ public class ServerTester {
         frame.setVisible(true);
 
         openGLComponent.startRender();
-        Server.attachRenderer(openGLComponent);
 
         button.addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Enter player name:");

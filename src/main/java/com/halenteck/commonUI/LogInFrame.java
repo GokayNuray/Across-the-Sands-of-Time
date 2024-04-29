@@ -11,7 +11,7 @@ public class LogInFrame extends JFrame {
 
     protected static final int FRAME_WIDTH = 800;
     protected static final int FRAME_HEIGHT = 500;
-    protected static String userName;
+    protected static String username;
 
     public LogInFrame() {
 
@@ -106,26 +106,26 @@ public class LogInFrame extends JFrame {
         class fieldChecker implements ActionListener {
 
             public void actionPerformed(ActionEvent e) {
+                username = usernameField.getText();
+                char[] password = passwordField.getPassword();
+                String passwordString = new String(password);
 
-                if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+                if (usernameField.getText().isEmpty() || passwordString.isEmpty()) {
                     JOptionPane.showMessageDialog(LogInFrame.this, "Please fill in the fields");
-                } else if (!usernameChecker(usernameField.getText()) || !passwordChecker(passwordField.getText())) {
+                } else if (!usernameChecker(username) || !passwordChecker(passwordString)) {
                     JOptionPane.showMessageDialog(LogInFrame.this, "Illegal username or password!");
-                    return;
                 } else {
 
-                    userName = usernameField.getText();
-
                     if (e.getSource() == loginButton) {
-                        if (Server.login(usernameField.getText(), passwordField.getText())) {
-                            GameSelectionMenu gameSelectionMenu = new GameSelectionMenu(usernameField.getText());
+                        if (Server.login(username, passwordString)) {
+                            new GameSelectionMenu(username);
                             dispose();
                         } else {
                             JOptionPane.showMessageDialog(LogInFrame.this, "Wrong username or password!");
                         }
                     } else if (e.getSource() == registerButton) {
-                        if (Server.register(usernameField.getText(), passwordField.getText())) {
-                            GameSelectionMenu gameSelectionMenu = new GameSelectionMenu(usernameField.getText());
+                        if (Server.register(username, passwordString)) {
+                            new GameSelectionMenu(username);
                             dispose();
                         } else {
                             JOptionPane.showMessageDialog(LogInFrame.this, "Username already exists!");

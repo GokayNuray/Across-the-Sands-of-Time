@@ -33,7 +33,7 @@ public class RenderTester {
 
                     // Use dx and dy as the amount of movement
                     // For example, you can rotate the camera based on the mouse movement
-                    openGLComponent.rotate(-dx, -dy);
+                    openGLComponent.rotateCamera(-dx, -dy);
                 }
 
                 lastX = currentX;
@@ -98,22 +98,22 @@ public class RenderTester {
                 Thread movementThread = new Thread(() -> {
                     while (true) {
                         if (isWPressed) {
-                            openGLComponent.moveForward(0.03f);
+                            openGLComponent.moveCameraForward(0.03f);
                         }
                         if (isSPressed) {
-                            openGLComponent.moveBackward(0.03f);
+                            openGLComponent.moveCameraBackward(0.03f);
                         }
                         if (isAPressed) {
-                            openGLComponent.moveLeft(0.03f);
+                            openGLComponent.moveCameraLeft(0.03f);
                         }
                         if (isDPressed) {
-                            openGLComponent.moveRight(0.03f);
+                            openGLComponent.moveCameraRight(0.03f);
                         }
                         if (isSpacePressed) {
-                            openGLComponent.moveUp(0.03f);
+                            openGLComponent.moveCameraUp(0.03f);
                         }
                         if (isShiftPressed) {
-                            openGLComponent.moveDown(0.03f);
+                            openGLComponent.moveCameraDown(0.03f);
                         }
                         try {
                             Thread.sleep(10);
@@ -136,7 +136,7 @@ public class RenderTester {
 
         JLabel fpsText = new JLabel("FPS: 0");
         fpsText.setBounds(120, 10, 100, 20);
-        openGLComponent.setFpsText(fpsText);
+        openGLComponent.setFpsCounter(fpsText);
         layeredPane.add(fpsText, JLayeredPane.PALETTE_LAYER);
 
         frame.add(layeredPane);
@@ -242,6 +242,8 @@ public class RenderTester {
         Renderable cube = ModelLoader.createRectangularPrism(new float[]{-4, -1, -1}, new float[]{-2, 1, 1});
         openGLComponent.addRenderable(cube);
 
-
+        Entity worldMap = new Entity(Models.WORLD_MAP1, 0, 0, 0, 0, 0, 100);
+        worldMap.translate(100, -3, -30);
+        openGLComponent.addEntity(worldMap);
     }
 }

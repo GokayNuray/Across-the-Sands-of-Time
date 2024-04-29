@@ -38,7 +38,7 @@ public class ServerTester {
 
                     // Use dx and dy as the amount of movement
                     // For example, you can rotate the camera based on the mouse movement
-                    openGLComponent.rotate(-dx, -dy);
+                    openGLComponent.rotateCamera(-dx, -dy);
                 }
 
                 lastX = currentX;
@@ -103,22 +103,22 @@ public class ServerTester {
                 Thread movementThread = new Thread(() -> {
                     while (true) {
                         if (isWPressed) {
-                            openGLComponent.moveForward(0.03f);
+                            openGLComponent.moveCameraForward(0.03f);
                         }
                         if (isSPressed) {
-                            openGLComponent.moveBackward(0.03f);
+                            openGLComponent.moveCameraBackward(0.03f);
                         }
                         if (isAPressed) {
-                            openGLComponent.moveLeft(0.03f);
+                            openGLComponent.moveCameraLeft(0.03f);
                         }
                         if (isDPressed) {
-                            openGLComponent.moveRight(0.03f);
+                            openGLComponent.moveCameraRight(0.03f);
                         }
                         if (isSpacePressed) {
-                            openGLComponent.moveUp(0.03f);
+                            openGLComponent.moveCameraUp(0.03f);
                         }
                         if (isShiftPressed) {
-                            openGLComponent.moveDown(0.03f);
+                            openGLComponent.moveCameraDown(0.03f);
                         }
                         if (isWPressed || isSPressed || isAPressed || isDPressed || isSpacePressed || isShiftPressed) {
                             Server.movePlayer(openGLComponent.getCameraPosition().x, openGLComponent.getCameraPosition().y - 1, openGLComponent.getCameraPosition().z);
@@ -144,7 +144,7 @@ public class ServerTester {
 
         JLabel fpsText = new JLabel("FPS: 0");
         fpsText.setBounds(120, 10, 100, 20);
-        openGLComponent.setFpsText(fpsText);
+        openGLComponent.setFpsCounter(fpsText);
         layeredPane.add(fpsText, JLayeredPane.PALETTE_LAYER);
 
         frame.add(layeredPane);

@@ -13,6 +13,12 @@ public final class Models {
 
     public static final int SQUARE_PRISM = 0;
     public static final int TEST2 = 1;
+    public static final int WORLD_MAP1 = 2;
+    public static final int CHARACTER1 = -1;
+    public static final int CHARACTER2 = -2;
+    public static final int CHARACTER3 = -3;
+    public static final int CHARACTER4 = -4;
+    public static final int CHARACTER5 = -5;
 
     private Models() {
     }
@@ -23,6 +29,7 @@ public final class Models {
         models = new HashMap<>();
         models.put(SQUARE_PRISM, List.of(ModelLoader.createRectangularPrism(new float[]{-0.5f, 0, -0.5f}, new float[]{0.5f, 2, 0.5f})));
         models.put(TEST2, ModelLoader.loadModel("src/main/resources/test/test2/test2.obj"));
+        models.put(WORLD_MAP1, ModelLoader.loadModel("src/main/resources/test/testworld2/testworld2.obj"));
     }
 
     public static List<Renderable> getModel(int modelId) {

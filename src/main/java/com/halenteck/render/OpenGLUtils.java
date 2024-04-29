@@ -54,6 +54,7 @@ public final class OpenGLUtils {
 
         ByteBuffer image = STBImage.stbi_load(file.getAbsolutePath(), width, height, channels, 4);
         if (image == null) {
+            System.out.println(file.getAbsolutePath());
             throw new RuntimeException("Failed to load a texture file!"
                     + System.lineSeparator() + STBImage.stbi_failure_reason());
         }

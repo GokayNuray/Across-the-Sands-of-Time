@@ -12,7 +12,7 @@ import static org.lwjgl.assimp.Assimp.*;
 
 public final class ModelLoader {
 
-    private static int FLAGS = aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices |
+    private static final int FLAGS = aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices |
             aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights |
             aiProcess_PreTransformVertices;
 

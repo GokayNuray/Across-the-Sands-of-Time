@@ -93,7 +93,7 @@ public class OpenGLComponent extends AWTGLCanvas {
         colorHandle = glGetAttribLocation(programHandle, "a_Color");
         textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
 
-        projectionMatrix.setPerspective((float) Math.toRadians(45), aspect, 0.1f, 10.0f);
+        projectionMatrix.setPerspective((float) Math.toRadians(45), aspect, 0.1f, 100.0f);
 
 
     }
@@ -166,34 +166,34 @@ public class OpenGLComponent extends AWTGLCanvas {
         }).start();
     }
 
-    public void moveForward(float distance) {
+    public void moveCameraForward(float distance) {
         cameraPosition.add(new Vector3f(directionVector).mul(distance));
     }
 
-    public void moveBackward(float distance) {
+    public void moveCameraBackward(float distance) {
         cameraPosition.sub(new Vector3f(directionVector).mul(distance));
     }
 
-    public void moveRight(float distance) {
+    public void moveCameraRight(float distance) {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
         cameraPosition.add(right.mul(distance));
     }
 
-    public void moveLeft(float distance) {
+    public void moveCameraLeft(float distance) {
         Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
         cameraPosition.sub(right.mul(distance));
     }
 
-    public void moveUp(float distance) {
+    public void moveCameraUp(float distance) {
         cameraPosition.add(new Vector3f(0, 1, 0).mul(distance));
     }
 
-    public void moveDown(float distance) {
+    public void moveCameraDown(float distance) {
         cameraPosition.sub(new Vector3f(0, 1, 0).mul(distance));
     }
 
 
-    public void rotate(float dYaw, float dPitch) {
+    public void rotateCamera(float dYaw, float dPitch) {
         yaw += dYaw;
         pitch += dPitch;
         if (pitch > 90) pitch = 90;
@@ -204,7 +204,7 @@ public class OpenGLComponent extends AWTGLCanvas {
         directionVector = new Vector3f(directionX, directionY, directionZ);
     }
 
-    public void setFpsText(JLabel fpsText) {
+    public void setFpsCounter(JLabel fpsText) {
         new Timer(1000, e -> {
             fpsText.setText("FPS: " + fps);
             fps = 0;

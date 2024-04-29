@@ -79,16 +79,16 @@ public class Renderable implements Cloneable {
         updated = true;
     }
 
-    void rotate(float angle, float x, float y, float z) {
+    void rotate(float angle, float x, float y, float z, float centerX, float centerY, float centerZ) {
         for (int i = 0; i < vertices.length; i += 3) {
             Vector3f vertex = new Vector3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+            vertex.sub(centerX, centerY, centerZ);
             Matrix3f rotationMatrix = new Matrix3f().rotate(angle, x, y, z);
             rotationMatrix.transform(vertex);
-            vertices[i] = vertex.x;
-            vertices[i + 1] = vertex.y;
-            vertices[i + 2] = vertex.z;
+            vertices[i] = vertex.x + centerX;
+            vertices[i + 1] = vertex.y + centerY;
+            vertices[i + 2] = vertex.z + centerZ;
         }
-
         updated = true;
     }
 
@@ -99,6 +99,15 @@ public class Renderable implements Cloneable {
             vertices[i + 2] *= z;
         }
 
+        updated = true;
+    }
+
+    void scaleAroundPoint(float x, float y, float z, float centerX, float centerY, float centerZ) {
+        for (int i = 0; i < vertices.length; i += 3) {
+            vertices[i] = centerX + (vertices[i] - centerX) * x;
+            vertices[i + 1] = centerY + (vertices[i + 1] - centerY) * y;
+            vertices[i + 2] = centerZ + (vertices[i + 2] - centerZ) * z;
+        }
         updated = true;
     }
 

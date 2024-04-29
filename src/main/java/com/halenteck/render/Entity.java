@@ -37,7 +37,7 @@ public class Entity {
         this.pitch += pitch;
         float yawRad = (float) Math.toRadians(yaw);
         float pitchRad = (float) Math.toRadians(pitch);
-        renderables.forEach(r -> r.rotate(yawRad, 0, 1, 0));
+        renderables.forEach(r -> r.rotate(yawRad, 0, 1, 0, x, y, z));
     }
 
     public void setRotation(float yaw, float pitch) {

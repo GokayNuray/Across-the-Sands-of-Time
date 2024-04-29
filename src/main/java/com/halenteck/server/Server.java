@@ -8,12 +8,41 @@ public final class Server {
     private static final String SERVER_IP = "34.105.208.236";
     private static final int SERVER_PORT = 37923;
 
+    //Client to server commands
     private static final byte LOGIN = 0x00;
-    private static final byte REGISTER = -0x01;
-    private static final byte UPDATE_USER_DATA = -0x02;
-    private static final byte JOIN_LOBBY = 0x01;
-    private static final byte ADD_PLAYER = 0x02;
-    private static final byte MOVE_PLAYER = 0x10;
+    private static final byte REGISTER = 0x01;
+    private static final byte UPDATE_USER_DATA = 0x02;
+    private static final byte GET_LOBBY_LIST = 0x10;
+    private static final byte JOIN_LOBBY = 0x11;
+    private static final byte QUICK_JOIN_LOBBY = 0x12;
+    private static final byte CREATE_LOBBY = 0x13;
+    private static final byte LEAVE_LOBBY = 0x14;
+    private static final byte MOVE = 0x20;
+    private static final byte ROTATE = 0x21;
+    private static final byte CROUCH_STATE_CHANGE = 0x22;
+    private static final byte WEAPON_CHANGE = 0x30;
+    private static final byte SHOOT = 0x31;
+    private static final byte ABILITY = 0x32;
+    private static final byte CHAT = 0x40;
+    private static final byte DAMAGED = 0x50;
+    private static final byte DEATH = 0x51;
+    private static final byte RESPAWN = 0x52;
+
+    //Server to client commands
+    private static final byte PLAYER_JOIN = 0x00;
+    private static final byte PLAYER_LEAVE = 0x01;
+    private static final byte PLAYER_MOVE = 0x10;
+    private static final byte PLAYER_ROTATE = 0x11;
+    private static final byte PLAYER_CROUCH_STATE_CHANGE = 0x12;
+    private static final byte PLAYER_WEAPON_CHANGE = 0x20;
+    private static final byte PLAYER_SHOOT = 0x21;
+    private static final byte PLAYER_ABILITY = 0x22;
+    private static final byte PLAYER_CHAT = 0x30;
+    private static final byte PLAYER_DAMAGED = 0x40;
+    private static final byte PLAYER_DEATH = 0x41;
+    private static final byte PLAYER_RESPAWN = 0x42;
+    private static final byte GAME_OVER = 0x50;
+
 
     private static Socket socket;
     private static DataOutputStream out;
@@ -39,47 +68,142 @@ public final class Server {
         }
     }
 
-    public static void joinLobby(String playerName) {
-        try {
-            out.writeByte(JOIN_LOBBY);
-            out.writeUTF(playerName);
-            int lobbyName = in.readInt();
-            int playerCount = in.readByte();
-            System.out.println("Joined lobby: " + lobbyName + " Players: " + playerCount);
-            Object[][] playerData = new Object[playerCount][];
-            for (int i = 0; i < playerCount; i++) {
-                String name = in.readUTF();
-                byte id = in.readByte();
-                float x = in.readFloat();
-                float y = in.readFloat();
-                float z = in.readFloat();
-                float yaw = in.readFloat();
-                float pitch = in.readFloat();
-                boolean crouching = in.readBoolean();
-                int weapon = in.readInt();
-                byte health = in.readByte();
+    public static void addServerListener(ServerListener listener) {
+        Server.listener = listener;
+    }
 
-                playerData[i] = new Object[]{id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health};
-                System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
+    private static void startServerPacketListenerThread() {
+        new Thread(() -> {
+            try {
+                while (true) {
+                    byte command = in.readByte();
+                    switch (command) {
+                        case PLAYER_JOIN: {
+                            String name = in.readUTF();
+                            byte id = in.readByte();
+                            float x = in.readFloat();
+                            float y = in.readFloat();
+                            float z = in.readFloat();
+                            float yaw = in.readFloat();
+                            float pitch = in.readFloat();
+                            boolean crouching = in.readBoolean();
+                            int weapon = in.readInt();
+                            byte health = in.readByte();
+
+                            PacketData data = new PacketData(id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health);
+                            listener.onPlayerJoin(data);
+                            break;
+                        }
+                        case PLAYER_MOVE: {
+                            byte id = in.readByte();
+                            float x = in.readFloat();
+                            float y = in.readFloat();
+                            float z = in.readFloat();
+
+                            PacketData data = new PacketData(id, new float[]{x, y, z});
+                            listener.onPlayerMove(data);
+                            break;
+                        }
+                        case PLAYER_ROTATE: {
+                            byte id = in.readByte();
+                            float yaw = in.readFloat();
+                            float pitch = in.readFloat();
+
+                            PacketData data = new PacketData(id, new float[]{yaw, pitch});
+                            listener.onPlayerRotate(data);
+                            break;
+                        }
+                        case PLAYER_CROUCH_STATE_CHANGE: {
+                            byte id = in.readByte();
+
+                            PacketData data = new PacketData(id);
+                            listener.onPlayerCrouchStateChange(data);
+                            break;
+                        }
+                        case PLAYER_WEAPON_CHANGE: {
+                            byte id = in.readByte();
+                            int weapon = in.readInt();
+
+                            PacketData data = new PacketData(id, weapon);
+                            listener.onPlayerWeaponChange(data);
+                            break;
+                        }
+                        case PLAYER_LEAVE: {
+                            byte id = in.readByte();
+
+                            PacketData data = new PacketData(id);
+                            listener.onPlayerLeave(data);
+                            break;
+                        }
+                        case PLAYER_CHAT: {
+                            byte id = in.readByte();
+                            String message = in.readUTF();
+
+                            PacketData data = new PacketData(id, message);
+                            listener.onPlayerChat(data);
+                            break;
+                        }
+                        case PLAYER_DAMAGED: {
+                            byte id = in.readByte();
+
+                            PacketData data = new PacketData(id);
+                            listener.onPlayerDamaged(data);
+                            break;
+                        }
+                        case PLAYER_DEATH: {
+                            byte deadId = in.readByte();
+                            byte killerId = in.readByte();
+                            int weapon = in.readInt();
+
+                            PacketData data = new PacketData(deadId, killerId, weapon);
+                            listener.onPlayerDeath(data);
+                            break;
+                        }
+                        case PLAYER_RESPAWN: {
+                            byte id = in.readByte();
+                            float x = in.readFloat();
+                            float y = in.readFloat();
+                            float z = in.readFloat();
+                            float yaw = in.readFloat();
+                            float pitch = in.readFloat();
+
+                            PacketData data = new PacketData(id, new float[]{x, y, z, yaw, pitch});
+                            listener.onPlayerRespawn(data);
+                            break;
+                        }
+                        case PLAYER_ABILITY: {
+                            byte id = in.readByte();
+                            int ability = in.readInt();
+
+                            PacketData data = new PacketData(id, ability);
+                            listener.onPlayerAbility(data);
+                            break;
+                        }
+                        case PLAYER_SHOOT: {
+                            byte id = in.readByte();
+
+                            PacketData data = new PacketData(id);
+                            listener.onPlayerShoot(data);
+                            break;
+                        }
+                        case GAME_OVER: {
+
+                            PacketData data = new PacketData((Object) null);
+                            listener.onGameOver(data);
+                            break;
+                        }
+
+                        default:
+                            System.out.println("Unknown command: " + command);
+                            socket.close();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            listener.onLobbyJoin(new PacketData(lobbyName, playerData));
-
-            startServerPacketListenerThread();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
-    public static void movePlayer(float x, float y, float z) {
-        try {
-            out.writeByte(MOVE_PLAYER);
-            out.writeFloat(x);
-            out.writeFloat(y);
-            out.writeFloat(z);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static boolean login(String name, String password) {
         try {
@@ -120,54 +244,174 @@ public final class Server {
     }
 
     public static String[] getLobbyList() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public static void addServerListener(ServerListener listener) {
-        Server.listener = listener;
-    }
-
-    private static void startServerPacketListenerThread() {
-        new Thread(() -> {
-            try {
-                while (true) {
-                    byte command = in.readByte();
-                    switch (command) {
-                        case MOVE_PLAYER: {
-                            byte id = in.readByte();
-                            float x = in.readFloat();
-                            float y = in.readFloat();
-                            float z = in.readFloat();
-
-                            PacketData data = new PacketData(id, new float[]{x, y, z});
-                            listener.onPlayerMove(data);
-                            break;
-                        }
-                        case ADD_PLAYER: {
-                            String name = in.readUTF();
-                            byte id = in.readByte();
-                            float x = in.readFloat();
-                            float y = in.readFloat();
-                            float z = in.readFloat();
-                            float yaw = in.readFloat();
-                            float pitch = in.readFloat();
-                            boolean crouching = in.readBoolean();
-                            int weapon = in.readInt();
-                            byte health = in.readByte();
-
-                            PacketData data = new PacketData(id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health);
-                            listener.onPlayerJoin(data);
-                            break;
-                        }
-
-                        default:
-                            System.out.println("Unknown command: " + command);
-                            socket.close();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            out.writeByte(GET_LOBBY_LIST);
+            int lobbyCount = in.readByte();
+            String[] lobbyNames = new String[lobbyCount];
+            for (int i = 0; i < lobbyCount; i++) {
+                lobbyNames[i] = in.readUTF();
             }
-        }).start();
+            return lobbyNames;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
+
+    public static void joinLobby(String playerName, byte lobbyId) {
+        try {
+            out.writeByte(JOIN_LOBBY);
+            out.writeByte(lobbyId);
+            out.writeUTF(playerName);
+            int lobbyName = in.readInt();
+            int playerCount = in.readByte();
+            System.out.println("Joined lobby: " + lobbyName + " Players: " + playerCount);
+            Object[][] playerData = new Object[playerCount][];
+            for (int i = 0; i < playerCount; i++) {
+                String name = in.readUTF();
+                byte id = in.readByte();
+                float x = in.readFloat();
+                float y = in.readFloat();
+                float z = in.readFloat();
+                float yaw = in.readFloat();
+                float pitch = in.readFloat();
+                boolean crouching = in.readBoolean();
+                int weapon = in.readInt();
+                byte health = in.readByte();
+
+                playerData[i] = new Object[]{id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health};
+                System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
+            }
+            listener.onLobbyJoin(new PacketData(lobbyName, playerData));
+
+            startServerPacketListenerThread();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void quickJoinLobby(String playerName) {
+        try {
+            out.writeByte(QUICK_JOIN_LOBBY);
+            byte lobbyId = in.readByte();
+            joinLobby(playerName, lobbyId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createLobby(String playerName, String lobbyName) {
+        try {
+            out.writeByte(CREATE_LOBBY);
+            out.writeUTF(lobbyName);
+            out.writeUTF(playerName);
+            int lobbyId = in.readByte();
+            joinLobby(playerName, (byte) lobbyId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void leaveLobby() {
+        try {
+            out.writeByte(LEAVE_LOBBY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void movePlayer(float x, float y, float z) {
+        try {
+            out.writeByte(MOVE);
+            out.writeFloat(x);
+            out.writeFloat(y);
+            out.writeFloat(z);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void rotatePlayer(float yaw, float pitch) {
+        try {
+            out.writeByte(ROTATE);
+            out.writeFloat(yaw);
+            out.writeFloat(pitch);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void crouchStateChange() {
+        try {
+            out.writeByte(CROUCH_STATE_CHANGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void weaponChange(int weapon) {
+        try {
+            out.writeByte(WEAPON_CHANGE);
+            out.writeInt(weapon);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void shoot() {
+        try {
+            out.writeByte(SHOOT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ability(int ability) {
+        try {
+            out.writeByte(ABILITY);
+            out.writeInt(ability);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void chat(String message) {
+        try {
+            out.writeByte(CHAT);
+            out.writeUTF(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void damaged() {
+        try {
+            out.writeByte(DAMAGED);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void death(byte killerId) {
+        try {
+            out.writeByte(DEATH);
+            out.writeByte(killerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void respawn(float x, float y, float z, float yaw, float pitch) {
+        try {
+            out.writeByte(RESPAWN);
+            out.writeFloat(x);
+            out.writeFloat(y);
+            out.writeFloat(z);
+            out.writeFloat(yaw);
+            out.writeFloat(pitch);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

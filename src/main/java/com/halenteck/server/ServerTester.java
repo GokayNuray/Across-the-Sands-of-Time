@@ -154,7 +154,7 @@ public class ServerTester {
 
         button.addActionListener(e -> {
             String name = JOptionPane.showInputDialog("Enter player name:");
-            Server.joinLobby(name);
+            Server.quickJoinLobby(name);
         });
 
         Entity test2 = new Entity(Models.SQUARE_PRISM, 0, 0, 0, 0, 0, 1);

@@ -10,7 +10,7 @@ public interface ServerListener {
 
     void onPlayerRotate(PacketData packetData);
 
-    void onPlayerCrouch(PacketData packetData);
+    void onPlayerCrouchStateChange(PacketData packetData);
 
     void onPlayerWeaponChange(PacketData packetData);
 
@@ -18,9 +18,7 @@ public interface ServerListener {
 
     void onPlayerChat(PacketData packetData);
 
-    void onPlayerAttack(PacketData packetData);
-
-    void onPlayerDamage(PacketData packetData);
+    void onPlayerDamaged(PacketData packetData);
 
     void onPlayerDeath(PacketData packetData);
 

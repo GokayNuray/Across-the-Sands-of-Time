@@ -9,17 +9,15 @@ public class PacketData {
     }
 
     /**
-     * @return The data that was sent in the packet.
-     * @apiNote [0] is lobby name, [1] is an array of players in the lobby.
-     * Player data is in the form of {byte id, String playerName, float[5] playerX, playerY, playerZ, playerYaw, playerPitch, boolean playerCrouching, int playerWeapon, byte playerHealth}
+     * @apiNote [0] is lobby name(String), [1] is an array of players in the lobby(Object[]), [2] is the current score(int[]) {you, enemy}, [3] is the game start time in milliseconds(long).
+     * Player data is in the form of {byte id, boolean inYourTeam, String name, float[5] x, y, z, yaw, pitch, boolean crouching, int weapon, byte health}
      */
     public Object[] getOnLobbyJoinDataData() {
         return data;
     }
 
     /**
-     * @return The data that was sent in the packet.
-     * @apiNote [0] is player id, [1] is an array of length 1 containing player data.
+     * @apiNote [0] is player id(byte), [1] is an array of length 1 containing player data(Object[]).
      * Player data is in the same form as in the onLobbyJoinData method.
      */
     public Object[] getOnPlayerJoinData() {
@@ -27,57 +25,82 @@ public class PacketData {
     }
 
     /**
-     * @return The data that was sent in the packet.
-     * @apiNote [0] is player id, [1] is an array of length 5 containing player position and rotation.
-     * Player position and rotation data is in the form of {playerX, playerY, playerZ}
+     * @apiNote [0] is player id(byte), [1] is an array containing player position and rotation(float[]) {x, y, z}.
      */
     public Object[] getOnPlayerMoveData() {
         return data;
     }
 
+    /**
+     * @apiNote [0] is player id(byte), [1] is an array containing player yaw and pitch(float[]) {yaw, pitch}.
+     */
     public Object[] getOnPlayerRotateData() {
         return data;
     }
 
-    public Object[] getOnPlayerCrouchData() {
+    /**
+     * @apiNote [0] is player id(byte).
+     */
+    public Object[] getOnPlayerCrouchStateChangeData() {
         return data;
     }
 
+    /**
+     * @apiNote [0] is player id(byte), [1] is weapon id(int).
+     */
     public Object[] getOnPlayerWeaponOnChangeData() {
         return data;
     }
 
+    /**
+     * @apiNote [0] is player id(byte).
+     */
     public Object[] getOnPlayerLeaveData() {
         return data;
     }
 
+    /**
+     * @apiNote [0] is player id(byte), [1] is player message(String).
+     */
     public Object[] getOnPlayerChatData() {
         return data;
     }
 
-    public Object[] getOnPlayerAttackData() {
+    /**
+     * @apiNote [0] is player id(byte).
+     */
+    public Object[] getOnPlayerDamagedData() {
         return data;
     }
 
-    public Object[] getOnPlayerDamageData() {
-        return data;
-    }
-
+    /**
+     * @apiNote [0] is id of dead player(byte), [1] is id of killer(byte).
+     */
     public Object[] getOnPlayerDeathData() {
         return data;
     }
 
+    /**
+     * @apiNote [0] is player id(byte), [1] is an array containing position and rotation(float[]) {x, y, z, yaw, pitch}.
+     */
     public Object[] getOnPlayerRespawnData() {
         return data;
     }
 
+    /**
+     * @apiNote [0] is player id(byte), [1] is ability id(int).
+     */
     public Object[] getOnPlayerAbilityData() {
         return data;
     }
 
+    /**
+     * @apiNote [0] is player id(byte).
+     */
     public Object[] getOnPlayerShootData() {
         return data;
     }
+
 
     public Object[] getOnGameOverData() {
         return data;

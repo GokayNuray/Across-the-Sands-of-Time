@@ -48,6 +48,11 @@ public final class Server {
     private static DataOutputStream out;
     private static DataInputStream in;
     private static ServerListener listener;
+
+    public static UserData getUserData() {
+        return userData;
+    }
+
     private static UserData userData;
 
     private Server() {

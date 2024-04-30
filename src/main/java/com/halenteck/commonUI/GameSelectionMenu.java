@@ -70,7 +70,7 @@ public class GameSelectionMenu extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // Open Ranked Match
-                        new LobbyFrame(userName, true);
+                        new LobbyFrame(true);
                         dispose();
                     }
                 });
@@ -79,7 +79,7 @@ public class GameSelectionMenu extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // Open Casual Match
-                        new LobbyFrame(userName, false);
+                        new LobbyFrame(false);
                         dispose();
                     }
                 });

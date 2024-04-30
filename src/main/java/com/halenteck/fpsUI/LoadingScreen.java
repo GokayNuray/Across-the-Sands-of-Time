@@ -16,7 +16,7 @@ public class LoadingScreen extends JFrame {
         getContentPane().setBackground(Color.BLACK);
 
         ImageIcon imageIcon =
-                new ImageIcon("this.getClass().getResource(\"/loadinggif.gif\")dinggif.gif");
+                new ImageIcon(this.getClass().getResource("/loadinggif.gif"));
 
         JLabel imageLabel = new JLabel(imageIcon);
         imageLabel.setIcon(new ImageIcon(imageIcon.getImage().getScaledInstance(300, 400, Image.SCALE_DEFAULT)));

@@ -81,6 +81,7 @@ public final class Server {
                         case PLAYER_JOIN: {
                             String name = in.readUTF();
                             byte id = in.readByte();
+                            boolean isRedTeam = in.readBoolean();
                             float x = in.readFloat();
                             float y = in.readFloat();
                             float z = in.readFloat();
@@ -90,7 +91,7 @@ public final class Server {
                             int weapon = in.readInt();
                             byte health = in.readByte();
 
-                            PacketData data = new PacketData(id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health);
+                            PacketData data = new PacketData(id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health);
                             listener.onPlayerJoin(data);
                             break;
                         }
@@ -227,7 +228,10 @@ public final class Server {
             out.writeByte(REGISTER);
             out.writeUTF(name);
             out.writeUTF(password);
-            return in.readBoolean();
+            if (!in.readBoolean()) {
+                return false;
+            }
+            return login(name, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -243,6 +247,10 @@ public final class Server {
         }
     }
 
+    /**
+     * @return Array of lobbies
+     * Lobby format: id(int),name(String),playerCount(int),creationTime(long){currentTimeMillis} all separated by commas
+     */
     public static String[] getLobbyList() {
         try {
             out.writeByte(GET_LOBBY_LIST);
@@ -258,18 +266,19 @@ public final class Server {
         return null;
     }
 
-    public static void joinLobby(String playerName, byte lobbyId) {
+    public static void joinLobby(String playerName, int lobbyId) {
         try {
             out.writeByte(JOIN_LOBBY);
-            out.writeByte(lobbyId);
+            out.writeInt(lobbyId);
             out.writeUTF(playerName);
-            int lobbyName = in.readInt();
+            String lobbyName = in.readUTF();
             int playerCount = in.readByte();
             System.out.println("Joined lobby: " + lobbyName + " Players: " + playerCount);
             Object[][] playerData = new Object[playerCount][];
             for (int i = 0; i < playerCount; i++) {
                 String name = in.readUTF();
                 byte id = in.readByte();
+                boolean isRedTeam = in.readBoolean();
                 float x = in.readFloat();
                 float y = in.readFloat();
                 float z = in.readFloat();
@@ -279,10 +288,12 @@ public final class Server {
                 int weapon = in.readInt();
                 byte health = in.readByte();
 
-                playerData[i] = new Object[]{id, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health};
+                playerData[i] = new Object[]{id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health};
                 System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
             }
-            listener.onLobbyJoin(new PacketData(lobbyName, playerData));
+            long creationTime = in.readLong();
+            int[] score = new int[]{in.readInt(), in.readInt()};
+            listener.onLobbyJoin(new PacketData(lobbyName, playerData, score, creationTime));
 
             startServerPacketListenerThread();
         } catch (Exception e) {
@@ -293,7 +304,7 @@ public final class Server {
     public static void quickJoinLobby(String playerName) {
         try {
             out.writeByte(QUICK_JOIN_LOBBY);
-            byte lobbyId = in.readByte();
+            int lobbyId = in.readInt();
             joinLobby(playerName, lobbyId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,9 +313,12 @@ public final class Server {
 
     public static void createLobby(String playerName, String lobbyName) {
         try {
+            if (lobbyName.contains(",")) {
+                System.out.println("Lobby name can't contain commas");
+                return;
+            }
             out.writeByte(CREATE_LOBBY);
             out.writeUTF(lobbyName);
-            out.writeUTF(playerName);
             int lobbyId = in.readByte();
             joinLobby(playerName, (byte) lobbyId);
         } catch (Exception e) {

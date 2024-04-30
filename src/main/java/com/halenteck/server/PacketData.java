@@ -9,15 +9,15 @@ public class PacketData {
     }
 
     /**
-     * @apiNote [0] is lobby name(String), [1] is an array of players in the lobby(Object[]), [2] is the current score(int[]) {you, enemy}, [3] is the game start time in milliseconds(long).
-     * Player data is in the form of {byte id, boolean inYourTeam, String name, float[5] x, y, z, yaw, pitch, boolean crouching, int weapon, byte health}
+     * @apiNote [0] is lobby name(String), [1] is an array of players in the lobby(Object[]), [2] is isRedTeam(boolean), [3] is the current score(int[]) {red, blue}, [4] is the game start time in milliseconds(long).
+     * Player data is in the form of {byte id, boolean isRedTeam, String name, float[5] x, y, z, yaw, pitch, boolean crouching, int weapon, byte health}
      */
     public Object[] getOnLobbyJoinDataData() {
         return data;
     }
 
     /**
-     * @apiNote [0] is player id(byte), [1] is an array of length 1 containing player data(Object[]).
+     * @apiNote [0] is player id(byte), [1] is isRedTeam(boolean), [2] is an array of length 1 containing player data(Object[]).
      * Player data is in the same form as in the onLobbyJoinData method.
      */
     public Object[] getOnPlayerJoinData() {

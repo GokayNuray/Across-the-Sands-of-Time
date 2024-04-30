@@ -61,19 +61,19 @@ public class BattLocation extends Location {
                 if (Math.abs(player.x - enemies.x) == 400) {
                     addDamageForShortRange = 0;
                 }
-                if (Math.abs(player.x - enemies.x) == 320) {
+                else if (Math.abs(player.x - enemies.x) == 320) {
                     addDamageForShortRange = 1;
                 }
-                if (Math.abs(player.x - enemies.x) == 240) {
+                else if (Math.abs(player.x - enemies.x) == 240) {
                     addDamageForShortRange = 2;
                 }
-                if (Math.abs(player.x - enemies.x) == 160) {
+                else if (Math.abs(player.x - enemies.x) == 160) {
                     addDamageForShortRange = 3;
                 }
-                if (Math.abs(player.x - enemies.x) == 480) {
+                else if (Math.abs(player.x - enemies.x) == 480) {
                     addDamageForShortRange = -1;
                 }
-                if (Math.abs(player.x - enemies.x) == 560) {
+                else if (Math.abs(player.x - enemies.x) == 560) {
                     addDamageForShortRange = -2;
                 } else {
                     addDamageForShortRange = -3;
@@ -95,19 +95,19 @@ public class BattLocation extends Location {
                 if (Math.abs(player.x - enemies.x) == 640) {
                     addDamageForLongRange = 3;
                 }
-                if (Math.abs(player.x - enemies.x) == 560) {
+                else if (Math.abs(player.x - enemies.x) == 560) {
                     addDamageForLongRange = 2;
                 }
-                if (Math.abs(player.x - enemies.x) == 480) {
+                else if (Math.abs(player.x - enemies.x) == 480) {
                     addDamageForLongRange = 1;
                 }
-                if (Math.abs(player.x - enemies.x) == 400) {
+                else if (Math.abs(player.x - enemies.x) == 400) {
                     addDamageForLongRange = 0;
                 }
-                if (Math.abs(player.x - enemies.x) == 320) {
+                else if (Math.abs(player.x - enemies.x) == 320) {
                     addDamageForLongRange = -1;
                 }
-                if (Math.abs(player.x - enemies.x) == 240) {
+                else if (Math.abs(player.x - enemies.x) == 240) {
                     addDamageForLongRange = -2;
                 } else {
                     addDamageForLongRange = -3;

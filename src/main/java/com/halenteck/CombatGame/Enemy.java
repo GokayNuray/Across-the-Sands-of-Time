@@ -21,7 +21,7 @@ public class Enemy {
     protected int award;
 
     public Enemy(Player aPlayer, String aName, int aDamage, int sAward, int aHealth, int maxNumber) {
-        x = 480;
+        x = 440;
         y = 40;
         isDead = false;
         player = aPlayer;

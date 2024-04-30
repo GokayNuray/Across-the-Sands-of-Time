@@ -107,25 +107,27 @@ public class LogInFrame extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
 
-                if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+
+                if (username.isEmpty() || password.isEmpty()) {
                     JOptionPane.showMessageDialog(LogInFrame.this, "Please fill in the fields");
-                } else if (!usernameChecker(usernameField.getText()) || !passwordChecker(passwordField.getText())) {
+                } else if (!usernameChecker(username) || !passwordChecker(password)) {
                     JOptionPane.showMessageDialog(LogInFrame.this, "Illegal username or password!");
-                    return;
                 } else {
 
-                    userName = usernameField.getText();
+                    userName = username;
 
                     if (e.getSource() == loginButton) {
-                        if (Server.login(usernameField.getText(), passwordField.getText())) {
-                            new GameSelectionMenu(usernameField.getText());
+                        if (Server.login(username, password)) {
+                            new GameSelectionMenu(username);
                             dispose();
                         } else {
                             JOptionPane.showMessageDialog(LogInFrame.this, "Wrong username or password!");
                         }
                     } else if (e.getSource() == registerButton) {
-                        if (Server.register(usernameField.getText(), passwordField.getText())) {
-                            new GameSelectionMenu(usernameField.getText());
+                        if (Server.register(username, password)) {
+                            new GameSelectionMenu(username);
                             dispose();
                         } else {
                             JOptionPane.showMessageDialog(LogInFrame.this, "Username already exists!");

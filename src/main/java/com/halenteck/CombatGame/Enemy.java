@@ -12,7 +12,6 @@ public class Enemy {
     protected int x;
     protected int y;
     protected Player player;
-    protected double damageFromEnemy;// the damage amount the enenmy will inflict after the distance calculations
     protected boolean isDead;
     protected boolean playedTurn;
     protected int number;//initalized at subclasses

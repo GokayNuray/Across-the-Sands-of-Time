@@ -46,7 +46,7 @@ public class BattLocation extends Location {
         while (player.playingChar.health > 0 && enemies.health > 0) {
             System.out.println("1-) Forward   2-) Backward   3-) Attack Short Range  4-) Attack Long Range  5-)Use Ability");
             int process = scan.nextInt();
-            if (process == 1 && (player.x + 80 < 240)) { //Karoların uzunluğuyla istediğin gibi oynayabilirsin, biz 80 almıştık.
+            if (process == 1 && (player.x + 80 <= 280)) { //Karoların uzunluğuyla istediğin gibi oynayabilirsin, biz 80 almıştık.
                 player.x += 80;
                 enemies.move();
                 System.out.println("You are in x = " + player.x);
@@ -60,20 +60,15 @@ public class BattLocation extends Location {
                 double addDamageForShortRange;
                 if (Math.abs(player.x - enemies.x) == 400) {
                     addDamageForShortRange = 0;
-                }
-                else if (Math.abs(player.x - enemies.x) == 320) {
+                } else if (Math.abs(player.x - enemies.x) == 320) {
                     addDamageForShortRange = 1;
-                }
-                else if (Math.abs(player.x - enemies.x) == 240) {
+                } else if (Math.abs(player.x - enemies.x) == 240) {
                     addDamageForShortRange = 2;
-                }
-                else if (Math.abs(player.x - enemies.x) == 160) {
+                } else if (Math.abs(player.x - enemies.x) == 160) {
                     addDamageForShortRange = 3;
-                }
-                else if (Math.abs(player.x - enemies.x) == 480) {
+                } else if (Math.abs(player.x - enemies.x) == 480) {
                     addDamageForShortRange = -1;
-                }
-                else if (Math.abs(player.x - enemies.x) == 560) {
+                } else if (Math.abs(player.x - enemies.x) == 560) {
                     addDamageForShortRange = -2;
                 } else {
                     addDamageForShortRange = -3;
@@ -94,20 +89,15 @@ public class BattLocation extends Location {
                 double addDamageForLongRange;
                 if (Math.abs(player.x - enemies.x) == 640) {
                     addDamageForLongRange = 3;
-                }
-                else if (Math.abs(player.x - enemies.x) == 560) {
+                } else if (Math.abs(player.x - enemies.x) == 560) {
                     addDamageForLongRange = 2;
-                }
-                else if (Math.abs(player.x - enemies.x) == 480) {
+                } else if (Math.abs(player.x - enemies.x) == 480) {
                     addDamageForLongRange = 1;
-                }
-                else if (Math.abs(player.x - enemies.x) == 400) {
+                } else if (Math.abs(player.x - enemies.x) == 400) {
                     addDamageForLongRange = 0;
-                }
-                else if (Math.abs(player.x - enemies.x) == 320) {
+                } else if (Math.abs(player.x - enemies.x) == 320) {
                     addDamageForLongRange = -1;
-                }
-                else if (Math.abs(player.x - enemies.x) == 240) {
+                } else if (Math.abs(player.x - enemies.x) == 240) {
                     addDamageForLongRange = -2;
                 } else {
                     addDamageForLongRange = -3;
@@ -177,8 +167,6 @@ public class BattLocation extends Location {
         }
     }
 
-    //!!!!!Bir karakter bir lokasyondaki item'ını topladığında, bir sonraki lokasyon için onje nerede yaratılacak?
-    //Ya da yeni karakter nerde yaratılacak?
 
     public void shortRange() {
 
@@ -186,20 +174,15 @@ public class BattLocation extends Location {
 
         if (Math.abs(player.x - enemies.x) == 400) {
             addDamageForShortRange = 0;
-        }
-        if (Math.abs(player.x - enemies.x) == 320) {
+        } else if (Math.abs(player.x - enemies.x) == 320) {
             addDamageForShortRange = 1;
-        }
-        if (Math.abs(player.x - enemies.x) == 240) {
+        } else if (Math.abs(player.x - enemies.x) == 240) {
             addDamageForShortRange = 2;
-        }
-        if (Math.abs(player.x - enemies.x) == 160) {
+        } else if (Math.abs(player.x - enemies.x) == 160) {
             addDamageForShortRange = 3;
-        }
-        if (Math.abs(player.x - enemies.x) == 480) {
+        } else if (Math.abs(player.x - enemies.x) == 480) {
             addDamageForShortRange = -1;
-        }
-        if (Math.abs(player.x - enemies.x) == 560) {
+        } else if (Math.abs(player.x - enemies.x) == 560) {
             addDamageForShortRange = -2;
         } else {
             addDamageForShortRange = -3;
@@ -223,20 +206,15 @@ public class BattLocation extends Location {
             double addDamageForLongRange;
             if (Math.abs(player.x - enemies.x) == 640) {
                 addDamageForLongRange = 3;
-            }
-            if (Math.abs(player.x - enemies.x) == 560) {
+            } else if (Math.abs(player.x - enemies.x) == 560) {
                 addDamageForLongRange = 2;
-            }
-            if (Math.abs(player.x - enemies.x) == 480) {
+            } else if (Math.abs(player.x - enemies.x) == 480) {
                 addDamageForLongRange = 1;
-            }
-            if (Math.abs(player.x - enemies.x) == 400) {
+            } else if (Math.abs(player.x - enemies.x) == 400) {
                 addDamageForLongRange = 0;
-            }
-            if (Math.abs(player.x - enemies.x) == 320) {
+            } else if (Math.abs(player.x - enemies.x) == 320) {
                 addDamageForLongRange = -1;
-            }
-            if (Math.abs(player.x - enemies.x) == 240) {
+            } else if (Math.abs(player.x - enemies.x) == 240) {
                 addDamageForLongRange = -2;
             } else {
                 addDamageForLongRange = -3;

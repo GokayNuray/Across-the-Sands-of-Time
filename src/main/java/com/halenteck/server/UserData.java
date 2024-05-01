@@ -14,8 +14,7 @@ public class UserData {
     private int money;
     private byte unlockedCharacterCount;
     private CharacterData[] characters;
-    private byte unlockedWeaponCount;
-    private byte[] unlockedWeapons;
+    private byte armorLevel;
     private byte lastSelectedCharacter;
     private byte combatLevelReached;
 
@@ -25,7 +24,7 @@ public class UserData {
                     int rankPoints,
                     int money,
                     byte unlockedCharacterCount, CharacterData[] characters,
-                    byte unlockedWeaponCount, byte[] unlockedWeapons,
+                    byte armorLevel,
                     byte lastSelectedCharacter,
                     byte combatLevelReached
     ) {
@@ -37,8 +36,7 @@ public class UserData {
         this.money = money;
         this.unlockedCharacterCount = unlockedCharacterCount;
         this.characters = characters;
-        this.unlockedWeaponCount = unlockedWeaponCount;
-        this.unlockedWeapons = unlockedWeapons;
+        this.armorLevel = armorLevel;
         this.lastSelectedCharacter = lastSelectedCharacter;
         this.combatLevelReached = combatLevelReached;
     }
@@ -60,22 +58,17 @@ public class UserData {
                 unlockedWeapons[j] = in.readBoolean();
             }
             byte lastSelectedWeapon = in.readByte();
-            byte armorLevel = in.readByte();
             byte[] abilityLevels = new byte[in.readByte()];
             for (int j = 0; j < abilityLevels.length; j++) {
                 abilityLevels[j] = in.readByte();
             }
             boolean isSpecialAbilityUnlocked = in.readBoolean();
-            characters[i] = new CharacterData(characterId, characterProgress, unlockedWeapons, lastSelectedWeapon, armorLevel, abilityLevels, isSpecialAbilityUnlocked);
+            characters[i] = new CharacterData(characterId, characterProgress, unlockedWeapons, lastSelectedWeapon, abilityLevels, isSpecialAbilityUnlocked);
         }
-        byte unlockedWeaponCount = in.readByte();
-        byte[] unlockedWeapons = new byte[unlockedWeaponCount];
-        for (int i = 0; i < unlockedWeaponCount; i++) {
-            unlockedWeapons[i] = in.readByte();
-        }
+        byte armorLevel = in.readByte();
         byte lastSelectedCharacter = in.readByte();
         byte combatLevelReached = in.readByte();
-        return new UserData(playerName, isFirstTime, level, xp, rankPoints, money, unlockedCharacterCount, characters, unlockedWeaponCount, unlockedWeapons, lastSelectedCharacter, combatLevelReached);
+        return new UserData(playerName, isFirstTime, level, xp, rankPoints, money, unlockedCharacterCount, characters, armorLevel, lastSelectedCharacter, combatLevelReached);
     }
 
     public static void writeUserData(DataOutputStream out, UserData userData) throws IOException {
@@ -94,17 +87,13 @@ public class UserData {
                 out.writeBoolean(unlockedWeapon);
             }
             out.writeByte(character.lastSelectedWeapon);
-            out.writeByte(character.armorLevel);
             out.writeByte(character.abilityLevels.length);
             for (byte abilityLevel : character.abilityLevels) {
                 out.writeByte(abilityLevel);
             }
             out.writeBoolean(character.isSpecialAbilityUnlocked);
         }
-        out.writeByte(userData.unlockedWeaponCount);
-        for (byte unlockedWeapon : userData.unlockedWeapons) {
-            out.writeByte(unlockedWeapon);
-        }
+        out.writeByte(userData.armorLevel);
         out.writeByte(userData.lastSelectedCharacter);
         out.writeByte(userData.combatLevelReached);
     }
@@ -173,20 +162,12 @@ public class UserData {
         this.characters = characters;
     }
 
-    public byte getUnlockedWeaponCount() {
-        return unlockedWeaponCount;
+    public byte getArmorLevel() {
+        return armorLevel;
     }
 
-    public void setUnlockedWeaponCount(byte unlockedWeaponCount) {
-        this.unlockedWeaponCount = unlockedWeaponCount;
-    }
-
-    public byte[] getUnlockedWeapons() {
-        return unlockedWeapons;
-    }
-
-    public void setUnlockedWeapons(byte[] unlockedWeapons) {
-        this.unlockedWeapons = unlockedWeapons;
+    public void setArmorLevel(byte armorLevel) {
+        this.armorLevel = armorLevel;
     }
 
     public byte getLastSelectedCharacter() {
@@ -207,80 +188,3 @@ public class UserData {
 
 }
 
-class CharacterData {
-
-    byte characterId;
-    byte progress;
-    boolean[] unlockedWeapons;
-    byte lastSelectedWeapon;
-    byte armorLevel;
-    byte[] abilityLevels;
-    boolean isSpecialAbilityUnlocked;
-
-    public CharacterData(byte characterId, byte progress, boolean[] unlockedWeapons, byte lastSelectedWeapon, byte armorLevel, byte[] abilityLevels, boolean isSpecialAbilityUnlocked) {
-        this.characterId = characterId;
-        this.progress = progress;
-        this.unlockedWeapons = unlockedWeapons;
-        this.lastSelectedWeapon = lastSelectedWeapon;
-        this.armorLevel = armorLevel;
-        this.abilityLevels = abilityLevels;
-        this.isSpecialAbilityUnlocked = isSpecialAbilityUnlocked;
-    }
-
-
-    public byte getCharacterId() {
-        return characterId;
-    }
-
-    public void setCharacterId(byte characterId) {
-        this.characterId = characterId;
-    }
-
-    public byte setProgress() {
-        return progress;
-    }
-
-    public void setProgress(byte progress) {
-        this.progress = progress;
-    }
-
-    public boolean[] getUnlockedWeapons() {
-        return unlockedWeapons;
-    }
-
-    public void setUnlockedWeapons(boolean[] unlockedWeapons) {
-        this.unlockedWeapons = unlockedWeapons;
-    }
-
-    public byte getLastSelectedWeapon() {
-        return lastSelectedWeapon;
-    }
-
-    public void setLastSelectedWeapon(byte lastSelectedWeapon) {
-        this.lastSelectedWeapon = lastSelectedWeapon;
-    }
-
-    public byte getArmorLevel() {
-        return armorLevel;
-    }
-
-    public void setArmorLevel(byte armorLevel) {
-        this.armorLevel = armorLevel;
-    }
-
-    public byte[] getAbilityLevels() {
-        return abilityLevels;
-    }
-
-    public void setAbilityLevels(byte[] abilityLevels) {
-        this.abilityLevels = abilityLevels;
-    }
-
-    public boolean isSpecialAbilityUnlocked() {
-        return isSpecialAbilityUnlocked;
-    }
-
-    public void setSpecialAbilityUnlocked(boolean specialAbilityUnlocked) {
-        isSpecialAbilityUnlocked = specialAbilityUnlocked;
-    }
-}

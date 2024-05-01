@@ -1,59 +1,105 @@
 package com.halenteck.CombatGame;
 
-import java.util.Scanner;
 
-public class ToolStore extends Location {
-    String name;
+import com.halenteck.server.CharacterData;
+import com.halenteck.server.Server;
+import com.halenteck.server.UserData;
 
-    public ToolStore(Player player) {
-        super(player);
+public class ToolStore {
 
-    }
-
-    @Override
-    public boolean getLocation() {
-        return true;
-    }
-
-    public void buyArmour() {
-        Scanner scan = new Scanner(System.in);
-        int type = scan.nextInt();
-        if (type >= 1 && type <= 3 && player.armours[type - 1] != null && player.armours[type - 1].price <= player.money) {
-            player.armours[type - 1].makePayment();
-            player.armour = player.armours[type - 1];
+    public boolean buyArmour(int type) {
+        UserData userData = Server.getUserData();
+        if (userData.getArmorLevel() >= type) {
+            return false;
         }
-    }
-
-    public void buyWeapon() {
-
-        if (player.playingChar.weapons[1].isActive == false && player.money >= player.playingChar.weapons[1].price) {//player'ı buarada böyle belirtemeyiz. Objesi lazım.
-            player.playingChar.weapons[1].isActive = true;
-            player.money -= player.playingChar.weapons[1].price;
-            player.boughtWeapons.add(player.playingChar.weapons[1]);
+        Armour armour = new Armour(type);
+        if (userData.getMoney() >= armour.price) {
+            userData.setMoney(userData.getMoney() - armour.price);
+            userData.setArmorLevel((byte) type);
+            Server.updateUserData();
+            return true;
         }
+        return false;
     }
 
-    public void buyAbility() {
-        if (!player.playingChar.abilityExists) {
-            player.playingChar.ability = new Ability(player);
-            if (player.money >= player.playingChar.ability.price) {
-                player.playingChar.ability.makePayment();
-                player.playingChar.abilityExists = true;
-            }
+    public boolean buyWeapon(byte CharacterID) {
+        UserData userData = Server.getUserData();
+        CharacterData characterData = userData.getCharacters()[CharacterID];
+        Character character = Character.characters.get(CharacterID);
+        if (characterData.getUnlockedWeapons()[1]) {
+            return false;
         }
+        if (userData.getMoney() >= character.weapons[1].price) {
+            userData.setMoney(userData.getMoney() - character.weapons[1].price);
+            characterData.getUnlockedWeapons()[1] = true;
+            Server.updateUserData();
+            return true;
+        }
+        return false;
     }
 
-    public void upgradeAttack() {//bu bir button'a bağlı olacak
-        if (player.playingChar.attackPower <= player.playingChar.upgradelimit && player.money >= 4 * (player.playingChar.attackPower + 1)) {
-            player.playingChar.attackPower++;
-            player.money -= 4 * player.playingChar.attackPower;
+    public boolean buyAbility(byte CharacterID) {
+        UserData userData = Server.getUserData();
+        CharacterData characterData = userData.getCharacters()[CharacterID];
+        Ability ability = new Ability(CharacterID);
+        if (characterData.isSpecialAbilityUnlocked()) {
+            return false;
         }
+        if (userData.getMoney() >= ability.price) {
+            userData.setMoney(userData.getMoney() - ability.price);
+            characterData.setSpecialAbilityUnlocked(true);
+            Server.updateUserData();
+            return true;
+        }
+        return false;
     }
 
-    public void upgradeDefence() {//bu bir button'a baplı olacak
-        if (player.playingChar.defencePower <= player.playingChar.upgradelimit && player.money >= 4 * (player.playingChar.defencePower + 1)) {
-            player.playingChar.defencePower++;
-            player.money -= 4 * player.playingChar.defencePower;
+    public boolean upgradeAttack(byte CharacterID) {//bu bir button'a bağlı olacak
+        UserData userData = Server.getUserData();
+        CharacterData characterData = userData.getCharacters()[CharacterID];
+        byte attackLevel = characterData.getAbilityLevels()[0];
+        if (attackLevel >= 3) {
+            return false;
         }
+        if (userData.getMoney() >= 4 * (attackLevel + 1)) {
+            characterData.getAbilityLevels()[0] = (byte) (attackLevel + 1);
+            userData.setMoney(userData.getMoney() - 4 * (attackLevel + 1));
+            Server.updateUserData();
+            return true;
+        }
+        return false;
     }
+
+    public boolean upgradeDefence(byte CharacterID) {//bu bir button'a baplı olacak
+        UserData userData = Server.getUserData();
+        CharacterData characterData = userData.getCharacters()[CharacterID];
+        byte attackLevel = characterData.getAbilityLevels()[1];
+        if (attackLevel >= 3) {
+            return false;
+        }
+        if (userData.getMoney() >= 4 * (attackLevel + 1)) {
+            characterData.getAbilityLevels()[1] = (byte) (attackLevel + 1);
+            userData.setMoney(userData.getMoney() - 4 * (attackLevel + 1));
+            Server.updateUserData();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean upgradeMobility(byte CharacterID) {//bu bir button'a bağlı olacak
+        UserData userData = Server.getUserData();
+        CharacterData characterData = userData.getCharacters()[CharacterID];
+        byte attackLevel = characterData.getAbilityLevels()[2];
+        if (attackLevel >= 3) {
+            return false;
+        }
+        if (userData.getMoney() >= 4 * (attackLevel + 1)) {
+            characterData.getAbilityLevels()[2] = (byte) (attackLevel + 1);
+            userData.setMoney(userData.getMoney() - 4 * (attackLevel + 1));
+            Server.updateUserData();
+            return true;
+        }
+        return false;
+    }
+
 }

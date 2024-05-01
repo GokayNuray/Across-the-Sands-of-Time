@@ -1,29 +1,20 @@
 package com.halenteck.CombatGame;
 //import javax.swing.JButton;
 
-public class Weapons extends ToolStore { //extend edilmeyecek
+public class Weapons { //extend edilmeyecek
     //her karakter için bir weapon objesi yaratılıyor ve onun üstünede oynama yapılıyor
     protected int price;
-    protected double performance;//the damage weapon will inflict originally
-    protected static int noOfWeapon = 1;
+    protected int performance;//the damage weapon will inflict originally
     protected int weaponID;
     //protected JButton buy = new JButton("buy");
     protected boolean isActive;
 
-    public Weapons(Player aForWeapons) {
-
-        super(aForWeapons);
-
-        weaponID = noOfWeapon;
-        noOfWeapon++;
-
-        if (noOfWeapon > 10) {
-            noOfWeapon = 1;
-        }
-        setPriceandDamage();
+    public Weapons(int weaponID) {
+        this.weaponID = weaponID;
+        setPriceAndDamage();
     }
 
-    public void setPriceandDamage() {//sets the price for the advanced weapon
+    public void setPriceAndDamage() {//sets the price for the advanced weapon
 
         if (weaponID == 1) {
             performance = 2;

@@ -1,13 +1,13 @@
 package com.halenteck.CombatGame;
 
-public class Armour extends ToolStore {
+
+public class Armour {
 
     protected int type; //"1-> low, 2-> middle, 3-> strong"
     protected int price;
-    protected double defence;
+    protected int defence;
 
-    public Armour(Player aGamer, int aType) {//JTextField or a button
-        super(aGamer);
+    public Armour(int aType) {//JTextField or a button
         type = aType;
         setPrice();
     }
@@ -15,18 +15,13 @@ public class Armour extends ToolStore {
     public void setPrice() {
         if (type == 1) {
             price = 3;
-            defence = 0.5;
+            defence = 1;
         } else if (type == 2) {
             price = 5;
-            defence = 1;
+            defence = 2;
         } else if (type == 3) {
             price = 7;
-            defence = 1.5;
+            defence = 3;
         }
-    }
-
-    public void makePayment() {
-        player.money -= price;
-        player.armourExists = true;
     }
 }

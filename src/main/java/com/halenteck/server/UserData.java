@@ -13,8 +13,9 @@ public class UserData {
     private int rankPoints;
     private int money;
     private byte unlockedCharacterCount;
-    private CharacterData[] characters;
-    private byte armorLevel;
+    private CharacterDataa[] characters;
+    private byte unlockedWeaponCount;
+    private byte[] unlockedWeapons;
     private byte lastSelectedCharacter;
     private byte combatLevelReached;
 
@@ -23,8 +24,8 @@ public class UserData {
                     byte level, short xp,
                     int rankPoints,
                     int money,
-                    byte unlockedCharacterCount, CharacterData[] characters,
-                    byte armorLevel,
+                    byte unlockedCharacterCount, CharacterDataa[] characters,
+                    byte unlockedWeaponCount, byte[] unlockedWeapons,
                     byte lastSelectedCharacter,
                     byte combatLevelReached
     ) {
@@ -36,7 +37,8 @@ public class UserData {
         this.money = money;
         this.unlockedCharacterCount = unlockedCharacterCount;
         this.characters = characters;
-        this.armorLevel = armorLevel;
+        this.unlockedWeaponCount = unlockedWeaponCount;
+        this.unlockedWeapons = unlockedWeapons;
         this.lastSelectedCharacter = lastSelectedCharacter;
         this.combatLevelReached = combatLevelReached;
     }
@@ -49,7 +51,7 @@ public class UserData {
         int rankPoints = in.readInt();
         int money = in.readInt();
         byte unlockedCharacterCount = in.readByte();
-        CharacterData[] characters = new CharacterData[unlockedCharacterCount];
+        CharacterDataa[] characters = new CharacterDataa[unlockedCharacterCount];
         for (int i = 0; i < unlockedCharacterCount; i++) {
             byte characterId = in.readByte();
             byte characterProgress = in.readByte();
@@ -58,17 +60,22 @@ public class UserData {
                 unlockedWeapons[j] = in.readBoolean();
             }
             byte lastSelectedWeapon = in.readByte();
+            byte armorLevel = in.readByte();
             byte[] abilityLevels = new byte[in.readByte()];
             for (int j = 0; j < abilityLevels.length; j++) {
                 abilityLevels[j] = in.readByte();
             }
             boolean isSpecialAbilityUnlocked = in.readBoolean();
-            characters[i] = new CharacterData(characterId, characterProgress, unlockedWeapons, lastSelectedWeapon, abilityLevels, isSpecialAbilityUnlocked);
+            characters[i] = new CharacterDataa(characterId, characterProgress, unlockedWeapons, lastSelectedWeapon, armorLevel, abilityLevels, isSpecialAbilityUnlocked);
         }
-        byte armorLevel = in.readByte();
+        byte unlockedWeaponCount = in.readByte();
+        byte[] unlockedWeapons = new byte[unlockedWeaponCount];
+        for (int i = 0; i < unlockedWeaponCount; i++) {
+            unlockedWeapons[i] = in.readByte();
+        }
         byte lastSelectedCharacter = in.readByte();
         byte combatLevelReached = in.readByte();
-        return new UserData(playerName, isFirstTime, level, xp, rankPoints, money, unlockedCharacterCount, characters, armorLevel, lastSelectedCharacter, combatLevelReached);
+        return new UserData(playerName, isFirstTime, level, xp, rankPoints, money, unlockedCharacterCount, characters, unlockedWeaponCount, unlockedWeapons, lastSelectedCharacter, combatLevelReached);
     }
 
     public static void writeUserData(DataOutputStream out, UserData userData) throws IOException {
@@ -79,7 +86,7 @@ public class UserData {
         out.writeInt(userData.rankPoints);
         out.writeInt(userData.money);
         out.writeByte(userData.unlockedCharacterCount);
-        for (CharacterData character : userData.characters) {
+        for (CharacterDataa character : userData.characters) {
             out.writeByte(character.characterId);
             out.writeByte(character.progress);
             out.writeByte(character.unlockedWeapons.length);
@@ -87,13 +94,17 @@ public class UserData {
                 out.writeBoolean(unlockedWeapon);
             }
             out.writeByte(character.lastSelectedWeapon);
+            out.writeByte(character.armorLevel);
             out.writeByte(character.abilityLevels.length);
             for (byte abilityLevel : character.abilityLevels) {
                 out.writeByte(abilityLevel);
             }
             out.writeBoolean(character.isSpecialAbilityUnlocked);
         }
-        out.writeByte(userData.armorLevel);
+        out.writeByte(userData.unlockedWeaponCount);
+        for (byte unlockedWeapon : userData.unlockedWeapons) {
+            out.writeByte(unlockedWeapon);
+        }
         out.writeByte(userData.lastSelectedCharacter);
         out.writeByte(userData.combatLevelReached);
     }
@@ -154,20 +165,28 @@ public class UserData {
         this.unlockedCharacterCount = unlockedCharacterCount;
     }
 
-    public CharacterData[] getCharacters() {
+    public CharacterDataa[] getCharacters() {
         return characters;
     }
 
-    public void setCharacters(CharacterData[] characters) {
+    public void setCharacters(CharacterDataa[] characters) {
         this.characters = characters;
     }
 
-    public byte getArmorLevel() {
-        return armorLevel;
+    public byte getUnlockedWeaponCount() {
+        return unlockedWeaponCount;
     }
 
-    public void setArmorLevel(byte armorLevel) {
-        this.armorLevel = armorLevel;
+    public void setUnlockedWeaponCount(byte unlockedWeaponCount) {
+        this.unlockedWeaponCount = unlockedWeaponCount;
+    }
+
+    public byte[] getUnlockedWeapons() {
+        return unlockedWeapons;
+    }
+
+    public void setUnlockedWeapons(byte[] unlockedWeapons) {
+        this.unlockedWeapons = unlockedWeapons;
     }
 
     public byte getLastSelectedCharacter() {
@@ -186,5 +205,11 @@ public class UserData {
         this.combatLevelReached = combatLevelReached;
     }
 
+    public int getArmorLevel() {
+        return 0;
+    }
+
+    public void setArmorLevel(byte type) {
+    }
 }
 

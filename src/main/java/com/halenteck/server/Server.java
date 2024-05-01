@@ -325,7 +325,7 @@ public final class Server {
             out.writeByte(CREATE_LOBBY);
             out.writeUTF(lobbyName);
             int lobbyId = in.readByte();
-            joinLobby(playerName, (byte) lobbyId);
+            joinLobby(playerName, lobbyId);
         } catch (Exception e) {
             e.printStackTrace();
         }

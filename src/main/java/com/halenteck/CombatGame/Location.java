@@ -1,7 +1,7 @@
 package com.halenteck.CombatGame;
 
-import com.halenteck.server.CharacterDataa;
 import com.halenteck.server.Server;
+import com.halenteck.server.UserCharacterData;
 import com.halenteck.server.UserData;
 
 import java.util.Random;
@@ -41,7 +41,7 @@ public class Location {
         this.player = player;
         characterID = player.characterID;
         UserData userData = Server.getUserData();
-        CharacterDataa characterData = userData.getCharacters()[characterID];
+        UserCharacterData characterData = userData.getCharacters()[characterID];
         playerHealth = player.health;
         playerAttackPower = player.attackPower + characterData.getAbilityLevels()[0];
         playerDefense = new Armour(userData.getArmorLevel()).defence + characterData.getAbilityLevels()[1];

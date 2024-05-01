@@ -1,8 +1,8 @@
 package com.halenteck.CombatGame;
 
 import com.halenteck.CombatGame.characters.*;
-import com.halenteck.server.CharacterDataa;
 import com.halenteck.server.Server;
+import com.halenteck.server.UserCharacterData;
 
 import java.util.Map;
 
@@ -56,7 +56,7 @@ public abstract class Character {
     }
 
     public void increaseProgress() {
-        CharacterDataa characterData = Server.getUserData().getCharacters()[characterID];
+        UserCharacterData characterData = Server.getUserData().getCharacters()[characterID];
         byte characterProgress = characterData.getProgress();
         if (items[3]) {
             characterProgress += 40;

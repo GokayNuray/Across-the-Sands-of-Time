@@ -6,11 +6,12 @@ import com.halenteck.server.UserData;
 
 public class Game {
 
-    Character player;
+    Location location;
 
     public void start() {
         UserData userData = Server.getUserData();
         byte characterId = userData.getUnlockedCharacterCount();
+        Character player;
         switch (characterId) {
             case 1 -> player = new CaveMan();
             case 2 -> player = new Panzehir();
@@ -20,10 +21,28 @@ public class Game {
             default -> throw new IllegalStateException("Unexpected value: " + characterId);
         }
         int lastLocation = userData.getCombatLevelReached();
-        Location location = player.maps[lastLocation % 4];
+        location = player.maps[lastLocation % 4];
 
         location.startGame(player);
     }
 
+    public void goForward() {
+        location.goForward();
+    }
 
+    public void goBackward() {
+        location.goBackward();
+    }
+
+    public void shortRangeAttack() {
+        location.shortRange();
+    }
+
+    public void longRangeAttack() {
+        location.longRange();
+    }
+
+    public void useAbility() {
+        location.useAbility();
+    }
 }

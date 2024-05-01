@@ -1,6 +1,6 @@
 package com.halenteck.server;
 
-public class CharacterData {
+public class UserCharacterData {
 
     byte characterId;
     byte progress;
@@ -9,7 +9,7 @@ public class CharacterData {
     byte[] abilityLevels;
     boolean isSpecialAbilityUnlocked;
 
-    public CharacterData(byte characterId, byte progress, boolean[] unlockedWeapons, byte lastSelectedWeapon, byte[] abilityLevels, boolean isSpecialAbilityUnlocked) {
+    public UserCharacterData(byte characterId, byte progress, boolean[] unlockedWeapons, byte lastSelectedWeapon, byte[] abilityLevels, boolean isSpecialAbilityUnlocked) {
         this.characterId = characterId;
         this.progress = progress;
         this.unlockedWeapons = unlockedWeapons;

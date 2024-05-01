@@ -1,6 +1,6 @@
 package com.halenteck.CombatGame.characters;
 
-import com.halenteck.CombatGame.BattLocation;
+import com.halenteck.CombatGame.Location;
 import com.halenteck.CombatGame.Character;
 import com.halenteck.CombatGame.locations.HistoryMuseum;
 import com.halenteck.CombatGame.locations.Lab;
@@ -11,6 +11,6 @@ public class Panzehir extends Character {
 
     public Panzehir() {
         super((byte) 1, "Panzehir", "/characters/panzehir.png", 65, 2,
-                new BattLocation[]{new Tent(), new Tunnel(), new Lab(), new HistoryMuseum()});
+                new Location[]{new Tent(), new Tunnel(), new Lab(), new HistoryMuseum()});
     }
 }

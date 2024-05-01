@@ -1,19 +1,16 @@
 package com.halenteck.CombatGame;
 
-import com.halenteck.fpsGame.Player;
-
 import java.util.Random;
 
 public class Enemy {
 
 
-    protected int health;//initalized at the subclasses
-    //when there is more than one enemy
-    protected int damage;//the amount of damage the opponent will originally inflict
-    protected Player player;
-    protected int number;//initalized at subclasses
+    // instance variables
+    protected int health;
+    protected int damage; //the amount of damage the opponent will originally inflict
+    protected int number;
     protected int maxNumber;
-    protected String name;//error'u gidermek için koydum
+    protected String name;
     protected int reward;
 
     public Enemy(String name, int damage, int reward, int health, int maxNumber) {
@@ -30,7 +27,5 @@ public class Enemy {
         number = (rand.nextInt(maxNumber) + 1);
         return number;
     }
-
-    //karakter oynadıktan sonra enemy oynacak
 
 }

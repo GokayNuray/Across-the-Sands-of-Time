@@ -1,12 +1,12 @@
 package com.halenteck.CombatGame;
 
-import com.halenteck.server.CharacterData;
+import com.halenteck.server.CharacterDataa;
 import com.halenteck.server.Server;
 import com.halenteck.server.UserData;
 
 import java.util.Random;
 
-public class BattLocation {
+public class Location {
 
     protected int locationId;
     protected String name;
@@ -29,22 +29,19 @@ public class BattLocation {
     int enemyHealth;
     int enemyAttackPower;
 
-    //protected Location location;
-
-    public BattLocation(int locationId, String name, Enemy enemies, String award) {
+    public Location(int locationId, String name, Enemy enemies, String award) {
         this.locationId = locationId;
         this.name = name;
         this.enemies = enemies;
         this.award = award;
         enemyCount = enemies.enemyCount();
-        //getBLocation();
     }
 
     public void startGame(Character player) {
         this.player = player;
         characterID = player.characterID;
         UserData userData = Server.getUserData();
-        CharacterData characterData = userData.getCharacters()[characterID];
+        CharacterDataa characterData = userData.getCharacters()[characterID];
         playerHealth = player.health;
         playerAttackPower = player.attackPower + characterData.getAbilityLevels()[0];
         playerDefense = new Armour(userData.getArmorLevel()).defence + characterData.getAbilityLevels()[1];
@@ -137,7 +134,7 @@ public class BattLocation {
         abilityActive = true;
         continueTurn();
         //TODO Draw the effects of the ability
-        /*if (player.playingChar.abilityExists) {// player.playingChar.ability.useage > 0 &&  bu belki gerekir, emin değilim ya da sadece bu olabilir
+        /*if (player.playingChar.abilityExists) {// player.playingChar.ability.usageLeft > 0 &&  bu belki gerekir, emin değilim ya da sadece bu olabilir
             player.playingChar.isAbilityActive = true;
             if (player.characterID == 1) {//uçma
                 player.y = player.y * 2;//sol üsütn y'si bu. height falan aynı

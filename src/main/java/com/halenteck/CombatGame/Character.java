@@ -1,7 +1,7 @@
 package com.halenteck.CombatGame;
 
 import com.halenteck.CombatGame.characters.*;
-import com.halenteck.server.CharacterData;
+import com.halenteck.server.CharacterDataa;
 import com.halenteck.server.Server;
 
 import java.util.Map;
@@ -25,12 +25,12 @@ public abstract class Character {
     protected int attackPower;
     protected boolean[] items = new boolean[4];
     protected Weapons[] weapons = new Weapons[2];//index 0'da short range, index 1'de long range var
-    protected BattLocation[] maps;
+    protected Location[] maps;
     protected int shortRangeDamage;
     protected int longRangeDamage;
 
 
-    public Character(byte characterId, String name, String resourcePath, int health, int attackPower, BattLocation[] maps) {
+    public Character(byte characterId, String name, String resourcePath, int health, int attackPower, Location[] maps) {
 
         this.characterID = characterId;
         this.ability = new Ability(characterId);
@@ -56,7 +56,7 @@ public abstract class Character {
     }
 
     public void increaseProgress() {
-        CharacterData characterData = Server.getUserData().getCharacters()[characterID];
+        CharacterDataa characterData = Server.getUserData().getCharacters()[characterID];
         byte characterProgress = characterData.getProgress();
         if (items[3]) {
             characterProgress += 40;

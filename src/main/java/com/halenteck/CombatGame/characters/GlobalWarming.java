@@ -1,6 +1,6 @@
 package com.halenteck.CombatGame.characters;
 
-import com.halenteck.CombatGame.BattLocation;
+import com.halenteck.CombatGame.Location;
 import com.halenteck.CombatGame.Character;
 import com.halenteck.CombatGame.locations.Glacier;
 import com.halenteck.CombatGame.locations.GreenHouse;
@@ -11,7 +11,7 @@ public class GlobalWarming extends Character {
 
     public GlobalWarming() {
         super((byte) 3, "Global Warming", "/characters/globalwarming.png", 100, 4,
-                new BattLocation[]{new GreenHouse(), new Volcano(), new Glacier(), new HistoryMuseum()});
+                new Location[]{new GreenHouse(), new Volcano(), new Glacier(), new HistoryMuseum()});
 
     }
 }

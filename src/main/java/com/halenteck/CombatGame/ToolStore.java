@@ -2,6 +2,7 @@ package com.halenteck.CombatGame;
 
 
 import com.halenteck.server.CharacterData;
+import com.halenteck.server.CharacterDataa;
 import com.halenteck.server.Server;
 import com.halenteck.server.UserData;
 
@@ -24,7 +25,7 @@ public class ToolStore {
 
     public boolean buyWeapon(byte CharacterID) {
         UserData userData = Server.getUserData();
-        CharacterData characterData = userData.getCharacters()[CharacterID];
+        CharacterDataa characterData = userData.getCharacters()[CharacterID];
         Character character = Character.characters.get(CharacterID);
         if (characterData.getUnlockedWeapons()[1]) {
             return false;
@@ -40,7 +41,7 @@ public class ToolStore {
 
     public boolean buyAbility(byte CharacterID) {
         UserData userData = Server.getUserData();
-        CharacterData characterData = userData.getCharacters()[CharacterID];
+        CharacterDataa characterData = userData.getCharacters()[CharacterID];
         Ability ability = new Ability(CharacterID);
         if (characterData.isSpecialAbilityUnlocked()) {
             return false;
@@ -56,7 +57,7 @@ public class ToolStore {
 
     public boolean upgradeAttack(byte CharacterID) {//bu bir button'a bağlı olacak
         UserData userData = Server.getUserData();
-        CharacterData characterData = userData.getCharacters()[CharacterID];
+        CharacterDataa characterData = userData.getCharacters()[CharacterID];
         byte attackLevel = characterData.getAbilityLevels()[0];
         if (attackLevel >= 3) {
             return false;
@@ -72,7 +73,7 @@ public class ToolStore {
 
     public boolean upgradeDefence(byte CharacterID) {//bu bir button'a baplı olacak
         UserData userData = Server.getUserData();
-        CharacterData characterData = userData.getCharacters()[CharacterID];
+        CharacterDataa characterData = userData.getCharacters()[CharacterID];
         byte attackLevel = characterData.getAbilityLevels()[1];
         if (attackLevel >= 3) {
             return false;
@@ -88,7 +89,7 @@ public class ToolStore {
 
     public boolean upgradeMobility(byte CharacterID) {//bu bir button'a bağlı olacak
         UserData userData = Server.getUserData();
-        CharacterData characterData = userData.getCharacters()[CharacterID];
+        CharacterDataa characterData = userData.getCharacters()[CharacterID];
         byte attackLevel = characterData.getAbilityLevels()[2];
         if (attackLevel >= 3) {
             return false;

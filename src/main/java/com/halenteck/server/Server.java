@@ -96,9 +96,10 @@ public final class Server {
                             float pitch = in.readFloat();
                             boolean crouching = in.readBoolean();
                             int weapon = in.readInt();
-                            byte health = in.readByte();
+                            byte kill = in.readByte();
+                            byte death = in.readByte();
 
-                            PacketData data = new PacketData(id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health);
+                            PacketData data = new PacketData(id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, kill, death);
                             listener.onPlayerJoin(data);
                             break;
                         }
@@ -161,9 +162,8 @@ public final class Server {
                         case PLAYER_DEATH: {
                             byte deadId = in.readByte();
                             byte killerId = in.readByte();
-                            int weapon = in.readInt();
 
-                            PacketData data = new PacketData(deadId, killerId, weapon);
+                            PacketData data = new PacketData(deadId, killerId);
                             listener.onPlayerDeath(data);
                             break;
                         }
@@ -314,9 +314,10 @@ public final class Server {
                 float pitch = in.readFloat();
                 boolean crouching = in.readBoolean();
                 int weapon = in.readInt();
-                byte health = in.readByte();
+                byte kill = in.readByte();
+                byte death = in.readByte();
 
-                playerData[i] = new Object[]{id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, health};
+                playerData[i] = new Object[]{id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, kill, death};
                 System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
             }
             long creationTime = in.readLong();

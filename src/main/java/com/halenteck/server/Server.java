@@ -12,6 +12,8 @@ public final class Server {
     private static final byte LOGIN = 0x00;
     private static final byte REGISTER = 0x01;
     private static final byte UPDATE_USER_DATA = 0x02;
+
+    private static final byte GET_LEADERBOARD = 0x04;
     private static final byte GET_LOBBY_LIST = 0x10;
     private static final byte JOIN_LOBBY = 0x11;
     private static final byte QUICK_JOIN_LOBBY = 0x12;
@@ -253,6 +255,27 @@ public final class Server {
     }
 
     /**
+     * @return Array of player names and scores(sorted by score)
+     * Format: [playerNames(String[]), playerScores(int[])]
+     */
+    public static Object[] getLeaderboard() {
+        try {
+            out.writeByte(GET_LEADERBOARD);
+            int playerCount = in.readByte();
+            String[] playerNames = new String[playerCount];
+            int[] playerScores = new int[playerCount];
+            for (int i = 0; i < playerCount; i++) {
+                playerNames[i] = in.readUTF();
+                playerScores[i] = in.readInt();
+            }
+            return new Object[]{playerNames, playerScores};
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("Failed to get leaderboard");
+    }
+
+    /**
      * @return Array of lobbies
      * Lobby format: id(int),name(String),playerCount(int),creationTime(long){currentTimeMillis} all separated by commas
      */
@@ -268,7 +291,7 @@ public final class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        throw new RuntimeException("Failed to get lobby list");
     }
 
     public static void joinLobby(String playerName, int lobbyId) {

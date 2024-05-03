@@ -101,7 +101,9 @@ public class PacketData {
         return data;
     }
 
-
+    /**
+     * @apiNote [0] is the change in rankPoints(int)
+     */
     public Object[] getOnGameOverData() {
         return data;
     }

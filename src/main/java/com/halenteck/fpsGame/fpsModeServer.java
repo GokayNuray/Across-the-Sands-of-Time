@@ -28,10 +28,12 @@ public class fpsModeServer implements ServerListener {
         Vector3f newPosition = new Vector3f((Float)packetData.getOnPlayerMoveData()[1], (Float)packetData.getOnPlayerMoveData()[2], (Float)packetData.getOnPlayerMoveData()[3]);
         Player player = players.get(playerId);
 
-        if (player != null)
+        if (player == null)
         {
-            player.setPosition(newPosition);
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerMove packet");
         }
+
+        player.setPosition(newPosition);
     }
 
     @Override
@@ -44,15 +46,18 @@ public class fpsModeServer implements ServerListener {
         Byte playerId = (Byte) packetData.getOnPlayerCrouchStateChangeData()[0];
         Player player = players.get(playerId);
 
-        if (player != null)
+        if (player == null)
         {
-            if (player.getCrouchState())
-            {
-                player.stand();
-            } else
-            {
-                player.crouch();
-            }
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerCrouchStateChange packet");
+        }
+
+        if (player.getCrouchState())
+        {
+            player.stand();
+        }
+        else
+        {
+            player.crouch();
         }
     }
 
@@ -61,10 +66,12 @@ public class fpsModeServer implements ServerListener {
         Byte playerId = (Byte) packetData.getOnPlayerWeaponOnChangeData()[0];
         Player player = players.get(playerId);
 
-        if (player != null)
+        if (player == null)
         {
-            player.switchWeapon();
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerWeaponChange packet");
         }
+
+        player.switchWeapon();
     }
 
     @Override
@@ -86,10 +93,12 @@ public class fpsModeServer implements ServerListener {
         int damage = (Integer) packetData.getOnPlayerDamagedData()[1];
         Player player = players.get(playerId);
 
-        if (player != null)
+        if (player == null)
         {
-            player.takeDamage(damage);
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerDamaged packet");
         }
+
+        player.takeDamage(damage);
     }
 
     @Override
@@ -97,10 +106,12 @@ public class fpsModeServer implements ServerListener {
         Byte playerId = (Byte) packetData.getOnPlayerDeathData()[0];
         Player player = players.get(playerId);
 
-        if (player != null)
+        if (player == null)
         {
-            player.die();
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerDeath packet");
         }
+
+        player.die();
     }
 
     @Override
@@ -109,11 +120,13 @@ public class fpsModeServer implements ServerListener {
         float[] details = (float[]) packetData.getOnPlayerRespawnData()[1];
         Player player = players.get(playerId);
 
-        if (player != null)
+        if (player == null)
         {
-            Vector3f respawnPosition = new Vector3f(details[0], details[1], details[2]);
-            player.setPosition(respawnPosition);
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerRespawn packet");
         }
+
+        Vector3f respawnPosition = new Vector3f(details[0], details[1], details[2]);
+        player.setPosition(respawnPosition);
     }
 
     @Override
@@ -127,10 +140,12 @@ public class fpsModeServer implements ServerListener {
         Vector3f direction = (Vector3f) packetData.getOnPlayerShootData()[1];
         Player player = players.get(playerId);
 
-        if (player != null)
+        if (player == null)
         {
-            player.shoot(direction);
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerShoot packet");
         }
+
+        player.shoot(direction);
     }
 
     @Override

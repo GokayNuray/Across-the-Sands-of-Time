@@ -28,7 +28,6 @@ public class Player {
     private FPSWeapon currentWeapon;
     private boolean isCrouching;
     private boolean isGrounded;
-    ArrayList<Bullet> bullets = new ArrayList<>();
 
     public Player(String name, int health, FPSWeapon weapon1, FPSWeapon weapon2, Vector3f startPosition) {
         this.name = name;
@@ -102,7 +101,7 @@ public class Player {
         {
             currentWeapon.fire();
             Bullet newBullet = new Bullet(this.position, direction, currentWeapon.getDamage());
-            bullets.add(newBullet);
+            newBullet.getBullets().add(newBullet);
         }
         else if (currentWeapon.isReloading())
         {
@@ -115,27 +114,6 @@ public class Player {
         {
             currentWeapon.reload();
         }
-    }
-
-    public void updateBullets(float time, ArrayList<Player> targets) {
-        for (Bullet bullet : bullets) {
-            bullet.update(time);
-
-            for (Player target : targets)
-            {
-                if (isBulletHittingTarget(bullet, target))
-                {
-                    bullets.remove(bullet);
-                    target.takeDamage(bullet.getDamage());
-                    break;
-                }
-            }
-        }
-    }
-
-    private boolean isBulletHittingTarget(Bullet bullet, Player target) {
-        float hitRadius = 1.0f; // Subject to change.
-        return bullet.getPosition().distance(target.position) <= hitRadius;
     }
 
     public void reload() {
@@ -281,5 +259,12 @@ public class Player {
 
     public Vector3f getVelocity() {
         return velocity;
+    }
+
+    public void setPosition(Vector3f newPosition) {
+        position.set(newPosition);
+        if (entity != null) {
+            entity.move(position.x, position.y, position.z);
+        }
     }
 }

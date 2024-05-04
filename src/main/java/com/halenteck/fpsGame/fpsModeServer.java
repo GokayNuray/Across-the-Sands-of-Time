@@ -4,11 +4,13 @@ import com.halenteck.server.PacketData;
 import com.halenteck.server.ServerListener;
 import org.joml.Vector3f;
 
+import java.nio.channels.ClosedByInterruptException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class fpsModeServer implements ServerListener {
-    private Map<Byte, Player> players = new ConcurrentHashMap<>();
+    private HashMap<Byte, Player> players = new HashMap<Byte, Player>();
 
     @Override
     public void onLobbyJoin(PacketData packetData) {

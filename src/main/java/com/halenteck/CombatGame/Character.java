@@ -23,7 +23,7 @@ public abstract class Character {
     protected Ability ability;
     protected int health;
     protected int attackPower;
-    protected boolean[] items = new boolean[4];
+    public boolean[] items = new boolean[4];
     protected Weapons[] weapons = new Weapons[2];//index 0'da short range, index 1'de long range var
     protected Location[] maps;
     protected int shortRangeDamage;

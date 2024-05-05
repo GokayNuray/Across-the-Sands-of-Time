@@ -1,12 +1,15 @@
 package com.halenteck.combatUI;
 
 import com.halenteck.CombatGame.Character;
+import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.server.Server;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopFrame extends JFrame {
@@ -27,6 +30,17 @@ public class ShopFrame extends JFrame {
         setTitle("Tool Store");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        // shortcut for returning to game selection menu
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    new GameSelectionMenu();
+                    dispose();
+                }
+            }
+        });
 
         // character-based display panels
         JPanel[] characterDisplayPanels = new JPanel[5];

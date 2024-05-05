@@ -14,7 +14,7 @@ public class GameSelectionMenu extends JFrame {
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 500;
 
-    GameSelectionMenu(String userName) {
+    public GameSelectionMenu() {
 
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("Game Selection Menu");
@@ -107,7 +107,7 @@ public class GameSelectionMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open Stats Frame
-                new UserCard(userName);
+                new UserCard();
                 dispose();
             }
         });

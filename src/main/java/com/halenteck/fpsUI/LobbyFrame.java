@@ -97,7 +97,7 @@ public class LobbyFrame extends JFrame {
 
         menuPanel.add(serverListPanel, BorderLayout.CENTER);
 
-        // scroller (optional)
+        // scroller
         JScrollPane scroller = new JScrollPane(serverListPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);  // Add scroller after positioning
 

@@ -120,14 +120,14 @@ public class LogInFrame extends JFrame {
 
                     if (e.getSource() == loginButton) {
                         if (Server.login(username, password)) {
-                            new GameSelectionMenu(username);
+                            new GameSelectionMenu();
                             dispose();
                         } else {
                             JOptionPane.showMessageDialog(LogInFrame.this, "Wrong username or password!");
                         }
                     } else if (e.getSource() == registerButton) {
                         if (Server.register(username, password)) {
-                            new GameSelectionMenu(username);
+                            new GameSelectionMenu();
                             dispose();
                         } else {
                             JOptionPane.showMessageDialog(LogInFrame.this, "Username already exists!");

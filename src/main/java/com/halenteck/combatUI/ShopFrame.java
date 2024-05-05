@@ -1,5 +1,6 @@
 package com.halenteck.combatUI;
 
+import com.halenteck.CombatGame.Character;
 import com.halenteck.server.Server;
 
 import javax.swing.*;
@@ -13,6 +14,13 @@ public class ShopFrame extends JFrame {
     private static final int FRAME_HEIGHT = 500;
     private static JPanel characterDisplayPanel = new JPanel();
     private static JPanel itemPanel = new JPanel();
+
+    public static void main(String[] args) {
+        Server.connect();
+        Server.login("Gokaynu", "Gokaynu1!");
+        new ShopFrame();
+    }
+
     public ShopFrame() {
 
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -64,7 +72,7 @@ public class ShopFrame extends JFrame {
             armourButton.setBackground(Color.WHITE);
             abilityButton.setBackground(Color.WHITE);
             menuSelection.set(0);
-            updatePanels(characterSelection.get(), menuSelection.get(),itemPanels ,characterDisplayPanels);
+            updatePanels(characterSelection.get(), menuSelection.get(), itemPanels, characterDisplayPanels);
         });
         shopButtonPanel.add(weaponButton);
 
@@ -73,7 +81,7 @@ public class ShopFrame extends JFrame {
             weaponButton.setBackground(Color.WHITE);
             abilityButton.setBackground(Color.WHITE);
             menuSelection.set(1);
-            updatePanels(characterSelection.get(), menuSelection.get(),itemPanels ,characterDisplayPanels);
+            updatePanels(characterSelection.get(), menuSelection.get(), itemPanels, characterDisplayPanels);
         });
         shopButtonPanel.add(armourButton);
 
@@ -82,7 +90,7 @@ public class ShopFrame extends JFrame {
             armourButton.setBackground(Color.WHITE);
             weaponButton.setBackground(Color.WHITE);
             menuSelection.set(2);
-            updatePanels(characterSelection.get(), menuSelection.get(),itemPanels ,characterDisplayPanels);
+            updatePanels(characterSelection.get(), menuSelection.get(), itemPanels, characterDisplayPanels);
         });
         shopButtonPanel.add(abilityButton);
         mainShopPanel.add(shopButtonPanel, BorderLayout.WEST);
@@ -127,17 +135,19 @@ public class ShopFrame extends JFrame {
     }
 
     private void updatePanels(int characterId, int shopId, JPanel[][] itemPanels, JPanel[] characterDisplayPanels) {
+        System.out.println("Character ID: " + characterId + ", Shop ID: " + shopId);
 
         // Update character shop panel based on slider value
         itemPanel.removeAll();
         itemPanel.revalidate();
-        itemPanel.add(itemPanels[characterId][shopId]);
+        JPanel[] panels = createItemPanel(characterId);
+        itemPanel.add(panels[shopId]);
         itemPanel.revalidate();  // Inform the panel layout needs to be updated
 
         // Update character display panel based on slider value
         characterDisplayPanel.removeAll();
         characterDisplayPanel.revalidate();
-        characterDisplayPanel.add(characterDisplayPanels[shopId]);
+        characterDisplayPanel.add(createCharacterDisplayPanel(characterId));
         characterDisplayPanel.revalidate();  // Inform the frame layout needs to be updated
         revalidate();
     }
@@ -312,6 +322,9 @@ public class ShopFrame extends JFrame {
     }
 
     private JPanel createCharacterDisplayPanel(int characterIndex) {
+        Character character = Character.characters.get((byte) characterIndex);
+        String characterName = character.name;
+        String characterResourcePath = character.resourcePath;
 
         JPanel characterDisplayPanel = new JPanel(new BorderLayout());
         // level panel
@@ -328,13 +341,14 @@ public class ShopFrame extends JFrame {
         // character image & name panel
         JPanel characterImagePanel = new JPanel(new BorderLayout());
         // character image
-        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/phoebe.jpg"));
+        System.out.println("Character Resource Path: " + characterResourcePath);
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource(characterResourcePath + "skin.jpg"));
         Image scaledImage = imageIcon.getImage().getScaledInstance(100, 230, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);
         characterImagePanel.add(imageLabel, BorderLayout.CENTER);
-        JLabel characterName = new JLabel("Phoebe", SwingConstants.CENTER);
-        characterImagePanel.add(characterName, BorderLayout.SOUTH);
+        JLabel characterNameLabel = new JLabel(characterName, SwingConstants.CENTER);
+        characterImagePanel.add(characterNameLabel, BorderLayout.SOUTH);
         characterPanel.add(characterImagePanel, BorderLayout.CENTER);
         // character progress panel
         JPanel characterProgressPanel = new JPanel(new BorderLayout());

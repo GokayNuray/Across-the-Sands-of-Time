@@ -8,7 +8,7 @@ import java.util.Map;
 
 public abstract class Character {
 
-    static Map<Byte, Character> characters = Map.of(
+    public static Map<Byte, Character> characters = Map.of(
             (byte) 0, new CaveMan(),
             (byte) 1, new Panzehir(),
             (byte) 2, new Nazi(),
@@ -16,9 +16,9 @@ public abstract class Character {
             (byte) 4, new Boss()
     );
 
-    byte characterID;
-    String name;
-    String resourcePath;
+    public byte characterID;
+    public String name;
+    public String resourcePath;
 
     protected Ability ability;
     protected int health;

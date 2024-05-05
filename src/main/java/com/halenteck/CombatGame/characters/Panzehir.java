@@ -10,7 +10,7 @@ import com.halenteck.CombatGame.locations.Tunnel;
 public class Panzehir extends Character {
 
     public Panzehir() {
-        super((byte) 1, "Panzehir", "/characters/panzehir.png", 65, 2,
+        super((byte) 1, "Panzehir", "/characters/panzehir/", 65, 2,
                 new Location[]{new Tent(), new Tunnel(), new Lab(), new HistoryMuseum()});
     }
 }

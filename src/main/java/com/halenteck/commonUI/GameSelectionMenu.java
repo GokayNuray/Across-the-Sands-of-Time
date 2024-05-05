@@ -2,6 +2,7 @@ package com.halenteck.commonUI;
 
 import com.halenteck.combatUI.ShopFrame;
 import com.halenteck.fpsUI.LobbyFrame;
+import com.halenteck.server.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +24,7 @@ public class GameSelectionMenu extends JFrame {
         // Welcome Panel
         JPanel welcomePanel = new JPanel();
         welcomePanel.setLayout(new GridLayout(2, 0));
-        JLabel welcomeLabel = new JLabel("       Hello, welcome " + userName + "!", SwingConstants.LEFT);
+        JLabel welcomeLabel = new JLabel("       Hello, welcome " + Server.getUserData().getPlayerName() + "!", SwingConstants.LEFT);
         welcomeLabel.setFont(new Font("Sans Serif", Font.BOLD, 24));
         welcomePanel.add(welcomeLabel);
         JLabel welcomeInfo = new JLabel("               Select a mode to join the fun", SwingConstants.LEFT);
@@ -39,7 +40,7 @@ public class GameSelectionMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open Combat Mode
-                new ShopFrame(userName);
+                new ShopFrame();
                 dispose();
             }
         });

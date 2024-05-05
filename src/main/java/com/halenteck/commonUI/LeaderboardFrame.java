@@ -26,6 +26,7 @@ public class LeaderboardFrame extends JFrame {
         JLabel pointsLabel = new JLabel("Points", SwingConstants.CENTER);
         pointsLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         infoPanel.add(pointsLabel);
+        add(infoPanel, BorderLayout.CENTER);
 
         JPanel leaderboardPanel = new JPanel(new GridLayout(10, 4));
         // data to be retrieved

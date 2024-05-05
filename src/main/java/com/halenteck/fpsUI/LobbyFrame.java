@@ -5,6 +5,8 @@ import com.halenteck.server.Server;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LobbyFrame extends JFrame {
 
@@ -20,6 +22,16 @@ public class LobbyFrame extends JFrame {
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("Lobby Selection");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                Server.leaveLobby(); // Call close connection method
+                System.exit(0); // Explicitly exit the application
+            }
+        });
+
+
         setLayout(new BorderLayout());
 
         // menu panel
@@ -45,7 +57,7 @@ public class LobbyFrame extends JFrame {
         titlePanel.add(serverTimeLeftLabel);
         JButton createLobby = new JButton("Create Server");
         createLobby.addActionListener(e -> {
-            String name = JOptionPane.showInputDialog("Enter server name:");
+            String name = JOptionPane.showInputDialog(this, "Enter server name:");
             Server.createLobby(Server.getUserData().getPlayerName(), name);
         });
         titlePanel.add(createLobby);

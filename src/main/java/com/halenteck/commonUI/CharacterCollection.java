@@ -3,6 +3,9 @@
 //import javax.swing.*;
 //import java.awt.*;
 //
+//import com.halenteck.server.UserCharacterData;
+//import com.halenteck.server.UserData;
+//
 //public class CharacterCollection extends JFrame{
 //
 //    private static final int FRAME_WIDTH = 800;
@@ -21,9 +24,9 @@
 //
 //        for (int i = 0; i < 5; i++) {
 //            collectionPanel.add(createCharacterPanel(i));
-//            if (!Player.getCharacters()[i].isUnlocked()) { // character is not unlocked
-//                // show blurry image and lock icon
-//            }
+////            if (!UserData.getUnlockedCharacterCount() < UserCharacterData.getCharacterId()) { // character is not unlocked
+////                // show blurry image and lock icon
+////            }
 //        }
 //
 //        JButton returnButton = new JButton("Return to Stats Page");

@@ -54,7 +54,23 @@ public class Player {
     }
 
     public void update(float time) {
-        // Apply gravity if the player is not grounded
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                velocity.mul(0.8f,0.8f,0.8f);
+                if (!isGrounded) {
+                    velocity.add(0,-0.4f, 0);
+                }
+                if (velocity.x < 0.005) velocity.x = 0;
+                if (velocity.y < 0.005) velocity.y = 0;
+                if (velocity.z < 0.005) velocity.z = 0;
+
+            }
+        }).run();
         if (!isGrounded) {
             velocity.add(new Vector3f(0, GRAVITY * time, 0));
             position.add(velocity);
@@ -159,6 +175,8 @@ public class Player {
     public void die() {
         // TODO: Implement death logic.
         System.out.println("die() method will be implemented soon.");
+        this.incrementDeaths();
+        health = -1;
     }
 
     public void crouch() {

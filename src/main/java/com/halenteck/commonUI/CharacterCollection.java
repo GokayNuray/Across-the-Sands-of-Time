@@ -14,7 +14,7 @@ public class CharacterCollection extends JFrame{
 
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 500;
-    private UserCharacterData[] characters = UserData.getCharacters();
+    private UserCharacterData[] characters = Server.getUserData().getCharacters();
 
     public CharacterCollection() {
 

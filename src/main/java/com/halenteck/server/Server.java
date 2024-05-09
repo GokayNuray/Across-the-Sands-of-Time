@@ -86,9 +86,9 @@ public final class Server {
                     byte command = in.readByte();
                     switch (command) {
                         case PLAYER_JOIN: {
-                            String name = in.readUTF();
                             byte id = in.readByte();
                             boolean isRedTeam = in.readBoolean();
+                            String name = in.readUTF();
                             float x = in.readFloat();
                             float y = in.readFloat();
                             float z = in.readFloat();
@@ -96,10 +96,11 @@ public final class Server {
                             float pitch = in.readFloat();
                             boolean crouching = in.readBoolean();
                             int weapon = in.readInt();
+                            int attackPower = in.readInt();
                             byte kill = in.readByte();
                             byte death = in.readByte();
 
-                            PacketData data = new PacketData(id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, kill, death);
+                            PacketData data = new PacketData(id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, attackPower, weapon, kill, death);
                             listener.onPlayerJoin(data);
                             break;
                         }
@@ -132,8 +133,9 @@ public final class Server {
                         case PLAYER_WEAPON_CHANGE: {
                             byte id = in.readByte();
                             int weapon = in.readInt();
+                            int attackPower = in.readInt();
 
-                            PacketData data = new PacketData(id, weapon);
+                            PacketData data = new PacketData(id, weapon, attackPower);
                             listener.onPlayerWeaponChange(data);
                             break;
                         }
@@ -263,12 +265,14 @@ public final class Server {
             out.writeByte(GET_LEADERBOARD);
             int playerCount = in.readByte();
             String[] playerNames = new String[playerCount];
+            byte[] playerLevels = new byte[playerCount];
             int[] playerScores = new int[playerCount];
             for (int i = 0; i < playerCount; i++) {
                 playerNames[i] = in.readUTF();
+                playerLevels[i] = in.readByte();
                 playerScores[i] = in.readInt();
             }
-            return new Object[]{playerNames, playerScores};
+            return new Object[]{playerNames, playerLevels, playerScores};
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -304,9 +308,9 @@ public final class Server {
             System.out.println("Joined lobby: " + lobbyName + " Players: " + playerCount);
             Object[][] playerData = new Object[playerCount][];
             for (int i = 0; i < playerCount; i++) {
-                String name = in.readUTF();
                 byte id = in.readByte();
                 boolean isRedTeam = in.readBoolean();
+                String name = in.readUTF();
                 float x = in.readFloat();
                 float y = in.readFloat();
                 float z = in.readFloat();
@@ -314,10 +318,11 @@ public final class Server {
                 float pitch = in.readFloat();
                 boolean crouching = in.readBoolean();
                 int weapon = in.readInt();
+                int attackPower = in.readInt();
                 byte kill = in.readByte();
                 byte death = in.readByte();
 
-                playerData[i] = new Object[]{id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, kill, death};
+                playerData[i] = new Object[]{id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, attackPower, kill, death};
                 System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
             }
             long creationTime = in.readLong();

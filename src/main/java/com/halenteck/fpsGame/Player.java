@@ -2,46 +2,49 @@ package com.halenteck.fpsGame;
 
 import com.halenteck.render.Entity;
 import com.halenteck.render.Models;
+import com.halenteck.render.World;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
 
 public class Player {
     private final float SPEED = 0.05f;
     private final float GRAVITY = -10;
     private final float JUMP_FORCE = 20f;
-    private final float CROUCH_MULTIPLIER = 0.5f; // Units are subject to change.
+    private final float CROUCH_MULTIPLIER = 0.5f;
 
-    private Entity entity;
     private String name;
     private Team team;
     private int health;
     private int armor;
     private int kills;
     private int deaths;
-    private FPSWeapon weapon1;
-    private FPSWeapon weapon2;
+    private FPSWeapon weapon;
+    private int attackPower = weapon.getDamage();
     private Vector3f position;
     private Vector3f velocity;
-    private Vector3f directionVector = new Vector3f(0, 0, -1);
+    private Vector3f directionVector;
+    private float yaw = -180;
+    private float pitch = 0;
     private float speed;
-    private FPSWeapon currentWeapon;
     private boolean isCrouching;
     private boolean isGrounded;
 
-    public Player(String name, int health, FPSWeapon weapon1, FPSWeapon weapon2, Vector3f startPosition) {
+    private boolean moveForward;
+    private boolean moveBackward;
+    private boolean moveLeft;
+    private boolean moveRight;
+
+    public Player(String name, int health, FPSWeapon weapon, Vector3f startPosition) {
         this.name = name;
         this.health = health;
-        this.weapon1 = weapon1;
-        this.weapon2 = weapon2;
+        this.weapon = weapon;
         this.position = startPosition;
         this.velocity = new Vector3f(0, 0, 0);
         kills = 0;
         deaths = 0;
         isCrouching = false;
         isGrounded = true;
-
-        currentWeapon = weapon1;
         speed = SPEED;
     }
 
@@ -56,6 +59,19 @@ public class Player {
     public void update(float time) {
         new Thread(() -> {
             while (true) {
+                if (moveForward) {
+                    moveForward();
+                }
+                if (moveBackward) {
+                    moveBackward();
+                }
+                if (moveLeft) {
+                    moveLeft();
+                }
+                if (moveRight) {
+                    moveRight();
+                }
+
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {
@@ -68,19 +84,8 @@ public class Player {
                 if (velocity.x < 0.005) velocity.x = 0;
                 if (velocity.y < 0.005) velocity.y = 0;
                 if (velocity.z < 0.005) velocity.z = 0;
-
             }
         }).run();
-        if (!isGrounded) {
-            velocity.add(new Vector3f(0, GRAVITY * time, 0));
-            position.add(velocity);
-        }
-
-        if (position.y <= 0) {
-            position.y = 0;
-            isGrounded = true;
-            velocity.y = 0;
-        }
     }
 
     public void jump() {
@@ -90,51 +95,90 @@ public class Player {
         }
     }
 
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                moveForward = true;
+                break;
+            case KeyEvent.VK_S:
+                moveBackward = true;
+                break;
+            case KeyEvent.VK_A:
+                moveLeft = true;
+                break;
+            case KeyEvent.VK_D:
+                moveRight = true;
+                break;
+        }
+    }
+
+    public void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                moveForward = false;
+                break;
+            case KeyEvent.VK_S:
+                moveBackward = false;
+                break;
+            case KeyEvent.VK_A:
+                moveLeft = false;
+                break;
+            case KeyEvent.VK_D:
+                moveRight = false;
+                break;
+        }
+    }
+
     public void moveForward() {
-        position.sub(new Vector3f(directionVector).mul(speed));
-        entity.move(position.x, position.y, position.z);
+        velocity.x = speed;
     }
 
     public void moveBackward() {
-        position.add(new Vector3f(directionVector).mul(speed));
-        entity.move(position.x, position.y, position.z);
+        velocity.x = -speed;
     }
 
     public void moveRight() {
-        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.sub(right.mul(speed));
-        entity.move(position.x, position.y, position.z);
+        velocity.z = speed;
     }
 
     public void moveLeft() {
-        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        position.add(right.mul(speed));
-        entity.move(position.x, position.y, position.z);
+        velocity.z = -speed;
+    }
+
+    public void rotate(float dYaw, float dPitch) {
+        yaw += dYaw;
+        pitch += dPitch;
+        if (pitch > 85) pitch = 85;
+        if (pitch < -90) pitch = -90;
+        float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        float directionY = (float) Math.sin(Math.toRadians(pitch));
+        float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        directionVector = new Vector3f(directionX, directionY, directionZ);
     }
 
     public void shoot(Vector3f direction) {
-        if (currentWeapon.canFire())
+        if (weapon.canFire())
         {
-            currentWeapon.fire();
-            Bullet newBullet = new Bullet(this.position, direction, currentWeapon.getDamage());
+            weapon.fire();
+            Bullet newBullet = new Bullet(this.position, direction, weapon.getDamage());
             newBullet.getBullets().add(newBullet);
         }
-        else if (currentWeapon.isReloading())
+        else if (weapon.isReloading())
         {
-            if (currentWeapon.isReloading())
+            if (weapon.isReloading())
             {
                 return;
             }
         }
         else
         {
-            currentWeapon.reload();
+            weapon.reload();
         }
     }
 
     public void reload() {
-        if (currentWeapon.getAmmoInMagazine() < currentWeapon.magazineSize) {
-            currentWeapon.reload();
+        if (weapon.getAmmoInMagazine() < weapon.magazineSize) {
+            weapon.reload();
         }
         else
         {
@@ -143,14 +187,7 @@ public class Player {
     }
 
     public void switchWeapon() {
-        if (currentWeapon == weapon1)
-        {
-            currentWeapon = weapon2;
-        }
-        if (currentWeapon == weapon2)
-        {
-            currentWeapon = weapon1;
-        }
+        //TODO: Switch function.
     }
 
     public void takeDamage(int damage) {
@@ -195,14 +232,6 @@ public class Player {
         }
     }
 
-    public void setEntity() {
-        entity = new Entity(Models.TEST2,0,0,0,0,0,1);
-    }
-
-    public Entity getEntity() {
-        return entity;
-    }
-
     public void setTeam(Team team) {
         this.team = team;
     }
@@ -223,20 +252,12 @@ public class Player {
         this.health = health;
     }
 
-    public FPSWeapon getWeapon1() {
-        return weapon1;
+    public FPSWeapon getWeapon() {
+        return weapon;
     }
 
-    public FPSWeapon getWeapon2() {
-        return weapon2;
-    }
-
-    public void setWeapon1(FPSWeapon weapon1) {
-        this.weapon1 = weapon1;
-    }
-
-    public void setWeapon2(FPSWeapon weapon2) {
-        this.weapon2 = weapon2;
+    public void setWeapon(FPSWeapon weapon) {
+        this.weapon = weapon;
     }
 
     public float getX() {
@@ -279,10 +300,11 @@ public class Player {
         return velocity;
     }
 
+    public Vector3f getDirectionVector() {
+        return directionVector;
+    }
+
     public void setPosition(Vector3f newPosition) {
-        position.set(newPosition);
-        if (entity != null) {
-            entity.move(position.x, position.y, position.z);
-        }
+        position = newPosition;
     }
 }

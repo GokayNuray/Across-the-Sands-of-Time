@@ -72,7 +72,12 @@ public class Game implements ServerListener {
 
     @Override
     public void onLobbyJoin(PacketData packetData) {
-        //TODO: Lobby joining implementation.
+        Object[] data = packetData.getOnLobbyJoinDataData();
+        String lobbyName = (String) data[0];
+        Player[] players = (Player[]) data[1];
+        boolean isRedTeam = (Boolean) data[2];
+        int[] currentScore = (int[]) data[3];
+        long gameStartTime = (Long) data[4];
     }
 
     @Override
@@ -86,11 +91,11 @@ public class Game implements ServerListener {
         Vector3f startPosition = new Vector3f(posAndRot[0], posAndRot[1], posAndRot[2]);
         boolean crouching = (Boolean) data[4];
         int weaponId = (Integer) data[5];
-        byte kill = (Byte) data[6];
-        byte death = (Byte) data[7];
+        int attckPower = (Integer) data[6];
+        byte kill = (Byte) data[7];
+        byte death = (Byte) data[8];
 
-
-        Player newPlayer = new Player(name, 100, null, null, startPosition);
+        Player newPlayer = new Player(name, 100, null, startPosition);
         players.put(playerId, newPlayer);
     }
 
@@ -110,7 +115,10 @@ public class Game implements ServerListener {
 
     @Override
     public void onPlayerRotate(PacketData packetData) {
-
+        Byte playerId = (Byte) packetData.getOnPlayerRotateData()[0];
+        Player player = players.get(playerId);
+        float[] rotateData = (float[]) packetData.getOnPlayerRotateData()[1];
+        player.rotate(rotateData[0], rotateData[1]);
     }
 
     @Override
@@ -222,6 +230,6 @@ public class Game implements ServerListener {
 
     @Override
     public void onGameOver(PacketData packetData) {
-
+        //TODO: Game over implementation.
     }
 }

@@ -10,7 +10,7 @@ public abstract class Character {
 
     public static Map<Byte, Character> characters = Map.of(
             (byte) 0, new CaveMan(),
-            (byte) 1, new Panzehir(),
+            (byte) 1, new Antidote(),
             (byte) 2, new Nazi(),
             (byte) 3, new GlobalWarming(),
             (byte) 4, new Boss()
@@ -21,7 +21,7 @@ public abstract class Character {
     public String resourcePath;
 
     protected Ability ability;
-    protected int health;
+    public int health;
     protected int attackPower;
     public boolean[] items = new boolean[4];
     protected Weapons[] weapons = new Weapons[2];//index 0'da short range, index 1'de long range var

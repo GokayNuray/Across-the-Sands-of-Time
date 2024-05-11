@@ -14,7 +14,7 @@ public class Game {
         Character player;
         switch (characterId) {
             case 1 -> player = new CaveMan();
-            case 2 -> player = new Panzehir();
+            case 2 -> player = new Antidote();
             case 3 -> player = new Nazi();
             case 4 -> player = new GlobalWarming();
             case 5 -> player = new Boss();

@@ -3,6 +3,7 @@ package com.halenteck.CombatGame;
 
 public class Ability {
 
+    public String name;
     protected int usageLeft;
     protected int price;
 
@@ -11,19 +12,24 @@ public class Ability {
     }
 
     public void setAbility(byte characterID) {
-        if (characterID == 1) {//uçmak
+        if (characterID == 1) {
+            name = "Flying";
             usageLeft = 3;
             price = 6;
-        } else if (characterID == 2) {//eğilmek
+        } else if (characterID == 2) {
+            name = "Crouching";
             usageLeft = 3;
             price = 9;
-        } else if (characterID == 3) {//görünmezlik
+        } else if (characterID == 3) {
+            name = "Invisibility";
             usageLeft = 2;
             price = 13;
-        } else if (characterID == 4) {//yeri sarsmak
+        } else if (characterID == 4) {
+            name = "Earthquake";
             usageLeft = 2;
             price = 17;
-        } else if (characterID == 5) {//afallatmak
+        } else if (characterID == 5) {
+            name = "Stun";
             usageLeft = 2;
             price = 21;
         }
@@ -32,7 +38,6 @@ public class Ability {
     public boolean use() {
         if (usageLeft == 0) {
             return false;
-            //düğme inaktifleşmeli
         }
         usageLeft--;
         return true;

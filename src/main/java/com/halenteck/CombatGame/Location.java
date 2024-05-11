@@ -8,6 +8,7 @@ import java.util.Random;
 
 public class Location {
 
+    public static boolean isGameOver = false;
     protected int locationId;
     protected String name;
     protected Enemy enemies;
@@ -28,7 +29,6 @@ public class Location {
     protected int enemyX;
     int enemyHealth;
     int enemyAttackPower;
-
     public Location(int locationId, String name, Enemy enemies, String award) {
         this.locationId = locationId;
         this.name = name;
@@ -57,7 +57,7 @@ public class Location {
 
     public boolean goForward() {
 
-        if (enemyX > playerX + 160) { //düşmanın x koordinatını alıp onunla çakışmayacağına emin olmak lazım
+        if (enemyX > playerX + 160) {
             playerX += 80;
             continueTurn();//in this case enemy will move after the character and will be able to move if the player made a valid move
             //the same goes for the enemy
@@ -163,14 +163,13 @@ public class Location {
 
     public void enemyMove() {
 
-        boolean playedTurn = false;//emin olmak için
+        boolean playedTurn = false;
         Random rand = new Random();
 
         while (playedTurn == false) {
 
             int enemyProcess = rand.nextInt(3);
 
-            // we can do it like this, ben bundan yanayım
             if (abilityActive && player.characterID == 3) {
 
                 enemyProcess = rand.nextInt(2);
@@ -186,9 +185,8 @@ public class Location {
                 playedTurn = true;
             }
 
-            if (enemyProcess == 0 && !playedTurn) {//to go forward, eğer çakışma olan bir şey gelirse henüz hareket edemedi varsayıp tekrar rastgele sayı seçiliyor
-
-                if (enemyX - 160 != playerX) { //düşmanın x koordinatını alıp onunla çakışmayacağına emin olmak lazım
+            if (enemyProcess == 0 && !playedTurn) { // to go forward
+                if (enemyX - 160 != playerX) {
                     enemyX -= 80;
                     playedTurn = true;
                 }
@@ -231,11 +229,12 @@ public class Location {
 
     public void continueTurn() {
 
-        if (enemyHealth <= 0 && enemyCount == 0) {
+        if (enemyHealth <= 0 && enemyCount <= 0) {
             player.collectItem(locationId);
             int money = Server.getUserData().getMoney() + enemies.reward;
             Server.getUserData().setMoney(money);
             Server.updateUserData();
+            isGameOver = true;
             return;
         }
 
@@ -248,9 +247,9 @@ public class Location {
         enemyMove();
 
         if (playerHealth <= 0) {
-            //TODO game over idk what to do
+            isGameOver = true;
         }
 
-        abilityActive = false;//maybe add ability duration idk
+        abilityActive = false;
     }
 }

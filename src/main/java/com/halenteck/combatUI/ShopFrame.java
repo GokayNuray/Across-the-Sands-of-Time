@@ -1,6 +1,7 @@
 package com.halenteck.combatUI;
 
 import com.halenteck.CombatGame.Character;
+import com.halenteck.CombatGame.ToolStore;
 import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.server.Server;
 
@@ -15,17 +16,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ShopFrame extends JFrame {
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 500;
-    private static JPanel characterDisplayPanel = new JPanel();
+    static JPanel characterDisplayPanel = new JPanel();
     private static JPanel itemPanel = new JPanel();
-
-    public static void main(String[] args) {
-        Server.connect();
-        Server.login("Gokaynu", "Gokaynu1!");
-        new ShopFrame();
-    }
+    private JLabel currencyLabel = new JLabel("Currency: $" + Server.getUserData().getMoney(), SwingConstants.CENTER);
+    private static ShopFrame instance;
 
     public ShopFrame() {
 
+        instance = this;
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("Tool Store");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,8 +41,8 @@ public class ShopFrame extends JFrame {
         });
 
         // character-based display panels
-        JPanel[] characterDisplayPanels = new JPanel[5];
-        for (int i = 0; i < 5; i++) {
+        JPanel[] characterDisplayPanels = new JPanel[Server.getUserData().getUnlockedCharacterCount()];
+        for (int i = 0; i < characterDisplayPanels.length; i++) {
             characterDisplayPanels[i] = createCharacterDisplayPanel(i);
         }
 
@@ -58,8 +56,8 @@ public class ShopFrame extends JFrame {
         AtomicInteger characterSelection = new AtomicInteger(0);
 
         // character item display panels (creates panels for each character)
-        JPanel[][] itemPanels = new JPanel[5][3];
-        for (int i = 0; i < itemPanels.length; i++) {
+        JPanel[][] itemPanels = new JPanel[characterDisplayPanels.length][3];
+        for (int i = 0; i < characterDisplayPanels.length; i++) {
             itemPanels[i] = createItemPanel(i);
         }
 
@@ -70,7 +68,11 @@ public class ShopFrame extends JFrame {
         add(characterDisplayPanel, BorderLayout.WEST);
 
         // constant button panel
-        JPanel shopButtonPanel = new JPanel(new GridLayout(3, 1));
+        JPanel shopButtonPanel = new JPanel(new GridLayout(4, 1));
+        currencyLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        currencyLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        currencyLabel.setBackground(Color.YELLOW);
+        shopButtonPanel.add(currencyLabel);
         JButton weaponButton = new JButton("Weapon");
         weaponButton.setFont(new Font("Sans Serif", Font.BOLD, 16)); // Adjust font size as needed
         weaponButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Adjust border style
@@ -86,7 +88,7 @@ public class ShopFrame extends JFrame {
             armourButton.setBackground(Color.WHITE);
             abilityButton.setBackground(Color.WHITE);
             menuSelection.set(0);
-            updatePanels(characterSelection.get(), menuSelection.get(), itemPanels, characterDisplayPanels);
+            updatePanels(characterSelection.get(), menuSelection.get());
         });
         shopButtonPanel.add(weaponButton);
 
@@ -95,7 +97,7 @@ public class ShopFrame extends JFrame {
             weaponButton.setBackground(Color.WHITE);
             abilityButton.setBackground(Color.WHITE);
             menuSelection.set(1);
-            updatePanels(characterSelection.get(), menuSelection.get(), itemPanels, characterDisplayPanels);
+            updatePanels(characterSelection.get(), menuSelection.get());
         });
         shopButtonPanel.add(armourButton);
 
@@ -104,14 +106,14 @@ public class ShopFrame extends JFrame {
             armourButton.setBackground(Color.WHITE);
             weaponButton.setBackground(Color.WHITE);
             menuSelection.set(2);
-            updatePanels(characterSelection.get(), menuSelection.get(), itemPanels, characterDisplayPanels);
+            updatePanels(characterSelection.get(), menuSelection.get());
         });
         shopButtonPanel.add(abilityButton);
         mainShopPanel.add(shopButtonPanel, BorderLayout.WEST);
 
 
         // horizontal slider for switching between character-based panels
-        JSlider characterSlider = new JSlider(JSlider.HORIZONTAL, 0, itemPanels.length - 1, 0);
+        JSlider characterSlider = new JSlider(JSlider.HORIZONTAL, 0, characterDisplayPanels.length - 1, 0);
         mainShopPanel.add(characterSlider, BorderLayout.SOUTH);
         characterSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -120,7 +122,7 @@ public class ShopFrame extends JFrame {
                 int newValue = characterSlider.getValue();
                 int adjustedValue = Math.min(newValue, itemPanels.length - 1); // ensuring value is within bounds
                 characterSelection.set(adjustedValue);
-                updatePanels(characterSelection.get(), menuSelection.get(), itemPanels, characterDisplayPanels);
+                updatePanels(characterSelection.get(), menuSelection.get());
             }
         });
         characterSlider.setMinorTickSpacing(1);
@@ -132,13 +134,21 @@ public class ShopFrame extends JFrame {
             bottomButtonPanel.add(new JLabel());
         }
         JButton upgradeButton = new JButton("Upgrade");
-        upgradeButton.setFont(new Font("Sans Serif", Font.BOLD, 14)); // Adjust font size as needed
+        upgradeButton.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        upgradeButton.addActionListener(e -> {
+            new UpgradeShopFrame();
+            dispose();
+        });
         bottomButtonPanel.add(upgradeButton);
         bottomButtonPanel.add(new JLabel());
         bottomButtonPanel.add(new JLabel());
         bottomButtonPanel.add(new JLabel());
         JButton joinBattleButton = new JButton("Join Battle");
-        joinBattleButton.setFont(new Font("Sans Serif", Font.BOLD, 14)); // Adjust font size as needed
+        joinBattleButton.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        joinBattleButton.addActionListener(e -> {
+            new InGameFrame();
+            dispose();
+        });
         bottomButtonPanel.add(joinBattleButton);
 
         shopPanel.add(mainShopPanel, BorderLayout.CENTER);
@@ -148,9 +158,11 @@ public class ShopFrame extends JFrame {
         setVisible(true);
     }
 
-    private void updatePanels(int characterId, int shopId, JPanel[][] itemPanels, JPanel[] characterDisplayPanels) {
+    private void updatePanels(int characterId, int shopId) {
         System.out.println("Character ID: " + characterId + ", Shop ID: " + shopId);
 
+        // update currency label
+        currencyLabel.setText("Currency: $" + Server.getUserData().getMoney());
         // Update character shop panel based on slider value
         itemPanel.removeAll();
         itemPanel.revalidate();
@@ -166,9 +178,7 @@ public class ShopFrame extends JFrame {
         revalidate();
     }
 
-    private JPanel[] createItemPanel(int characterIndex) {
-        // Implement your logic to create a shop panel specific to the character
-        // This panel could display items, stats, or upgrade options relevant to the character.
+    protected static JPanel[] createItemPanel(int characterIndex) {
         JPanel[] panels = new JPanel[3];
 
         JPanel weaponPanel = new JPanel(new BorderLayout());
@@ -177,26 +187,35 @@ public class ShopFrame extends JFrame {
         weaponPricePanel.add(new JLabel("" + characterIndex));
         JLabel weaponPriceLabel1 = new JLabel("$ 100", SwingConstants.LEFT);
         weaponPricePanel.add(weaponPriceLabel1);
-        JButton buyGunButton1 = new JButton("BUY");
-        buyGunButton1.addActionListener(e -> {
-            // buy gun method
-        });
+        JButton buyGunButton1 = new JButton("BOUGHT");
+        buyGunButton1.setEnabled(false);
         weaponPricePanel.add(buyGunButton1);
         weaponPricePanel.add(new JLabel());
         JLabel gunPriceLabel2 = new JLabel("$ 200", SwingConstants.LEFT);
         weaponPricePanel.add(gunPriceLabel2);
-        JButton weaponGunButton2 = new JButton("BUY");
-        weaponGunButton2.addActionListener(e -> {
-            // buy gun method
+        JButton buyGunButton2 = new JButton("BUY");
+        buyGunButton2.addActionListener(e -> {
+            if (ToolStore.buyWeapon((byte) characterIndex)) {
+                instance.updatePanels(characterIndex, 0);
+            }
+            if (Server.getUserData().getCharacters()[characterIndex].getUnlockedWeapons().length > 1) {
+                buyGunButton2.setText("BOUGHT");
+                buyGunButton2.setEnabled(false);
+            }
         });
-        weaponPricePanel.add(weaponGunButton2);
+        if (Server.getUserData().getCharacters()[characterIndex].getUnlockedWeapons().length > 1) {
+            buyGunButton2.setText("BOUGHT");
+            buyGunButton2.setEnabled(false);
+        }
+        weaponPricePanel.add(buyGunButton2);
+        weaponPricePanel.add(buyGunButton2);
         weaponPricePanel.add(new JLabel());
         weaponPanel.add(weaponPricePanel, BorderLayout.NORTH);
         // weapon display panel
         JPanel weaponDisplayPanel = new JPanel(new GridLayout(2, 2));
         // weapon image
         for (int i = 0; i < 2; i++) {
-            ImageIcon weaponImageIcon = new ImageIcon(getClass().getResource("/weapon" + (i + 1) + ".png"));
+            ImageIcon weaponImageIcon = new ImageIcon(ShopFrame.class.getResource("/weapon" + (i + 1) + ".png"));
             Image scaledWeaponImage = weaponImageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
             ImageIcon scaledWeaponImageIcon = new ImageIcon(scaledWeaponImage); // Create a new ImageIcon from the scaled image
             JLabel weaponImageLabel = new JLabel(scaledWeaponImageIcon);
@@ -207,10 +226,10 @@ public class ShopFrame extends JFrame {
             JLabel weaponNameLabel = new JLabel();
             switch (i) {
                 case 0:
-                    weaponNameLabel.setText("axe");
+                    weaponNameLabel.setText("short-range weapon");
                     break;
                 case 1:
-                    weaponNameLabel.setText("super gun");
+                    weaponNameLabel.setText("long-range gun");
                     break;
             }
             weaponDisplayPanel.add(weaponNameLabel);
@@ -219,13 +238,12 @@ public class ShopFrame extends JFrame {
         // weapon equip panel
         JPanel weaponEquipPanel = new JPanel(new GridLayout(1, 3));
         for (int i = 0; i < 3; i++) {
-//            if (Server.getUserData().getUnlockedWeaponCount - 1 == i) { // armour is the strongest one available
-//            JLabel equippedArmourLabel = new JLabel("equipped", SwingConstants.CENTER);
-//            armourEquipPanel.add(equippedArmourLabel);
-//        }
-//        else {
-//            armourEquipPanel.add(new JLabel());
-//        }
+            if (Server.getUserData().getLastSelectedCharacter() == characterIndex) {
+                JLabel equippedWeaponLabel = new JLabel("Equipped!", SwingConstants.CENTER);
+                weaponEquipPanel.add(equippedWeaponLabel);
+            } else {
+                weaponEquipPanel.add(new JLabel());
+            }
         }
         weaponPanel.add(weaponEquipPanel, BorderLayout.SOUTH);
         panels[0] = weaponPanel;
@@ -238,24 +256,26 @@ public class ShopFrame extends JFrame {
             JLabel armourPriceLabel = new JLabel("$ " + (10 + i) * 5, SwingConstants.LEFT);
             armourPricePanel.add(armourPriceLabel);
             JButton buyArmourButton = new JButton("BUY");
+            int finalI = i;
             buyArmourButton.addActionListener(e -> {
-                // buy armour method
-
+                if (ToolStore.buyArmour((byte) finalI)) {
+                    instance.updatePanels(characterIndex, 1);
+                }
             });
-
-            // if the armour is bought, change button text
-//            if (Server.getUserData().getUnlockedWeaponCount - 1 >= i) {
-//                buyArmourButton.setText("BOUGHT");
-//                buyArmourButton.setEnabled(false);
-//            }
+            if (Server.getUserData().getArmorLevel() >= (finalI + 1)) {
+                buyArmourButton.setText("BOUGHT");
+                buyArmourButton.setEnabled(false);
+            }
             armourPricePanel.add(buyArmourButton);
         }
+
+        weaponPricePanel.add(buyGunButton2);
         armourPanel.add(armourPricePanel, BorderLayout.NORTH);
         // armour display panel
         JPanel armourDisplayPanel = new JPanel(new GridLayout(2, 3));
         // armour image
         for (int i = 0; i < 3; i++) {
-            ImageIcon armourImageIcon = new ImageIcon(getClass().getResource("/armour" + (i + 1) + ".png"));
+            ImageIcon armourImageIcon = new ImageIcon(ShopFrame.class.getResource("/armour" + (i + 1) + ".png"));
             Image scaledArmourImage = armourImageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
             ImageIcon scaledArmourImageIcon = new ImageIcon(scaledArmourImage); // Create a new ImageIcon from the scaled image
             JLabel armourImageLabel = new JLabel(scaledArmourImageIcon);
@@ -280,13 +300,13 @@ public class ShopFrame extends JFrame {
         // armour equip panel
         JPanel armourEquipPanel = new JPanel(new GridLayout(1, 3));
         for (int i = 0; i < 3; i++) {
-//            if (Server.getUserData().getUnlockedWeaponCount - 1 == i) { // armour is the strongest one available
-//            JLabel equippedArmourLabel = new JLabel("equipped", SwingConstants.CENTER);
-//            armourEquipPanel.add(equippedArmourLabel);
-//        }
-//        else {
-//            armourEquipPanel.add(new JLabel());
-//        }
+            if (Server.getUserData().getArmorLevel() - 1 == i) { // armour is the strongest one available
+            JLabel equippedArmourLabel = new JLabel("Equipped!", SwingConstants.CENTER);
+            armourEquipPanel.add(equippedArmourLabel);
+        }
+        else {
+            armourEquipPanel.add(new JLabel());
+        }
         }
         armourPanel.add(armourEquipPanel, BorderLayout.SOUTH);
         panels[1] = armourPanel;
@@ -300,8 +320,14 @@ public class ShopFrame extends JFrame {
         abilityPricePanel.add(abilityPriceLabel);
         JButton buyAbilityButton = new JButton("BUY");
         buyAbilityButton.addActionListener(e -> {
-            // buy ability method
+            if (ToolStore.buyAbility((byte) characterIndex)) {
+                instance.updatePanels(characterIndex, 2);
+            }
         });
+        if (Server.getUserData().getCharacters()[characterIndex].isSpecialAbilityUnlocked()) {
+            buyAbilityButton.setText("BOUGHT");
+            buyAbilityButton.setEnabled(false);
+        }
         abilityPricePanel.add(buyAbilityButton);
         abilityPricePanel.add(new JLabel());
         abilityPricePanel.add(new JLabel());
@@ -310,7 +336,7 @@ public class ShopFrame extends JFrame {
         JPanel abilityDisplayPanel = new JPanel(new GridLayout(2, 3));
         // ability image
         abilityDisplayPanel.add(new JLabel());
-        ImageIcon abilityImageIcon = new ImageIcon(getClass().getResource("/specialability.png"));
+        ImageIcon abilityImageIcon = new ImageIcon(ShopFrame.class.getResource("/specialability.png"));
         Image scaledAbilityImage = abilityImageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledAbilityImageIcon = new ImageIcon(scaledAbilityImage); // Create a new ImageIcon from the scaled image
         JLabel abilityImageLabel = new JLabel(scaledAbilityImageIcon);
@@ -335,7 +361,7 @@ public class ShopFrame extends JFrame {
         return panels;
     }
 
-    private JPanel createCharacterDisplayPanel(int characterIndex) {
+    protected static JPanel createCharacterDisplayPanel(int characterIndex) {
         Character character = Character.characters.get((byte) characterIndex);
         String characterName = character.name;
         String characterResourcePath = character.resourcePath;
@@ -356,7 +382,7 @@ public class ShopFrame extends JFrame {
         JPanel characterImagePanel = new JPanel(new BorderLayout());
         // character image
         System.out.println("Character Resource Path: " + characterResourcePath);
-        ImageIcon imageIcon = new ImageIcon(getClass().getResource(characterResourcePath + "skin.jpg"));
+        ImageIcon imageIcon = new ImageIcon(ShopFrame.class.getResource(characterResourcePath + "skin.jpg"));
         Image scaledImage = imageIcon.getImage().getScaledInstance(100, 230, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);
@@ -377,44 +403,26 @@ public class ShopFrame extends JFrame {
         // character stats panel
         JPanel characterStatsPanel = new JPanel(new GridLayout(6, 1));
         JLabel attackLabel = new JLabel("Attack Power");
-        JComponent attackBar = new JComponent() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.setColor(Color.RED);
-                int attackPower = 5;
-                g.fillRect(0, 0, 5 * 50 / 100, 20);
-            }
-        };
-        attackBar.setPreferredSize(new Dimension(50, 20));
+        JProgressBar attackBar = new JProgressBar(0, 4);
+        attackBar.setValue(Server.getUserData().getCharacters()[characterIndex].getAbilityLevels()[0]);
+        attackBar.setStringPainted(true);
+        attackBar.setBackground(Color.RED);
         characterStatsPanel.add(attackLabel);
         characterStatsPanel.add(attackBar);
 
         JLabel defenceLabel = new JLabel("Defence Power");
-        JComponent defenceBar = new JComponent() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.setColor(Color.GREEN);
-                int defencePower = 5;
-                g.fillRect(0, 0, 5 * 50 / 100, 20);
-            }
-        };
-        defenceBar.setPreferredSize(new Dimension(50, 20));
+        JProgressBar defenceBar = new JProgressBar(0, 4);
+        defenceBar.setValue(Server.getUserData().getCharacters()[characterIndex].getAbilityLevels()[1]);
+        defenceBar.setStringPainted(true);
+        defenceBar.setBackground(Color.GREEN);
         characterStatsPanel.add(defenceLabel);
         characterStatsPanel.add(defenceBar);
 
         JLabel mobilityLabel = new JLabel("Mobility");
-        JComponent mobilityBar = new JComponent() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.setColor(Color.BLUE);
-                int mobilityPower = 5;
-                g.fillRect(0, 0, 5 * 50 / 100, 20);
-            }
-        };
-        mobilityBar.setPreferredSize(new Dimension(50, 20));
+        JProgressBar mobilityBar = new JProgressBar(0, 4);
+        mobilityBar.setValue(Server.getUserData().getCharacters()[characterIndex].getAbilityLevels()[2]);
+        mobilityBar.setStringPainted(true);
+        mobilityBar.setBackground(Color.BLUE);
         characterStatsPanel.add(mobilityLabel);
         characterStatsPanel.add(mobilityBar);
 

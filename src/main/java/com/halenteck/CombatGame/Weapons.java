@@ -16,38 +16,38 @@ public class Weapons { //extend edilmeyecek
 
     public void setPriceAndDamage() {//sets the price for the advanced weapon
 
-        if (weaponID == 1) {
+        if (weaponID == 0) {
             performance = 2;
             isActive = true;
-        } else if (weaponID == 2) {
+        } else if (weaponID == 1) {
             price = 5;
             performance = 3;
             isActive = false;
-        } else if (weaponID == 3) {
+        } else if (weaponID == 2) {
             performance = 3;
             isActive = true;
-        } else if (weaponID == 4) {
+        } else if (weaponID == 3) {
             price = 9;
             performance = 5;
             isActive = false;
-        } else if (weaponID == 5) {
+        } else if (weaponID == 4) {
             performance = 4;
             isActive = true;
-        } else if (weaponID == 6) {
+        } else if (weaponID == 5) {
             price = 17;
             performance = 7;
             isActive = false;
-        } else if (weaponID == 7) {
+        } else if (weaponID == 6) {
             performance = 5;
             isActive = true;
-        } else if (weaponID == 8) {
+        } else if (weaponID == 7) {
             price = 21;
             performance = 8;
             isActive = false;
-        } else if (weaponID == 9) {
+        } else if (weaponID == 8) {
             performance = 6;
             isActive = true;
-        } else if (weaponID == 10) {
+        } else if (weaponID == 9) {
             price = 29;
             performance = 9;
             isActive = false;

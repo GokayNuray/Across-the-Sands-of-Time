@@ -1,6 +1,6 @@
 package com.halenteck.render;
 
-import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
@@ -8,6 +8,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class Renderable implements Cloneable {
+
+    private String name;
 
     private boolean built = false;
     private boolean updated = false;
@@ -21,11 +23,23 @@ public class Renderable implements Cloneable {
     private IntBuffer indicesBuffer;
     private int textureHandle;
 
+    private Vector3f position = new Vector3f();
+    private float yaw = 0;
+    private float pitch = 0;
+    private Vector3f scale = new Vector3f(1, 1, 1);
+    private Matrix4f nodeTransformation;
+    private Matrix4f animationTransformation;
+
     public Renderable(float[] vertices, float[] colors, int[] indices) {
         this(vertices, colors, new float[colors.length / 2], indices, "/whiteSquare.png");
     }
 
     public Renderable(float[] vertices, float[] colors, float[] texCoords, int[] indices, String texturePath) {
+        this("default", vertices, colors, texCoords, indices, texturePath);
+    }
+
+    public Renderable(String name, float[] vertices, float[] colors, float[] texCoords, int[] indices, String texturePath) {
+        this.name = name;
         this.vertices = vertices;
         this.colors = colors;
         this.texCoords = texCoords;
@@ -64,31 +78,42 @@ public class Renderable implements Cloneable {
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
         vertexBuffer.put(vertices).flip();
 
-        buffers[0] = vertexBuffer;
+        if (animationTransformation != null) {
+            vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
+            for (int i = 0; i < vertices.length; i += 3) {
+                Vector3f vertex = new Vector3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+                Matrix4f nodeTransformation = new Matrix4f(this.nodeTransformation);
+                nodeTransformation.invert().transformPosition(vertex);
+                animationTransformation.transformPosition(vertex);
+                //nodeTransformation.invert().transformPosition(vertex);
+                vertexBuffer.put(vertex.x).put(vertex.y).put(vertex.z);
+            }
+            vertexBuffer.flip();
+        }
+
+        FloatBuffer vertexBuffer2 = BufferUtils.createFloatBuffer(vertices.length);
+        for (int i = 0; i < vertices.length; i += 3) {
+            Vector3f vertex = new Vector3f(vertexBuffer.get(), vertexBuffer.get(), vertexBuffer.get());
+            Matrix4f transformation = new Matrix4f().scale(scale).rotate(yaw, 0, 1, 0).rotate(pitch, 1, 0, 0);
+            transformation.transformPosition(vertex);
+            vertex.add(position);
+            vertexBuffer2.put(vertex.x).put(vertex.y).put(vertex.z);
+        }
+        vertexBuffer2.flip();
+
+        buffers[0] = vertexBuffer2;
 
         updated = false;
     }
 
     void translate(float x, float y, float z) {
-        for (int i = 0; i < vertices.length; i += 3) {
-            vertices[i] += x;
-            vertices[i + 1] += y;
-            vertices[i + 2] += z;
-        }
+        position.add(x, y, z);
 
         updated = true;
     }
 
-    void rotate(float angle, float x, float y, float z, float centerX, float centerY, float centerZ) {
-        for (int i = 0; i < vertices.length; i += 3) {
-            Vector3f vertex = new Vector3f(vertices[i], vertices[i + 1], vertices[i + 2]);
-            vertex.sub(centerX, centerY, centerZ);
-            Matrix3f rotationMatrix = new Matrix3f().rotate(angle, x, y, z);
-            rotationMatrix.transform(vertex);
-            vertices[i] = vertex.x + centerX;
-            vertices[i + 1] = vertex.y + centerY;
-            vertices[i + 2] = vertex.z + centerZ;
-        }
+    void increaseYaw(float yaw) {
+        this.yaw += yaw;
         updated = true;
     }
 
@@ -102,15 +127,9 @@ public class Renderable implements Cloneable {
         updated = true;
     }
 
-    void scaleAroundPoint(float x, float y, float z, float centerX, float centerY, float centerZ) {
-        for (int i = 0; i < vertices.length; i += 3) {
-            vertices[i] = centerX + (vertices[i] - centerX) * x;
-            vertices[i + 1] = centerY + (vertices[i + 1] - centerY) * y;
-            vertices[i + 2] = centerZ + (vertices[i + 2] - centerZ) * z;
-        }
-        updated = true;
+    public String getName() {
+        return name;
     }
-
 
     public FloatBuffer[] getBuffers() {
         return buffers;
@@ -146,5 +165,14 @@ public class Renderable implements Cloneable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void setNodeTransformation(Matrix4f nodeTransformation) {
+        this.nodeTransformation = nodeTransformation;
+    }
+
+    public void setAnimationTransformation(Matrix4f animationTransformation) {
+        this.animationTransformation = animationTransformation;
+        updated = true;
     }
 }

@@ -8,7 +8,7 @@ public class Game {
 
     Location location;
 
-    public void start() {
+    public Game() {
         UserData userData = Server.getUserData();
         byte characterId = userData.getUnlockedCharacterCount();
         Character player;
@@ -44,5 +44,9 @@ public class Game {
 
     public void useAbility() {
         location.useAbility();
+    }
+
+    public Location getLocations() {
+        return location;
     }
 }

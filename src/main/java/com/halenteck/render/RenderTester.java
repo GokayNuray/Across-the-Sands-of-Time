@@ -54,6 +54,7 @@ public class RenderTester {
             boolean isDPressed = false;
             boolean isSpacePressed = false;
             boolean isShiftPressed = false;
+            boolean isCtrlPressed = false;
 
             @Override
             public void keyTyped(KeyEvent e) {
@@ -74,6 +75,8 @@ public class RenderTester {
                     isSpacePressed = true;
                 } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = true;
+                } else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    isCtrlPressed = true;
                 }
             }
 
@@ -91,29 +94,35 @@ public class RenderTester {
                     isSpacePressed = false;
                 } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                     isShiftPressed = false;
+                } else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    isCtrlPressed = false;
                 }
             }
 
             {
                 Thread movementThread = new Thread(() -> {
                     while (true) {
+                        float moveDistance = 3;
+                        if (isCtrlPressed) {
+                            moveDistance *= 0.01f;
+                        }
                         if (isWPressed) {
-                            openGLComponent.moveCameraForward(0.03f);
+                            openGLComponent.moveCameraForward(moveDistance);
                         }
                         if (isSPressed) {
-                            openGLComponent.moveCameraBackward(0.03f);
+                            openGLComponent.moveCameraBackward(moveDistance);
                         }
                         if (isAPressed) {
-                            openGLComponent.moveCameraLeft(0.03f);
+                            openGLComponent.moveCameraLeft(moveDistance);
                         }
                         if (isDPressed) {
-                            openGLComponent.moveCameraRight(0.03f);
+                            openGLComponent.moveCameraRight(moveDistance);
                         }
                         if (isSpacePressed) {
-                            openGLComponent.moveCameraUp(0.03f);
+                            openGLComponent.moveCameraUp(moveDistance);
                         }
                         if (isShiftPressed) {
-                            openGLComponent.moveCameraDown(0.03f);
+                            openGLComponent.moveCameraDown(moveDistance);
                         }
                         try {
                             Thread.sleep(10);
@@ -223,10 +232,10 @@ public class RenderTester {
         //ModelLoader.loadModel("src/main/resources/test/elgato/12221_Cat_v1_l3.obj").forEach(openGLComponent::addRenderable);
         List<Renderable> test2 = ModelLoader.loadModel("src/main/resources/test/test2/test2.obj");
         for (Renderable renderable1 : test2) {
-            openGLComponent.addRenderable(renderable1);
+            //openGLComponent.addRenderable(renderable1);
         }
 
-        Entity entity = new Entity(Models.TEST2, 0, 0, 2, 180, 0, 0.5f);
+        Entity entity = new Entity(Models.TEST2, 0, 0, 2, 180, 0, 0.05f);
         openGLComponent.addEntity(entity);
         new Thread(() -> {
             while (true) {
@@ -245,5 +254,20 @@ public class RenderTester {
         Entity worldMap = new Entity(Models.WORLD_MAP1, 0, 0, 0, 0, 0, 100);
         worldMap.translate(100, -3, -30);
         openGLComponent.addEntity(worldMap);
+
+        Entity animated = new Entity(Models.ANIM_TEST, 0, 0, 0, 0, 0, 1f);
+        openGLComponent.addEntity(animated);
+
+        new Thread(() -> {
+            while (true) {
+                animated.rotate(0.5f, 0);
+                animated.translate((float) 0, 0.1f, 0);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

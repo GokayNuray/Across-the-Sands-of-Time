@@ -19,21 +19,30 @@ public final class Models {
     public static final int CHARACTER3 = -3;
     public static final int CHARACTER4 = -4;
     public static final int CHARACTER5 = -5;
+    public static final int ANIM_TEST = 11;
 
     private Models() {
     }
 
     private static Map<Integer, List<Renderable>> models;
+    private static Map<Integer, Map<String, Animation>> animations;
 
     public static void loadModels() {
         models = new HashMap<>();
+        animations = new HashMap<>();
         models.put(SQUARE_PRISM, List.of(ModelLoader.createRectangularPrism(new float[]{-0.5f, 0, -0.5f}, new float[]{0.5f, 2, 0.5f})));
         models.put(TEST2, ModelLoader.loadModel("src/main/resources/test/test2/test2.obj"));
         models.put(WORLD_MAP1, ModelLoader.loadModel("src/main/resources/test/testworld2/testworld2.obj"));
+        models.put(ANIM_TEST, ModelLoader.loadModel("src/main/resources/test/animTest/model.fbx"));
+        animations.put(ANIM_TEST, ModelLoader.loadAnimations("src/main/resources/test/animTest/model.fbx"));
     }
 
     public static List<Renderable> getModel(int modelId) {
         return models.get(modelId).stream().map(Renderable::clone).collect(Collectors.toList());
+    }
+
+    public static Map<String, Animation> getAnimations(int modelId) {
+        return animations.get(modelId);
     }
 
 }

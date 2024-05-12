@@ -44,8 +44,8 @@ public abstract class Character {
     }
 
     public void createWeapons(int characterId) {
-        weapons[0] = new Weapons(characterId + 1);
-        weapons[1] = new Weapons(characterId + 2);
+        weapons[0] = new Weapons(2 * characterId);
+        weapons[1] = new Weapons(2 * characterId + 1);
         shortRangeDamage = weapons[0].performance;
         longRangeDamage = weapons[1].performance;
     }

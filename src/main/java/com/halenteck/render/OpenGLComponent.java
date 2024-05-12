@@ -93,7 +93,7 @@ public class OpenGLComponent extends AWTGLCanvas {
         colorHandle = glGetAttribLocation(programHandle, "a_Color");
         textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
 
-        projectionMatrix.setPerspective((float) Math.toRadians(45), aspect, 0.1f, 100.0f);
+        projectionMatrix.setPerspective((float) Math.toRadians(45), aspect, 0.1f, 2000.0f);
 
 
     }
@@ -119,6 +119,10 @@ public class OpenGLComponent extends AWTGLCanvas {
 
         swapBuffers();
 
+        int error = glGetError();
+        if (error != GL_NO_ERROR) {
+            System.out.println("OpenGL Error: " + error);
+        }
         fps++;
     }
 

@@ -252,4 +252,44 @@ public class Location {
 
         abilityActive = false;
     }
+
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public Enemy getEnemies() {
+        return enemies;
+    }
+
+    public String getAward() {
+        return award;
+    }
+
+    public Character getPlayer() {
+        return player;
+    }
+
+    public int getPlayerHealth() {
+        return playerHealth;
+    }
+
+    public Ability getAbility() {
+        return ability;
+    }
+
+    public boolean isAbilityActive() {
+        return abilityActive;
+    }
+
+    public int getEnemyCount() {
+        return enemyCount;
+    }
+
+    public int getEnemyX() {
+        return enemyX;
+    }
+
+    public int getEnemyHealth() {
+        return enemyHealth;
+    }
 }

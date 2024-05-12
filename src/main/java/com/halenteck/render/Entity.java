@@ -1,8 +1,11 @@
 package com.halenteck.render;
 
 import java.util.List;
+import java.util.Map;
 
 public class Entity {
+
+    private Animation animation;
 
     private List<Renderable> renderables;
     private float x = 0;
@@ -16,6 +19,13 @@ public class Entity {
         rotate(yaw, pitch);
         scale(scale, scale, scale);
         translate(x, y, z);
+
+        Map<String, Animation> animations = Models.getAnimations(modelId);
+        if (animations != null) {
+            this.animation = new Animation(animations.get("wave"), this);
+            this.animation.start();
+        }
+
     }
 
     public void translate(float x, float y, float z) {
@@ -37,7 +47,7 @@ public class Entity {
         this.pitch += pitch;
         float yawRad = (float) Math.toRadians(yaw);
         float pitchRad = (float) Math.toRadians(pitch);
-        renderables.forEach(r -> r.rotate(yawRad, 0, 1, 0, x, y, z));
+        renderables.forEach(r -> r.increaseYaw(yawRad));
     }
 
     public void setRotation(float yaw, float pitch) {

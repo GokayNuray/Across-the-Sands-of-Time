@@ -9,12 +9,9 @@ import java.awt.event.KeyEvent;
 
 public class UserCard extends JFrame {
 
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
 
     UserCard() {
 
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("User Card");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -99,6 +96,7 @@ public class UserCard extends JFrame {
 
         add(returnPanel, BorderLayout.SOUTH);
 
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
 

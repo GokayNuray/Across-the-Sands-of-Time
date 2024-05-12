@@ -1,5 +1,6 @@
 package com.halenteck.combatUI;
 
+import com.halenteck.CombatGame.Game;
 import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.server.Server;
 
@@ -11,10 +12,8 @@ import java.awt.event.KeyEvent;
 
 public class EndGameFrame extends JFrame {
 
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
-    public EndGameFrame() {
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+    public EndGameFrame(JFrame gameFrame) {
+        setSize(700, 500);
         setTitle("Game Over");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -25,6 +24,7 @@ public class EndGameFrame extends JFrame {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     new GameSelectionMenu();
+                    gameFrame.dispose();
                     dispose();
                 }
             }
@@ -45,7 +45,7 @@ public class EndGameFrame extends JFrame {
         // level bar panel
         JPanel levelPanel = new JPanel(new BorderLayout());
         JProgressBar levelBar = new JProgressBar();
-        levelBar.setValue(Server.getUserData().getXp()); // current xp / level up xp * 100
+        levelBar.setValue(Server.getUserData().getXp());
         levelBar.setStringPainted(true);
         JLabel xpLabel = new JLabel("+ 15 XP", SwingConstants.CENTER);
         xpLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
@@ -55,14 +55,35 @@ public class EndGameFrame extends JFrame {
         midPanel.add(statsPanel);
 
         JButton enterBattleButton = new JButton("Enter Another Battle");
+        enterBattleButton.addActionListener(e -> {
+            try {
+                new InGameFrame();
+                gameFrame.dispose();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            dispose();
+        });
         midPanel.add(enterBattleButton);
         endGamePanel.add(midPanel);
 
         JPanel bottomPanel = new JPanel(new GridLayout(1,3));
         JButton shopButton = new JButton("Shop/Upgrade");
+        shopButton.addActionListener(e -> {
+            ShopFrame.getInstance().setVisible(true);
+            dispose();
+            gameFrame.dispose();
+
+        });
         bottomPanel.add(shopButton);
         bottomPanel.add(new JPanel());
         JButton returnToMenuButton = new JButton("Return to Menu");
+        returnToMenuButton.addActionListener(e -> {
+            new GameSelectionMenu();
+            dispose();
+            gameFrame.dispose();
+
+        });
         bottomPanel.add(returnToMenuButton);
         endGamePanel.add(bottomPanel);
         endGamePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));

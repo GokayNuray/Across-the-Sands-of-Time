@@ -8,14 +8,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class LeaderboardFrame extends JFrame {
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
 
     LeaderboardFrame() {
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("Global Leaderboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();
 
         // shortcut for returning to game selection menu
         addKeyListener(new KeyAdapter() {
@@ -43,8 +42,6 @@ public class LeaderboardFrame extends JFrame {
         titlePanel.add(pointsLabel);
         leaderboardPanel.add(titlePanel, BorderLayout.NORTH);
 
-        JPanel numberPanel = new JPanel(new GridLayout(10, 1));
-
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS)); // Change layout manager to BoxLayout
         Object[] leaderboardInfo = Server.getLeaderboard();
@@ -52,22 +49,25 @@ public class LeaderboardFrame extends JFrame {
         byte[] userLevels = (byte[]) leaderboardInfo[1];
         int[] userPoints = (int[]) leaderboardInfo[2];
 
-        for (int i = 0; i < userNames.length; i++) { // Keep 20 here to iterate over all users
-            JPanel userPanel = new JPanel(new GridLayout(1, 3)); // Create a separate panel for each user
-            userPanel.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT / 10)); // Set preferred size
-            userPanel.add(new JLabel(userNames[i], SwingConstants.CENTER));
+        for (int i = 0; i < userNames.length; i++) {
+            JPanel userPanel = new JPanel(new GridLayout(1, 3));
+            userPanel.setPreferredSize(new Dimension((int) bounds.getWidth(), (int) (bounds.getHeight() / 10)));
+            JPanel userNamePanel = new JPanel(new BorderLayout());
+            userNamePanel.add(new JLabel(String.valueOf((i + 1)), SwingConstants.CENTER), BorderLayout.WEST);
+            userNamePanel.add(new JLabel(userNames[i], SwingConstants.CENTER), BorderLayout.CENTER);
+            userPanel.add(userNamePanel);
             userPanel.add(new JLabel("" + userLevels[i], SwingConstants.CENTER));
             userPanel.add(new JLabel("" + userPoints[i], SwingConstants.CENTER));
-            infoPanel.add(userPanel); // Add userPanel to infoPanel
+            infoPanel.add(userPanel);
         }
-        leaderboardPanel.add(numberPanel, BorderLayout.WEST);
         leaderboardPanel.add(infoPanel, BorderLayout.CENTER);
         // scroller
         JScrollPane scroller = new JScrollPane(leaderboardPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(scroller, BorderLayout.CENTER);
-        pack(); // Pack the frame
+        pack();
 
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
     }

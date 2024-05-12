@@ -14,8 +14,6 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopFrame extends JFrame {
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
     static JPanel characterDisplayPanel = new JPanel();
     private static JPanel itemPanel = new JPanel();
     private JLabel currencyLabel = new JLabel("Currency: $" + Server.getUserData().getMoney(), SwingConstants.CENTER);
@@ -24,7 +22,6 @@ public class ShopFrame extends JFrame {
     public ShopFrame() {
 
         instance = this;
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("Tool Store");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -136,8 +133,8 @@ public class ShopFrame extends JFrame {
         JButton upgradeButton = new JButton("Upgrade");
         upgradeButton.setFont(new Font("Sans Serif", Font.BOLD, 14));
         upgradeButton.addActionListener(e -> {
-            new UpgradeShopFrame();
-            dispose();
+            ShopFrame.getInstance().setVisible(false);
+            UpgradeShopFrame.getInstance().setVisible(true);
         });
         bottomButtonPanel.add(upgradeButton);
         bottomButtonPanel.add(new JLabel());
@@ -146,7 +143,11 @@ public class ShopFrame extends JFrame {
         JButton joinBattleButton = new JButton("Join Battle");
         joinBattleButton.setFont(new Font("Sans Serif", Font.BOLD, 14));
         joinBattleButton.addActionListener(e -> {
-            new InGameFrame();
+            try {
+                new InGameFrame();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             dispose();
         });
         bottomButtonPanel.add(joinBattleButton);
@@ -155,6 +156,7 @@ public class ShopFrame extends JFrame {
         shopPanel.add(bottomButtonPanel, BorderLayout.SOUTH);
 
         add(shopPanel, BorderLayout.CENTER);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
 
@@ -208,7 +210,6 @@ public class ShopFrame extends JFrame {
             buyGunButton2.setEnabled(false);
         }
         weaponPricePanel.add(buyGunButton2);
-        weaponPricePanel.add(buyGunButton2);
         weaponPricePanel.add(new JLabel());
         weaponPanel.add(weaponPricePanel, BorderLayout.NORTH);
         // weapon display panel
@@ -216,7 +217,7 @@ public class ShopFrame extends JFrame {
         // weapon image
         for (int i = 0; i < 2; i++) {
             ImageIcon weaponImageIcon = new ImageIcon(ShopFrame.class.getResource("/weapon" + (i + 1) + ".png"));
-            Image scaledWeaponImage = weaponImageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
+            Image scaledWeaponImage = weaponImageIcon.getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
             ImageIcon scaledWeaponImageIcon = new ImageIcon(scaledWeaponImage); // Create a new ImageIcon from the scaled image
             JLabel weaponImageLabel = new JLabel(scaledWeaponImageIcon);
             weaponDisplayPanel.add(weaponImageLabel);
@@ -276,7 +277,7 @@ public class ShopFrame extends JFrame {
         // armour image
         for (int i = 0; i < 3; i++) {
             ImageIcon armourImageIcon = new ImageIcon(ShopFrame.class.getResource("/armour" + (i + 1) + ".png"));
-            Image scaledArmourImage = armourImageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
+            Image scaledArmourImage = armourImageIcon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
             ImageIcon scaledArmourImageIcon = new ImageIcon(scaledArmourImage); // Create a new ImageIcon from the scaled image
             JLabel armourImageLabel = new JLabel(scaledArmourImageIcon);
             armourDisplayPanel.add(armourImageLabel);
@@ -337,7 +338,7 @@ public class ShopFrame extends JFrame {
         // ability image
         abilityDisplayPanel.add(new JLabel());
         ImageIcon abilityImageIcon = new ImageIcon(ShopFrame.class.getResource("/specialability.png"));
-        Image scaledAbilityImage = abilityImageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
+        Image scaledAbilityImage = abilityImageIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledAbilityImageIcon = new ImageIcon(scaledAbilityImage); // Create a new ImageIcon from the scaled image
         JLabel abilityImageLabel = new JLabel(scaledAbilityImageIcon);
         abilityDisplayPanel.add(abilityImageLabel);
@@ -383,7 +384,7 @@ public class ShopFrame extends JFrame {
         // character image
         System.out.println("Character Resource Path: " + characterResourcePath);
         ImageIcon imageIcon = new ImageIcon(ShopFrame.class.getResource(characterResourcePath + "skin.jpg"));
-        Image scaledImage = imageIcon.getImage().getScaledInstance(100, 230, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
+        Image scaledImage = imageIcon.getImage().getScaledInstance(200, 400, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);
         characterImagePanel.add(imageLabel, BorderLayout.CENTER);
@@ -428,5 +429,12 @@ public class ShopFrame extends JFrame {
 
         characterDisplayPanel.add(characterStatsPanel, BorderLayout.SOUTH);
         return characterDisplayPanel;
+    }
+
+    public static ShopFrame getInstance() {
+        if (instance == null) {
+            instance = new ShopFrame();
+        }
+        return instance;
     }
 }

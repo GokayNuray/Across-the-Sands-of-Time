@@ -1,6 +1,7 @@
 package com.halenteck.commonUI;
 
 import com.halenteck.combatUI.ShopFrame;
+import com.halenteck.combatUI.UpgradeShopFrame;
 import com.halenteck.fpsUI.LobbyFrame;
 import com.halenteck.server.*;
 
@@ -11,12 +12,8 @@ import java.awt.event.ActionListener;
 
 public class GameSelectionMenu extends JFrame {
 
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
-
     public GameSelectionMenu() {
 
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("Game Selection Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -40,7 +37,7 @@ public class GameSelectionMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open Combat Mode
-                new ShopFrame();
+                ShopFrame.getInstance().setVisible(true);
                 dispose();
             }
         });
@@ -147,7 +144,7 @@ public class GameSelectionMenu extends JFrame {
 
         add(statsPanel, BorderLayout.SOUTH);
 
-
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
     }

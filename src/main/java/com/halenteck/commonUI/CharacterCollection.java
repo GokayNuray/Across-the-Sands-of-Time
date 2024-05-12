@@ -18,7 +18,6 @@ public class CharacterCollection extends JFrame{
 
     public CharacterCollection() {
 
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("User Card");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -58,7 +57,7 @@ public class CharacterCollection extends JFrame{
 
         add(collectionPanel, BorderLayout.CENTER); // game in the background to be added to other sections later
 
-
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
 

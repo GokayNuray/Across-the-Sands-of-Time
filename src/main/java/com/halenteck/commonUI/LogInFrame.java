@@ -9,13 +9,9 @@ import java.awt.event.ActionListener;
 
 public class LogInFrame extends JFrame {
 
-    protected static final int FRAME_WIDTH = 800;
-    protected static final int FRAME_HEIGHT = 500;
-    protected static String userName;
 
     public LogInFrame() {
 
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setTitle("Across the Sands of Time");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -81,7 +77,7 @@ public class LogInFrame extends JFrame {
 
         // Image Panel
         ImageIcon imageIcon = new ImageIcon(this.getClass().getResource("/logo.jpg"));
-        Image scaledImage = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
+        Image scaledImage = imageIcon.getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);
         add(imageLabel, BorderLayout.WEST);
@@ -101,6 +97,7 @@ public class LogInFrame extends JFrame {
         northPanel.add(nameLabel);
         add(northPanel, BorderLayout.NORTH);
 
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
         class fieldChecker implements ActionListener {
@@ -115,8 +112,6 @@ public class LogInFrame extends JFrame {
                 } else if (!usernameChecker(username) || !passwordChecker(password)) {
                     JOptionPane.showMessageDialog(LogInFrame.this, "Illegal username or password!");
                 } else {
-
-                    userName = username;
 
                     if (e.getSource() == loginButton) {
                         if (Server.login(username, password)) {
@@ -208,5 +203,6 @@ public class LogInFrame extends JFrame {
         // length is not allowed
         return false;
     }
+
 
 }

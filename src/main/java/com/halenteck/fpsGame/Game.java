@@ -1,6 +1,9 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.render.OpenGLComponent;
+import com.halenteck.render.World;
 import com.halenteck.server.PacketData;
+import com.halenteck.server.Server;
 import com.halenteck.server.ServerListener;
 import org.joml.Vector3f;
 
@@ -13,16 +16,26 @@ public class Game implements ServerListener {
     private boolean isRunning;
     private Map<Byte, Player> players;
 
-    public Game() {
+    private Player thisPlayer;
+
+    World world;
+    OpenGLComponent renderer;
+
+    public Game(World world, Player thisPlayer, OpenGLComponent renderer) {
+        Server.addServerListener(this);
         this.players = new HashMap<>();
         this.redTeam = new Team();
         this.blueTeam = new Team();
         this.isRunning = true;
+        this.world = world;
+        this.thisPlayer = thisPlayer;
+        this.renderer = renderer;
+
+        renderer.addRenderable(world.getModel());
     }
 
     public void loop() {
-        while (isRunning)
-        {
+        while (isRunning) {
             //TODO: Create a game loop.
         }
     }
@@ -30,23 +43,20 @@ public class Game implements ServerListener {
     public void addPlayer(Player player) {
         if (players.size() < 10) {
 
-            if(redTeam.getTeamSize() == blueTeam.getTeamSize() && redTeam.getTeamSize() < 5)
-            {
+            if (redTeam.getTeamSize() == blueTeam.getTeamSize() && redTeam.getTeamSize() < 5) {
                 redTeam.addPlayer(player);
                 player.setTeam(redTeam);
             }
-            if (redTeam.getTeamSize() < blueTeam.getTeamSize())
-            {
+            if (redTeam.getTeamSize() < blueTeam.getTeamSize()) {
                 redTeam.addPlayer(player);
                 player.setTeam(redTeam);
             }
-            if(blueTeam.getTeamSize() < redTeam.getTeamSize())
-            {
+            if (blueTeam.getTeamSize() < redTeam.getTeamSize()) {
                 blueTeam.addPlayer(player);
                 player.setTeam(blueTeam);
             }
 
-            if(player.getTeam() == blueTeam) {
+            if (player.getTeam() == blueTeam) {
                 blueTeam.addPlayer(player);
             } else {
                 redTeam.addPlayer(player);
@@ -63,9 +73,7 @@ public class Game implements ServerListener {
 
         if (killer.getTeam() == blueTeam) {
             blueTeam.incrementScore();
-        }
-        else
-        {
+        } else {
             redTeam.incrementScore();
         }
     }
@@ -74,39 +82,51 @@ public class Game implements ServerListener {
     public void onLobbyJoin(PacketData packetData) {
         Object[] data = packetData.getOnLobbyJoinDataData();
         String lobbyName = (String) data[0];
-        Player[] players = (Player[]) data[1];
+        Object[][] players = (Object[][]) data[1];
         boolean isRedTeam = (Boolean) data[2];
         int[] currentScore = (int[]) data[3];
         long gameStartTime = (Long) data[4];
+
+        joinPlayer(players);
     }
 
     @Override
     public void onPlayerJoin(PacketData packetData) {
         Object[] data = packetData.getOnPlayerJoinData();
-        Byte playerId = (Byte) data[0];
-        boolean isRedTeam = (Boolean) data[1];
-        String name = (String) data[2];
+        joinPlayer(new Object[][]{data});
+    }
 
-        float[] posAndRot = (float[]) data[3];
-        Vector3f startPosition = new Vector3f(posAndRot[0], posAndRot[1], posAndRot[2]);
-        boolean crouching = (Boolean) data[4];
-        int weaponId = (Integer) data[5];
-        int attckPower = (Integer) data[6];
-        byte kill = (Byte) data[7];
-        byte death = (Byte) data[8];
+    public void joinPlayer(Object[][] data) {
+        for (Object[] playerData : data) {
+            Byte playerId = (Byte) playerData[0];
+            boolean isRedTeam = (Boolean) playerData[1];
+            String name = (String) playerData[2];
 
-        Player newPlayer = new Player(name, 100, null, startPosition);
-        players.put(playerId, newPlayer);
+            float[] posAndRot = (float[]) playerData[3];
+            Vector3f startPosition = new Vector3f(posAndRot[0], posAndRot[1], posAndRot[2]);
+            float yaw = posAndRot[3];
+            float pitch = posAndRot[4];
+            boolean crouching = (Boolean) playerData[4];
+            int weaponId = (Integer) playerData[5];
+            int attackPower = (Integer) playerData[6];
+            byte kill = (Byte) playerData[7];
+            byte death = (Byte) playerData[8];
+
+            //TODO: characterId is temporarily set to 0
+            Player newPlayer = new Player(playerId, isRedTeam, name, startPosition, yaw, pitch, crouching, weaponId, attackPower, kill, death, (byte) 0, world);
+            players.put(playerId, newPlayer);
+
+            renderer.addEntity(newPlayer.getEntity());
+        }
     }
 
     @Override
     public void onPlayerMove(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerMoveData()[0];
-        Vector3f newPosition = new Vector3f((Float)packetData.getOnPlayerMoveData()[1], (Float)packetData.getOnPlayerMoveData()[2], (Float)packetData.getOnPlayerMoveData()[3]);
+        Vector3f newPosition = new Vector3f((Float) packetData.getOnPlayerMoveData()[1], (Float) packetData.getOnPlayerMoveData()[2], (Float) packetData.getOnPlayerMoveData()[3]);
         Player player = players.get(playerId);
 
-        if (player == null)
-        {
+        if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerMove packet");
         }
 
@@ -117,6 +137,11 @@ public class Game implements ServerListener {
     public void onPlayerRotate(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerRotateData()[0];
         Player player = players.get(playerId);
+
+        if (player == null) {
+            throw new IllegalArgumentException("Incorrect player ID in onPlayerWeaponChange packet");
+        }
+
         float[] rotateData = (float[]) packetData.getOnPlayerRotateData()[1];
         player.rotate(rotateData[0], rotateData[1]);
     }
@@ -126,17 +151,13 @@ public class Game implements ServerListener {
         Byte playerId = (Byte) packetData.getOnPlayerCrouchStateChangeData()[0];
         Player player = players.get(playerId);
 
-        if (player == null)
-        {
+        if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerCrouchStateChange packet");
         }
 
-        if (player.getCrouchState())
-        {
+        if (player.getCrouchState()) {
             player.stand();
-        }
-        else
-        {
+        } else {
             player.crouch();
         }
     }
@@ -146,8 +167,7 @@ public class Game implements ServerListener {
         Byte playerId = (Byte) packetData.getOnPlayerWeaponOnChangeData()[0];
         Player player = players.get(playerId);
 
-        if (player == null)
-        {
+        if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerWeaponChange packet");
         }
 
@@ -173,8 +193,7 @@ public class Game implements ServerListener {
         int damage = (Integer) packetData.getOnPlayerDamagedData()[1];
         Player player = players.get(playerId);
 
-        if (player == null)
-        {
+        if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerDamaged packet");
         }
 
@@ -186,8 +205,7 @@ public class Game implements ServerListener {
         Byte playerId = (Byte) packetData.getOnPlayerDeathData()[0];
         Player player = players.get(playerId);
 
-        if (player == null)
-        {
+        if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerDeath packet");
         }
 
@@ -200,8 +218,7 @@ public class Game implements ServerListener {
         float[] details = (float[]) packetData.getOnPlayerRespawnData()[1];
         Player player = players.get(playerId);
 
-        if (player == null)
-        {
+        if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerRespawn packet");
         }
 
@@ -217,15 +234,14 @@ public class Game implements ServerListener {
     @Override
     public void onPlayerShoot(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerShootData()[0];
-        Vector3f direction = (Vector3f) packetData.getOnPlayerShootData()[1];
         Player player = players.get(playerId);
 
-        if (player == null)
-        {
+        if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerShoot packet");
         }
 
-        player.shoot(direction);
+        Bullet bullet = player.shoot();
+        thisPlayer.handleBullet(bullet);
     }
 
     @Override

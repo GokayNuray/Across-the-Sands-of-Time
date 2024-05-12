@@ -10,7 +10,7 @@ import com.halenteck.CombatGame.locations.Tunnel;
 public class Antidote extends Character {
 
     public Antidote() {
-        super((byte) 1, "Panzehir", "/characters/antidote/", 65, 2,
+        super((byte) 1, "Kai", "/characters/antidote/", 65, 2,
                 new Location[]{new Tent(), new Tunnel(), new Lab(), new HistoryMuseum()});
     }
 }

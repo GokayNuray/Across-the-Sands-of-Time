@@ -11,7 +11,7 @@ public class Boss extends Character {
 
     public Boss() {
 
-        super((byte) 4, "Boss", "/characters/boss/", 150, 5,
+        super((byte) 4, "Esther", "/characters/boss/", 150, 5,
                 new Location[]{new Office(), new RepairShop(), new Library(), new HistoryMuseum()});
 
     }

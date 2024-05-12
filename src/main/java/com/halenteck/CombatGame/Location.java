@@ -1,5 +1,6 @@
 package com.halenteck.CombatGame;
 
+import com.halenteck.combatUI.InGameFrame;
 import com.halenteck.server.Server;
 import com.halenteck.server.UserCharacterData;
 import com.halenteck.server.UserData;
@@ -8,7 +9,11 @@ import java.util.Random;
 
 public class Location {
 
-    public static boolean isGameOver = false;
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public boolean isGameOver = false;
     protected int locationId;
     protected String name;
     protected Enemy enemies;
@@ -24,11 +29,11 @@ public class Location {
     protected int playerX;
     Ability ability;
     protected boolean abilityActive;
-
     protected int enemyCount;
     protected int enemyX;
     int enemyHealth;
     int enemyAttackPower;
+    InGameFrame inGameFrame;
     public Location(int locationId, String name, Enemy enemies, String award) {
         this.locationId = locationId;
         this.name = name;
@@ -37,8 +42,9 @@ public class Location {
         enemyCount = enemies.enemyCount();
     }
 
-    public void startGame(Character player) {
+    public void startGame(Character player, InGameFrame inGameFrame) {
         this.player = player;
+        this.inGameFrame = inGameFrame;
         characterID = player.characterID;
         UserData userData = Server.getUserData();
         UserCharacterData characterData = userData.getCharacters()[characterID];
@@ -133,31 +139,6 @@ public class Location {
         }
         abilityActive = true;
         continueTurn();
-        //TODO Draw the effects of the ability
-        /*if (player.playingChar.abilityExists) {// player.playingChar.ability.usageLeft > 0 &&  bu belki gerekir, emin değilim ya da sadece bu olabilir
-            player.playingChar.isAbilityActive = true;
-            if (player.characterID == 1) {//uçma
-                player.y = player.y * 2;//sol üsütn y'si bu. height falan aynı
-                //burada karakter çizildiğinde buna göre çizilmeli
-            } else if (player.characterID == 2) {//eğilme
-                player.y = player.y / 2;//sol üsütn y'si bu. height yarıya inecek
-                player.height = player.height / 2;
-                //burada karakter çizildiğinde buna göre çizilmeli
-            }
-            //bu son 3 if bizim için gerekli olmayabilir ama Dilara'nın çizimleri yaparken ihtiyacı olabilir
-            else if (player.characterID == 3) {//görünmezlik
-                //burada karakter çizilmeyecek
-            } else if (player.characterID == 4) {//yeri sarsma
-                //çizm
-            } else if (player.characterID == 5) {//afallatmak
-                //çizim
-            }
-            enemies.move(); //etkisi enemy nin hareket etmesiyle görünecek
-            player.playingChar.ability.used();
-            player.playingChar.isAbilityActive = false;
-            player.y = 80;
-            player.height = 80;
-        }*/
         return true;
     }
 
@@ -251,6 +232,7 @@ public class Location {
         }
 
         abilityActive = false;
+        inGameFrame.updatePanels();
     }
 
     public int getLocationId() {

@@ -1,14 +1,16 @@
 package com.halenteck.CombatGame;
 
 import com.halenteck.CombatGame.characters.*;
+import com.halenteck.combatUI.InGameFrame;
 import com.halenteck.server.Server;
 import com.halenteck.server.UserData;
 
 public class Game {
 
     Location location;
+    public boolean isGameOver = false;
 
-    public Game() {
+    public Game(InGameFrame inGameFrame) {
         UserData userData = Server.getUserData();
         byte characterId = userData.getUnlockedCharacterCount();
         Character player;
@@ -23,7 +25,7 @@ public class Game {
         int lastLocation = userData.getCombatLevelReached();
         location = player.maps[lastLocation % 4];
 
-        location.startGame(player);
+        location.startGame(player, inGameFrame);
     }
 
     public void goForward() {

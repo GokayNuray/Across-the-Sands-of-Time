@@ -10,7 +10,7 @@ import com.halenteck.CombatGame.locations.Market;
 public class Nazi extends Character {
 
     public Nazi() {
-        super((byte) 2, "Nazi", "/characters/nazi/", 80, 3,
+        super((byte) 2, "Eobard", "/characters/nazi/", 80, 3,
                 new Location[]{new Camp(), new Berlin(), new Market(), new HistoryMuseum()});
 
     }

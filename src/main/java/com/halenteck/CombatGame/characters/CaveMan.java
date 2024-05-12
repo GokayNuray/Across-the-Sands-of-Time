@@ -10,7 +10,7 @@ import com.halenteck.CombatGame.locations.River;
 public class CaveMan extends Character {
 
     public CaveMan() {
-        super((byte) 0, "CaveMan", "/characters/caveman/", 50, 1,
+        super((byte) 0, "Grok", "/characters/caveman/", 50, 1,
                 new Location[]{new Forest(), new Cave(), new River(), new HistoryMuseum()});
     }
 }

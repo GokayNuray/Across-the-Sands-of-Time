@@ -10,7 +10,7 @@ import com.halenteck.CombatGame.locations.Volcano;
 public class GlobalWarming extends Character {
 
     public GlobalWarming() {
-        super((byte) 3, "Global Warming", "/characters/globalwarming/", 100, 4,
+        super((byte) 3, "Lyra", "/characters/globalwarming/", 100, 4,
                 new Location[]{new GreenHouse(), new Volcano(), new Glacier(), new HistoryMuseum()});
 
     }

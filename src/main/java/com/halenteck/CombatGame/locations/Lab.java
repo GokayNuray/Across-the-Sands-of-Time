@@ -7,7 +7,7 @@ import com.halenteck.CombatGame.enemies.Security;
 public class Lab extends Location {
 
     public Lab() {
-        super(2, "Lab", new Security(), "Medicine4");
+        super(2, "Lab", new Security(), "Keycard");
 
     }
 }

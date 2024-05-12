@@ -7,7 +7,7 @@ import com.halenteck.CombatGame.enemies.PolarBear;
 public class Glacier extends Location {
 
     public Glacier() {
-        super(2, "Glacier", new PolarBear(), "Ice");
+        super(2, "Glacier", new PolarBear(), "Icicle");
 
     }
 

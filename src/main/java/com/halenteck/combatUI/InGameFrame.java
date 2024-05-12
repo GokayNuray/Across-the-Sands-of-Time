@@ -47,7 +47,7 @@ public class InGameFrame extends JFrame {
         game = new Game(this);
         setTitle("Combat Fight");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ImageIcon backgroundImage = new ImageIcon(getClass().getResource(character.resourcePath + "map4.jpeg"));
+        ImageIcon backgroundImage = new ImageIcon(getClass().getResource(character.resourcePath + "map4.jpg"));
         Image scaledImage = backgroundImage.getImage().getScaledInstance((int) bounds.getWidth(), (int) bounds.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(scaledImageIcon);
@@ -59,21 +59,8 @@ public class InGameFrame extends JFrame {
         // give up button
         JButton giveUpButton = new JButton("Give Up");
         giveUpButton.addActionListener(e -> {
-            showPopUp(new EndGameFrame(this));
-            int layerToRemove = layeredPane.PALETTE_LAYER;
-
-            // Get all components in the JLayeredPane
-            Component[] components = layeredPane.getComponentsInLayer(layerToRemove);
-
-            // Iterate over the components
-            for (Component component : components) {
-                // Remove the component from the JLayeredPane
-                layeredPane.remove(component);
-            }
-
-            // Refresh the JLayeredPane
-            layeredPane.revalidate();
-            layeredPane.repaint();
+            game.isGameOver = true;
+            updatePanels();
         });
         giveUpButton.setBounds((int) bounds.getWidth() - 190, 10, 100, 50);
         layeredPane.add(giveUpButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
@@ -116,7 +103,7 @@ public class InGameFrame extends JFrame {
         layeredPane.add(enemyHealthBar, JLayeredPane.PALETTE_LAYER); // Add to layer 1
 
         // player images
-        ImageIcon playerImage = new ImageIcon(getClass().getResource(character.resourcePath + "skin.jpg"));
+        ImageIcon playerImage = new ImageIcon(getClass().getResource(character.resourcePath + "skin.png"));
         Image scaledPlayerImage = playerImage.getImage().getScaledInstance(300, 550, Image.SCALE_SMOOTH);
         ImageIcon scaledPlayerImageIcon = new ImageIcon(scaledPlayerImage);
         playerImageLabel = new JLabel(scaledPlayerImageIcon);

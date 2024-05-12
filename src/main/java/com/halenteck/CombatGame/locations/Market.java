@@ -7,7 +7,7 @@ import com.halenteck.CombatGame.enemies.Cashier;
 public class Market extends Location {
 
     public Market() {
-        super(2, "Market", new Cashier(), "Energy Drink");
+        super(2, "Market", new Cashier(), "Receipt");
 
     }
 

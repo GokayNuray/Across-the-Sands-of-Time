@@ -54,7 +54,7 @@ public class ToolStore {
         return false;
     }
 
-    public static boolean upgradeAttack(byte CharacterID) {//bu bir button'a bağlı olacak
+    public static boolean upgradeAttack(byte CharacterID) {
         UserData userData = Server.getUserData();
         UserCharacterData characterData = userData.getCharacters()[CharacterID];
         byte attackLevel = characterData.getAbilityLevels()[0];

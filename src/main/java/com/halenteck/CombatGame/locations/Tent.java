@@ -7,7 +7,7 @@ import com.halenteck.CombatGame.enemies.Zombie;
 public class Tent extends Location {
 
     public Tent() {
-        super(0, "Tent", new Zombie(), "Medicine1");
+        super(0, "Tent", new Zombie(), "Torch");
 
     }
 

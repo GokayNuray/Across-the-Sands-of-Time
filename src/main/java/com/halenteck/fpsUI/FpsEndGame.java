@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class FpsEndGame extends JFrame {
 
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
+    private static final int FRAME_WIDTH = 600;
+    private static final int FRAME_HEIGHT = 400;
 
     public FpsEndGame(boolean rankedGame) {
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -75,7 +75,6 @@ public class FpsEndGame extends JFrame {
 
         endGamePanel.add(buttonPanel);
         endGamePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
         add(endGamePanel);
     }
 

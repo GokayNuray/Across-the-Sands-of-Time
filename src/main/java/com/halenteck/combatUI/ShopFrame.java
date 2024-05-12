@@ -383,7 +383,7 @@ public class ShopFrame extends JFrame {
         JPanel characterImagePanel = new JPanel(new BorderLayout());
         // character image
         System.out.println("Character Resource Path: " + characterResourcePath);
-        ImageIcon imageIcon = new ImageIcon(ShopFrame.class.getResource(characterResourcePath + "skin.jpg"));
+        ImageIcon imageIcon = new ImageIcon(ShopFrame.class.getResource(characterResourcePath + "skin.png"));
         Image scaledImage = imageIcon.getImage().getScaledInstance(200, 400, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);

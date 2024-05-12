@@ -122,6 +122,33 @@ public class LogInFrame extends JFrame {
                         }
                     } else if (e.getSource() == registerButton) {
                         if (Server.register(username, password)) {
+                            String firstMessage = "You take on" +
+                                    "a time-travel journey, starting with one character and 3 enemies + 1 boss level" +
+                                    "to defeat and items, XP as well as currency to collect along the way! " +
+                                    "Once you've collected all items, you will unlock the next character and be able" +
+                                    "to upgrade it at the shop! You will be teleported to designated maps for all 5 characters" +
+                                    "to fight in a turn-based combat one by one. Don't forget to equip your favourite" +
+                                    "character to use in the FPS game! (All controls are button based for the combat mode!) " +
+                                    "Good luck!";
+                            JTextArea firstTextArea = new JTextArea(firstMessage);
+                            firstTextArea.setColumns(70);
+                            firstTextArea.setLineWrap(true);
+                            firstTextArea.setWrapStyleWord(true);
+                            firstTextArea.setEditable(false);
+                            firstTextArea.setSize(firstTextArea.getPreferredSize().width, 1);
+                            JOptionPane.showMessageDialog(LogInFrame.this, firstTextArea, "Registration successful!", JOptionPane.INFORMATION_MESSAGE);
+                            String secondMessage = "A voxelated FPS game awaits you where" +
+                                    "all you need to do is help your team get the most kills at the end of the game! Join with your" +
+                                    "character equipped and don't forget to purchase its special ability because you may (will) need it." +
+                                    "(WASD for movement, mouse for turning and shooting, R for reloading and X for special ability)" +
+                                    "You will climb the leaderboard ranks from ranked games and can chill in the casual games!";
+                            JTextArea secondTextArea = new JTextArea(secondMessage);
+                            secondTextArea.setColumns(70);
+                            secondTextArea.setLineWrap(true);
+                            secondTextArea.setWrapStyleWord(true);
+                            secondTextArea.setEditable(false);
+                            secondTextArea.setSize(secondTextArea.getPreferredSize().width, 1);
+                            JOptionPane.showMessageDialog(LogInFrame.this, secondTextArea, "Registration successful!", JOptionPane.INFORMATION_MESSAGE);
                             new GameSelectionMenu();
                             dispose();
                         } else {

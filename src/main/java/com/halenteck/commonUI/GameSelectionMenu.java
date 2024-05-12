@@ -1,7 +1,6 @@
 package com.halenteck.commonUI;
 
 import com.halenteck.combatUI.ShopFrame;
-import com.halenteck.combatUI.UpgradeShopFrame;
 import com.halenteck.fpsUI.LobbyFrame;
 import com.halenteck.server.*;
 
@@ -41,7 +40,6 @@ public class GameSelectionMenu extends JFrame {
                 dispose();
             }
         });
-
         buttonPanel.add(combatButton);
 
         JButton fpsButton = new JButton("Join FPS Match");

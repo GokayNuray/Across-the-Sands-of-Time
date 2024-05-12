@@ -1,11 +1,9 @@
 package com.halenteck.combatUI;
 
-import com.halenteck.CombatGame.Game;
 import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.server.Server;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

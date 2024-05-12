@@ -7,6 +7,6 @@ import com.halenteck.CombatGame.enemies.WolfMan;
 public class Tunnel extends Location {
 
     public Tunnel() {
-        super(1, "Tunnel", new WolfMan(), "Medicine2");
+        super(1, "Tunnel", new WolfMan(), "Vaccine");
     }
 }

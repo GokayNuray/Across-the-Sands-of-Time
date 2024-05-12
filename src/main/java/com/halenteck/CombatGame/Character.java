@@ -20,12 +20,12 @@ public abstract class Character {
     public String name;
     public String resourcePath;
 
-    protected Ability ability;
+    public Ability ability;
     public int health;
     protected int attackPower;
     public boolean[] items = new boolean[4];
     protected Weapons[] weapons = new Weapons[2];//index 0'da short range, index 1'de long range var
-    protected Location[] maps;
+    public Location[] maps;
     protected int shortRangeDamage;
     protected int longRangeDamage;
 

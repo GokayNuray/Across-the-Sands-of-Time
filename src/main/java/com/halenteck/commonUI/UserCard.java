@@ -30,7 +30,7 @@ public class UserCard extends JFrame {
         // User Card Panel
         JPanel userCardPanel = new JPanel(new GridLayout(6,1));
 
-        JLabel userCardLabel = new JLabel(Server.getUserData().getPlayerName(), SwingConstants.LEFT);
+        JLabel userCardLabel = new JLabel("You're viewing stats for: " + Server.getUserData().getPlayerName(), SwingConstants.LEFT);
         userCardLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         userCardPanel.add(userCardLabel);
 
@@ -72,7 +72,7 @@ public class UserCard extends JFrame {
         // getRankedPoints() to get the number of ranked points
         rankedLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         userCardPanel.add(rankedLabel);
-        JLabel leaderboardLabel = new JLabel("Global Rank: 1", SwingConstants.LEFT);
+        JLabel leaderboardLabel = new JLabel("Global Rank: null", SwingConstants.LEFT);
         leaderboardLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         // getGlobalRank() to get the global rank
         userCardPanel.add(leaderboardLabel);

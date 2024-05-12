@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
 
 public class EndGameFrame extends JFrame {
 
-    public EndGameFrame(JFrame gameFrame) {
+    public EndGameFrame(InGameFrame gameFrame) {
         setSize(700, 500);
         setTitle("Game Over");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,7 +31,15 @@ public class EndGameFrame extends JFrame {
         });
 
         JPanel endGamePanel = new JPanel(new GridLayout(3,1));
-        JLabel endGameLabel = new JLabel("You " + "won/lost!", SwingConstants.CENTER); // Add win/loss condition
+        JLabel endGameLabel = new JLabel();
+        if (gameFrame.game.isGameWon) {
+            JLabel text = new JLabel("You won!", SwingConstants.CENTER);
+            text.setFont(new Font("Sans Serif", Font.PLAIN, 30));
+            endGameLabel = text;
+        } else {
+            JLabel text = new JLabel("You lost!", SwingConstants.CENTER);
+            text.setFont(new Font("Sans Serif", Font.PLAIN, 30));
+            endGameLabel = text;        }
         endGamePanel.add(endGameLabel);
 
         JPanel midPanel = new JPanel(new GridLayout(1,2));

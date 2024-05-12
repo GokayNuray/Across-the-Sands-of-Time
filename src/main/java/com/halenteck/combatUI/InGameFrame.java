@@ -1,53 +1,58 @@
 package com.halenteck.combatUI;
 
 import com.halenteck.CombatGame.Game;
-import com.halenteck.CombatGame.Location;
-import com.halenteck.CombatGame.characters.*;
 import com.halenteck.server.Server;
 import com.halenteck.CombatGame.Character;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.font.ImageGraphicAttribute;
-import java.awt.image.BufferedImage;
 
 public class InGameFrame extends JFrame {
 
-    private Game game;
+    public Game game;
     public int enemyX;
+    public int playerX;
     public int playerHealth;
     public int enemyHealth;
+    public int enemyCount;
+    public boolean isAbilityActive;
+    JProgressBar playerHealthBar;
+    JProgressBar enemyHealthBar;
+    JLabel enemyImageLabel;
+    JLabel playerImageLabel;
+    Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();
+    JButton moveForwardButton;
+    JButton moveBackwardButton;
+    JButton longAttackButton;
+    JButton shortAttackButton;
+    JButton specialAbilityButton;
+    JLayeredPane layeredPane;
 
-    public static void main(String[] args) {
-        try {
-            Server.connect();
-            Server.login("Babapiiro31", "Gokaynu2!");
-            new InGameFrame();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+//    public static void main(String[] args) {
+//        try {
+//            Server.connect();
+//            Server.login("Babapiiro31", "Gokaynu2!");
+//            new FpsInGame();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public InGameFrame() throws Exception {
+        byte lastSelectedCharacter = (byte) (Server.getUserData().getLastSelectedCharacter() - 1);
+        Character character = Character.characters.get(lastSelectedCharacter);
+        isAbilityActive = false;
+        playerX = 250;
+        enemyX = (int) bounds.getWidth() - 450;
         game = new Game(this);
         setTitle("Combat Fight");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();
-        ImageIcon backgroundImage = new ImageIcon(getClass().getResource("/characters/historymuseum.jpeg"));
+        ImageIcon backgroundImage = new ImageIcon(getClass().getResource(character.resourcePath + "map4.jpeg"));
         Image scaledImage = backgroundImage.getImage().getScaledInstance((int) bounds.getWidth(), (int) bounds.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(scaledImageIcon);
 
-        // Check the image loading
-        if (backgroundImage == null) {
-            System.out.println("Image could not be loaded");
-            return;
-        }
-
-        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane = new JLayeredPane();
         imageLabel.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
         layeredPane.add(imageLabel, JLayeredPane.DEFAULT_LAYER); // Add to layer 0
 
@@ -55,12 +60,26 @@ public class InGameFrame extends JFrame {
         JButton giveUpButton = new JButton("Give Up");
         giveUpButton.addActionListener(e -> {
             showPopUp(new EndGameFrame(this));
+            int layerToRemove = layeredPane.PALETTE_LAYER;
+
+            // Get all components in the JLayeredPane
+            Component[] components = layeredPane.getComponentsInLayer(layerToRemove);
+
+            // Iterate over the components
+            for (Component component : components) {
+                // Remove the component from the JLayeredPane
+                layeredPane.remove(component);
+            }
+
+            // Refresh the JLayeredPane
+            layeredPane.revalidate();
+            layeredPane.repaint();
         });
         giveUpButton.setBounds((int) bounds.getWidth() - 190, 10, 100, 50);
         layeredPane.add(giveUpButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
 
         // game panel
-        JLabel playerName = new JLabel("Grok", SwingConstants.LEFT);
+        JLabel playerName = new JLabel(character.name, SwingConstants.LEFT);
         playerName.setFont(new Font("Arial", Font.BOLD, 30));
         playerName.setBounds(200, 100, 200, 50);
         layeredPane.add(playerName, JLayeredPane.PALETTE_LAYER); // Add to layer 1
@@ -78,24 +97,18 @@ public class InGameFrame extends JFrame {
         enemyHealthLabel.setFont(new Font("Arial", Font.BOLD, 20));
         enemyHealthLabel.setForeground(Color.WHITE);
         layeredPane.add(enemyHealthLabel, JLayeredPane.PALETTE_LAYER); // Add to layer 1
-        byte lastSelectedCharacter = Server.getUserData().getLastSelectedCharacter();
-        Character character;
-        switch (lastSelectedCharacter) {
-            case 1 -> character = new CaveMan();
-            case 2 -> character = new Antidote();
-            case 3 -> character = new Nazi();
-            case 4 -> character = new GlobalWarming();
-            case 5 -> character = new Boss();
-            default -> throw new IllegalStateException("Unexpected value: " + lastSelectedCharacter);
-        }
+        playerHealth = character.health;
+        enemyHealth = game.getLocations().getEnemyHealth();
+        enemyX = (int) bounds.getWidth() - 500;
         int playerMaxHealth = character.health;
-        JProgressBar playerHealthBar = new JProgressBar(0, playerMaxHealth);
+        int enemyMaxHealth = game.getLocations().getEnemyHealth();
+        playerHealthBar = new JProgressBar(0, playerMaxHealth);
         playerHealthBar.setValue(character.health);
         playerHealthBar.setString(character.health + "/" + playerMaxHealth);
         playerHealthBar.setStringPainted(true);
-        JProgressBar enemyHealthBar = new JProgressBar(0, character.health);
-        enemyHealthBar.setValue(character.health);
-        enemyHealthBar.setString(character.health + "/" + playerMaxHealth);
+        enemyHealthBar = new JProgressBar(0, character.health);
+        enemyHealthBar.setValue(enemyHealth);
+        enemyHealthBar.setString(enemyHealth + "/" + enemyMaxHealth + "x" + enemyCount);
         enemyHealthBar.setStringPainted(true);
         playerHealthBar.setBounds((int) bounds.getWidth() - 1500, (int) bounds.getHeight() - 100, 400, 50);
         enemyHealthBar.setBounds((int) bounds.getWidth() - 500, (int) bounds.getHeight() - 100, 400, 50);
@@ -106,37 +119,46 @@ public class InGameFrame extends JFrame {
         ImageIcon playerImage = new ImageIcon(getClass().getResource(character.resourcePath + "skin.jpg"));
         Image scaledPlayerImage = playerImage.getImage().getScaledInstance(300, 550, Image.SCALE_SMOOTH);
         ImageIcon scaledPlayerImageIcon = new ImageIcon(scaledPlayerImage);
-        JLabel playerImageLabel = new JLabel(scaledPlayerImageIcon);
+        playerImageLabel = new JLabel(scaledPlayerImageIcon);
         playerImageLabel.setBounds(250, 130, 300, 600);
         layeredPane.add(playerImageLabel, JLayeredPane.PALETTE_LAYER); // Add to layer 1
         Dimension playerImageBounds = playerImageLabel.getSize();
         // player move buttons
-        JButton moveForwardButton = new JButton("->");
+        moveForwardButton = new JButton("->");
         moveForwardButton.addActionListener(e -> {
-            playerImageLabel.setBounds((int) (playerImageLabel.getX() + 50), playerImageLabel.getY(), playerImageBounds.width, playerImageBounds.height);
-            game.goForward();
+            if (playerX < 450) {
+                game.goForward();
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "You can't move forward anymore!");
+            }
         });
         moveForwardButton.setToolTipText("Move Forward");
-        moveForwardButton.setBounds((int) (250 + playerImageBounds.getWidth() - 425), 300, 100, 100);
+        moveForwardButton.setBounds((int) (playerX + playerImageBounds.getWidth() - 425), 300, 100, 100);
         layeredPane.add(moveForwardButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
-        JButton moveBackwardButton = new JButton("<-");
+        moveBackwardButton = new JButton("<-");
         moveBackwardButton.setToolTipText("Move Backward");
         moveBackwardButton.addActionListener(e -> {
-            playerImageLabel.setBounds((int) (playerImageLabel.getX() - 50), playerImageLabel.getY(), playerImageBounds.width, playerImageBounds.height);
-            game.goBackward();
+            if (playerX > 250) {
+                game.goBackward();
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "You can't move backward anymore!");
+            }
+
         });
-        moveBackwardButton.setBounds((int) (250 + playerImageBounds.getWidth() - 425), 450, 100, 100);
+        moveBackwardButton.setBounds((int) (playerX + playerImageBounds.getWidth() - 425), 450, 100, 100);
         layeredPane.add(moveBackwardButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
-        JButton closeAttackButton = new JButton("\uD83E\uDD1C");
-        closeAttackButton.setToolTipText("Close Attack");
-        closeAttackButton.addActionListener(e -> {
+        shortAttackButton = new JButton("\uD83E\uDD1C");
+        shortAttackButton.setToolTipText("Close Attack");
+        shortAttackButton.addActionListener(e -> {
             game.shortRangeAttack();
             enemyHealthBar.setValue(character.health);
             enemyHealthBar.setString(character.health + "/" + playerMaxHealth);
         });
-        closeAttackButton.setBounds(250 + playerImageBounds.width + 10, 200, 100, 100);
-        layeredPane.add(closeAttackButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
-        JButton longAttackButton = new JButton("\uD83D\uDDE1\uFE0F");
+        shortAttackButton.setBounds(250 + playerImageBounds.width + 10, 200, 100, 100);
+        layeredPane.add(shortAttackButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
+        longAttackButton = new JButton("\uD83D\uDDE1\uFE0F");
         longAttackButton.setToolTipText("Long Attack");
         longAttackButton.addActionListener(e -> {
             game.longRangeAttack();
@@ -150,9 +172,10 @@ public class InGameFrame extends JFrame {
         }
         longAttackButton.setBounds(250 + playerImageBounds.width + 10, 350, 100, 100);
         layeredPane.add(longAttackButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
-        JButton specialAbilityButton = new JButton("\uD83C\uDF1F");
+        specialAbilityButton = new JButton("\uD83C\uDF1F");
         specialAbilityButton.setToolTipText("Special Ability");
-        if (!Server.getUserData().getCharacters()[Server.getUserData().getLastSelectedCharacter() - 1].isSpecialAbilityUnlocked()) {
+        if (!Server.getUserData().getCharacters()[Server.getUserData().getLastSelectedCharacter() - 1].isSpecialAbilityUnlocked()
+                || !isAbilityActive) {
             specialAbilityButton.setEnabled(false);
             specialAbilityButton.setToolTipText("Special Ability is locked");
         }
@@ -168,7 +191,7 @@ public class InGameFrame extends JFrame {
         ImageIcon enemyImage = new ImageIcon(getClass().getResource(character.resourcePath + "specialability.png"));
         Image scaledEnemyImage = enemyImage.getImage().getScaledInstance(300, 550, Image.SCALE_SMOOTH);
         ImageIcon scaledEnemyImageIcon = new ImageIcon(scaledEnemyImage);
-        JLabel enemyImageLabel = new JLabel(scaledEnemyImageIcon);
+        enemyImageLabel = new JLabel(scaledEnemyImageIcon);
         enemyImageLabel.setBounds((int) bounds.getWidth() - 450, 130, 300, 600);
         layeredPane.add(enemyImageLabel, JLayeredPane.PALETTE_LAYER); // Add to layer 1
 
@@ -180,7 +203,40 @@ public class InGameFrame extends JFrame {
     public void updatePanels() {
         if (game.isGameOver) {
             showPopUp(new EndGameFrame(this));
+            int layerToRemove = layeredPane.PALETTE_LAYER;
+
+            // Get all components in the JLayeredPane
+            Component[] components = layeredPane.getComponentsInLayer(layerToRemove);
+
+            // Iterate over the components
+            for (Component component : components) {
+                // Remove the component from the JLayeredPane
+                layeredPane.remove(component);
+            }
+
+            // Refresh the JLayeredPane
+            layeredPane.revalidate();
+            layeredPane.repaint();
+            return;
         }
+
+        // Update player and enemy health
+        playerHealthBar.setValue(playerHealth);
+        playerHealthBar.setString(playerHealth + "/" + playerHealthBar.getMaximum());
+        enemyHealthBar.setValue(enemyHealth);
+        enemyHealthBar.setString(enemyHealth + "/" + enemyHealthBar.getMaximum() + "x" + enemyCount);
+
+        // update player and enemy images
+        playerImageLabel.setBounds(playerX, 130, 300, 600);
+        enemyImageLabel.setBounds(enemyX, 130, 300, 600);
+
+        // update buttons accordingly
+        shortAttackButton.setBounds(playerX + playerImageLabel.getWidth() + 10, 200, 100, 100);
+        longAttackButton.setBounds(playerX + playerImageLabel.getWidth() + 10, 350, 100, 100);
+        specialAbilityButton.setBounds(playerX + playerImageLabel.getWidth() + 10, 500, 100, 100);
+        moveBackwardButton.setBounds(playerX + playerImageLabel.getWidth() - 425, 450, 100, 100);
+        moveForwardButton.setBounds(playerX + playerImageLabel.getWidth() - 425, 300, 100, 100);
+
     }
 
     public void showPopUp(JFrame frame) {

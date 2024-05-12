@@ -9,6 +9,7 @@ public class Game {
 
     Location location;
     public boolean isGameOver = false;
+    public boolean isGameWon = false;
 
     public Game(InGameFrame inGameFrame) {
         UserData userData = Server.getUserData();

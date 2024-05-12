@@ -14,6 +14,7 @@ public class Location {
     }
 
     public boolean isGameOver = false;
+    public boolean isGameWon = false;
     protected int locationId;
     protected String name;
     protected Enemy enemies;
@@ -34,6 +35,7 @@ public class Location {
     int enemyHealth;
     int enemyAttackPower;
     InGameFrame inGameFrame;
+
     public Location(int locationId, String name, Enemy enemies, String award) {
         this.locationId = locationId;
         this.name = name;
@@ -216,12 +218,15 @@ public class Location {
             Server.getUserData().setMoney(money);
             Server.updateUserData();
             isGameOver = true;
+            isGameWon = true;
+            updatePanels();
             return;
         }
 
         if (enemyHealth <= 0) {
             enemyCount--;
             enemyHealth = enemies.health;
+            updatePanels();
             return;
         }
 
@@ -229,9 +234,21 @@ public class Location {
 
         if (playerHealth <= 0) {
             isGameOver = true;
+            isGameWon = false;
         }
 
         abilityActive = false;
+        updatePanels();
+    }
+
+    public void updatePanels() {
+        inGameFrame.enemyHealth = enemyHealth;
+        inGameFrame.enemyCount = enemyCount;
+        inGameFrame.playerHealth = playerHealth;
+        inGameFrame.playerX = playerX;
+        inGameFrame.enemyX = enemyX;
+        inGameFrame.isAbilityActive = abilityActive;
+
         inGameFrame.updatePanels();
     }
 

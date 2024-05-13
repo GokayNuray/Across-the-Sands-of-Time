@@ -5,10 +5,9 @@ import com.halenteck.render.Models;
 import com.halenteck.render.World;
 import org.joml.Vector3f;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
-public class Player implements KeyListener {
+public class Player implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
     private static final float TICKS_PER_SECOND = 20;
     private static final float SPEED = 1;
     private static final float JUMP_FORCE = 4;
@@ -42,6 +41,14 @@ public class Player implements KeyListener {
     private boolean isRedTeam;
     private boolean isCrouching;
     private boolean isGrounded;
+    private boolean abilityActive;
+    private boolean shooting;
+
+    private boolean isInvisible;
+    private boolean isImmortal;
+    private boolean isFlying;
+    private boolean redBullets;
+    private boolean infAmmo;
 
     private boolean moveForward;
     private boolean moveBackward;
@@ -105,6 +112,12 @@ public class Player implements KeyListener {
                 if (moveRight) {
                     moveRight();
                 }
+                if (shooting) {
+                    shoot();
+                }
+                if (abilityActive) {
+                    activateAbility();
+                }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 move(velocity);
@@ -144,6 +157,8 @@ public class Player implements KeyListener {
             case KeyEvent.VK_D:
                 moveRight = true;
                 break;
+            case KeyEvent.VK_Q:
+                abilityActive = true;
             case KeyEvent.VK_SPACE:
                 jump();
                 break;
@@ -168,9 +183,58 @@ public class Player implements KeyListener {
             case KeyEvent.VK_D:
                 moveRight = false;
                 break;
+            case KeyEvent.VK_Q:
+                abilityActive = false;
             case KeyEvent.VK_SHIFT:
                 stand();
                 break;
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON1:
+                shooting = true;
+                break;
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON1:
+                shooting = false;
+                break;
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        float lastMouseX = yaw;
+        float lastMouseY = pitch;
+        float dx = e.getX() - lastMouseX;
+        float dy = e.getY() - lastMouseY;
+        rotate(dx, dy);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {}
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        int notches = e.getWheelRotation();
+        if (notches != 0) {
+            switchWeapon();
         }
     }
 
@@ -339,10 +403,29 @@ public class Player implements KeyListener {
     }
 
     public void die() {
-        // TODO: Implement death logic.
-        System.out.println("die() method will be implemented soon.");
         this.incrementDeaths();
         health = -1;
+    }
+
+    //TODO: Implement each ability.
+    public void activateAbility() {
+        switch (characterId) {
+            case 1:
+                isInvisible = true;
+                break;
+            case 2:
+                isImmortal = true;
+                break;
+            case 3:
+                isFlying = true;
+                break;
+            case 4:
+                redBullets = true;
+                break;
+            case 5:
+                infAmmo = true;
+                break;
+        }
     }
 
     public void setTeam(Team team) {
@@ -419,6 +502,14 @@ public class Player implements KeyListener {
 
     public void setPosition(Vector3f newPosition) {
         position = newPosition;
+    }
+
+    public byte getCharacterId() {
+        return characterId;
+    }
+
+    public boolean isAbilityActive() {
+        return abilityActive;
     }
 
     public Entity getEntity() {

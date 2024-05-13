@@ -7,7 +7,7 @@ public class Bullet {
     private Vector3f velocity;
     private int damage;
     private static final float SPEED = 50f;
-
+    private Player player;
 
     public Bullet(Vector3f startPosition, Vector3f direction, int damage) {
         this.position = new Vector3f(startPosition.x, startPosition.y, startPosition.z);
@@ -48,5 +48,9 @@ public class Bullet {
 
     public int getDamage() {
         return damage;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

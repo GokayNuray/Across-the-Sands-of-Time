@@ -44,6 +44,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean abilityActive;
     private boolean shooting;
 
+    //Abilities for 1, 2(done), 3, 4(done), 5 respectively, used to keep track
     private boolean isInvisible;
     private boolean isImmortal;
     private boolean isFlying;
@@ -114,9 +115,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 }
                 if (shooting) {
                     shoot();
-                }
-                if (abilityActive) {
-                    activateAbility();
                 }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
@@ -379,7 +377,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void handleBullet(Bullet bullet) {
         if (bullet.doesBulletHitTarget(this))
         {
-            takeDamage(bullet.getDamage());
+            if (isAbilityActive() && characterId == 2) {
+                takeDamage(bullet.getDamage());
+            }
         }
     }
 
@@ -405,27 +405,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void die() {
         this.incrementDeaths();
         health = -1;
-    }
-
-    //TODO: Implement each ability.
-    public void activateAbility() {
-        switch (characterId) {
-            case 1:
-                isInvisible = true;
-                break;
-            case 2:
-                isImmortal = true;
-                break;
-            case 3:
-                isFlying = true;
-                break;
-            case 4:
-                redBullets = true;
-                break;
-            case 5:
-                infAmmo = true;
-                break;
-        }
     }
 
     public void setTeam(Team team) {

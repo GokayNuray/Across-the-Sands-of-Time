@@ -175,7 +175,7 @@ public class InGameFrame extends JFrame {
         layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
 
         // enemy images
-        ImageIcon enemyImage = new ImageIcon(getClass().getResource(character.resourcePath + "specialability.png"));
+        ImageIcon enemyImage = new ImageIcon(getClass().getResource(character.resourcePath + "enemy" + (game.getLocations().getLocationId() + 1) + ".png"));
         Image scaledEnemyImage = enemyImage.getImage().getScaledInstance(300, 550, Image.SCALE_SMOOTH);
         ImageIcon scaledEnemyImageIcon = new ImageIcon(scaledEnemyImage);
         enemyImageLabel = new JLabel(scaledEnemyImageIcon);

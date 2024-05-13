@@ -1,6 +1,7 @@
 package com.halenteck.fpsUI;
 
 import com.halenteck.CombatGame.Character;
+import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.fpsGame.Game;
 import com.halenteck.server.Server;
 
@@ -39,16 +40,6 @@ public class FpsInGame extends JFrame {
         layeredPane = new JLayeredPane();
         JLabel background = new JLabel();
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER);
-        // shortcut for ending game esc
-        KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
-        Action escapeAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new FpsEndGame(false);
-            }
-        };
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
-        getRootPane().getActionMap().put("ESCAPE", escapeAction);
 
         playerHealthBar = new JProgressBar();
         playerHealthBar.setStringPainted(true);
@@ -113,12 +104,37 @@ public class FpsInGame extends JFrame {
         if (!isAbilityActive) {
             specialAbilityButton.setEnabled(false);
         }
+        specialAbilityButton.setEnabled(true);
+        layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER);
+
+        JLabel ammoLabel = new JLabel("27/30");
+        ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        ammoLabel.setBounds((int) bounds.getWidth() - 150, (int) bounds.getHeight() - 75, 100, 20);
+        layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);
+
+        JLabel returnLabel = new JLabel("Press ESC to return to the main menu");
+        returnLabel.setFont(new Font("Arial", Font.BOLD, 15));
+        returnLabel.setForeground(Color.PINK);
+        returnLabel.setBounds(10, (int) bounds.getHeight() - 70, 300, 20);
+        layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
+
         Timer abilityTimer = new Timer(1000, e -> {
             if (isAbilityActive && isAbilityUsed) {
                 specialAbilityButton.setEnabled(true);
                 isAbilityUsed = false;
             }
         });
+
+        // shortcut for returning to game selection menu
+        KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
+        Action escapeAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                new GameSelectionMenu();
+                dispose();
+            }
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
+        getRootPane().getActionMap().put("ESCAPE", escapeAction);
         layeredPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -142,19 +158,6 @@ public class FpsInGame extends JFrame {
                 }
             }
         });
-        specialAbilityButton.setEnabled(true);
-        layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER);
-
-        JLabel ammoLabel = new JLabel("27/30");
-        ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        ammoLabel.setBounds((int) bounds.getWidth() - 150, (int) bounds.getHeight() - 75, 100, 20);
-        layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);
-
-        JLabel returnLabel = new JLabel("Press ESC to return to the main menu");
-        returnLabel.setFont(new Font("Arial", Font.BOLD, 15));
-        returnLabel.setForeground(Color.PINK);
-        returnLabel.setBounds(10, (int) bounds.getHeight() - 70, 300, 20);
-        layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
         // viewing in-game scoreboard with tab
         layeredPane.addKeyListener(new KeyAdapter() {
@@ -176,7 +179,6 @@ public class FpsInGame extends JFrame {
             }
         });
 
-        // Game Panel
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);

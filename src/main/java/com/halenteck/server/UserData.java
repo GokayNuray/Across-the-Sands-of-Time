@@ -13,7 +13,7 @@ public class UserData {
     private int rankPoints;
     private int money;
     private byte unlockedCharacterCount;
-    private static UserCharacterData[] characters;
+    private UserCharacterData[] characters;
     private byte armorLevel;
     private byte lastSelectedCharacter;
     private byte combatLevelReached;
@@ -154,7 +154,7 @@ public class UserData {
         this.unlockedCharacterCount = unlockedCharacterCount;
     }
 
-    public static UserCharacterData[] getCharacters() {
+    public UserCharacterData[] getCharacters() {
         return characters;
     }
 

@@ -9,10 +9,6 @@ import java.util.Random;
 
 public class Location {
 
-    public boolean isGameOver() {
-        return isGameOver;
-    }
-
     public boolean isGameOver = false;
     public boolean isGameWon = false;
     protected int locationId;
@@ -35,6 +31,8 @@ public class Location {
     int enemyHealth;
     int enemyAttackPower;
     InGameFrame inGameFrame;
+    int playerFrameX;
+    int enemyFrameX;
 
     public Location(int locationId, String name, Enemy enemies, String award) {
         this.locationId = locationId;
@@ -42,6 +40,7 @@ public class Location {
         this.enemies = enemies;
         this.award = award;
         enemyCount = enemies.enemyCount();
+
     }
 
     public void startGame(Character player, InGameFrame inGameFrame) {
@@ -57,16 +56,22 @@ public class Location {
         playerLongRangeDamage = player.longRangeDamage;
         playerX = 40;
         enemyX = 440;
+        playerFrameX = inGameFrame.playerX;
+        enemyFrameX = inGameFrame.enemyX;
         ability = new Ability(characterID);
         abilityActive = false;
         enemyHealth = enemies.health;
         enemyAttackPower = enemies.damage;
+        inGameFrame.enemyHealth = enemyHealth;
+        inGameFrame.enemyCount = enemyCount;
+        inGameFrame.playerHealth = playerHealth;
     }
 
     public boolean goForward() {
 
         if (enemyX > playerX + 160) {
             playerX += 80;
+            playerFrameX += 50;
             continueTurn();//in this case enemy will move after the character and will be able to move if the player made a valid move
             //the same goes for the enemy
             return true;
@@ -78,6 +83,7 @@ public class Location {
 
         if (playerX - 80 > 0) {//to check limits
             playerX -= 80;
+            playerFrameX -= 50;
             continueTurn();
             return true;
         }
@@ -171,6 +177,7 @@ public class Location {
             if (enemyProcess == 0 && !playedTurn) { // to go forward
                 if (enemyX - 160 != playerX) {
                     enemyX -= 80;
+                    enemyFrameX -= 50;
                     playedTurn = true;
                 }
             }
@@ -179,6 +186,7 @@ public class Location {
 
                 if (enemyX + 80 <= 800) {
                     enemyX += 80;
+                    enemyFrameX += 50;
                     playedTurn = true;
                 }
             }
@@ -213,9 +221,28 @@ public class Location {
     public void continueTurn() {
 
         if (enemyHealth <= 0 && enemyCount <= 0) {
+            UserData userData = Server.getUserData();
             player.collectItem(locationId);
-            int money = Server.getUserData().getMoney() + enemies.reward;
-            Server.getUserData().setMoney(money);
+            int money = userData.getMoney() + enemies.reward;
+            userData.setMoney(money);
+            short xp = userData.getXp();
+            xp += (short) switch (locationId) {
+                case 0 -> 15;
+                case 1 -> 20;
+                case 2 -> 25;
+                case 3 -> 40;
+                default -> throw new IllegalStateException("Unexpected value: " + locationId);
+            };
+            xp += (short) (characterID * 10);
+            if (xp >= 100) {
+                xp -= 100;
+                byte level = userData.getLevel();
+                level++;
+                userData.setLevel(level);
+            }
+            userData.setXp(xp);
+            byte combatLevelReached = (byte) (userData.getCombatLevelReached() + 1);
+            userData.setCombatLevelReached(combatLevelReached);
             Server.updateUserData();
             isGameOver = true;
             isGameWon = true;
@@ -245,8 +272,8 @@ public class Location {
         inGameFrame.enemyHealth = enemyHealth;
         inGameFrame.enemyCount = enemyCount;
         inGameFrame.playerHealth = playerHealth;
-        inGameFrame.playerX = playerX;
-        inGameFrame.enemyX = enemyX;
+        inGameFrame.playerX = playerFrameX;
+        inGameFrame.enemyX = enemyFrameX;
         inGameFrame.isAbilityActive = abilityActive;
 
         inGameFrame.updatePanels();
@@ -290,5 +317,9 @@ public class Location {
 
     public int getEnemyHealth() {
         return enemyHealth;
+    }
+
+    public int getReward() {
+        return enemies.reward;
     }
 }

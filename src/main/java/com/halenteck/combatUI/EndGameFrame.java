@@ -28,21 +28,22 @@ public class EndGameFrame extends JFrame {
             }
         });
 
-        JPanel endGamePanel = new JPanel(new GridLayout(3,1));
+        JPanel endGamePanel = new JPanel(new GridLayout(3, 1));
         JLabel endGameLabel = new JLabel();
-        if (gameFrame.game.isGameWon) {
+        if (gameFrame.game.isGameWon()) {
             JLabel text = new JLabel("You won!", SwingConstants.CENTER);
             text.setFont(new Font("Sans Serif", Font.PLAIN, 30));
             endGameLabel = text;
         } else {
             JLabel text = new JLabel("You lost!", SwingConstants.CENTER);
             text.setFont(new Font("Sans Serif", Font.PLAIN, 30));
-            endGameLabel = text;        }
+            endGameLabel = text;
+        }
         endGamePanel.add(endGameLabel);
 
-        JPanel midPanel = new JPanel(new GridLayout(1,2));
-        JPanel statsPanel = new JPanel(new GridLayout(3,1));
-        JLabel additionLabel = new JLabel("+ item 2" + "\t+ $25", SwingConstants.CENTER);
+        JPanel midPanel = new JPanel(new GridLayout(1, 2));
+        JPanel statsPanel = new JPanel(new GridLayout(3, 1));
+        JLabel additionLabel = new JLabel("+ " + gameFrame.game.getLocation().getAward() + "\t+ " + gameFrame.game.getLocation().getReward() + "$", SwingConstants.CENTER);
         statsPanel.add(additionLabel);
 
         JLabel levelLabel = new JLabel("Level: " + Server.getUserData().getLevel(), SwingConstants.RIGHT);
@@ -53,7 +54,17 @@ public class EndGameFrame extends JFrame {
         JProgressBar levelBar = new JProgressBar();
         levelBar.setValue(Server.getUserData().getXp());
         levelBar.setStringPainted(true);
-        JLabel xpLabel = new JLabel("+ 15 XP", SwingConstants.CENTER);
+        int xpEarned;
+        switch (gameFrame.game.getLocation().getLocationId()) {
+            case 0 -> xpEarned = 15;
+            case 1 -> xpEarned = 20;
+            case 2 -> xpEarned = 25;
+            case 3 -> xpEarned = 40;
+            default ->
+                    throw new IllegalStateException("Unexpected value: " + gameFrame.game.getLocation().getLocationId());
+        }
+        xpEarned += Server.getUserData().getUnlockedCharacterCount() * 10 - 10;
+        JLabel xpLabel = new JLabel("+ " + xpEarned + " XP", SwingConstants.CENTER);
         xpLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         levelPanel.add(levelBar, BorderLayout.CENTER);
         levelPanel.add(xpLabel, BorderLayout.EAST);
@@ -73,7 +84,7 @@ public class EndGameFrame extends JFrame {
         midPanel.add(enterBattleButton);
         endGamePanel.add(midPanel);
 
-        JPanel bottomPanel = new JPanel(new GridLayout(1,3));
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 3));
         JButton shopButton = new JButton("Shop/Upgrade");
         shopButton.addActionListener(e -> {
             ShopFrame.getInstance().setVisible(true);

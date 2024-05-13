@@ -8,8 +8,6 @@ import com.halenteck.server.UserData;
 public class Game {
 
     Location location;
-    public boolean isGameOver = false;
-    public boolean isGameWon = false;
 
     public Game(InGameFrame inGameFrame) {
         UserData userData = Server.getUserData();
@@ -49,7 +47,24 @@ public class Game {
         location.useAbility();
     }
 
-    public Location getLocations() {
+    public Location getLocation() {
         return location;
+    }
+
+    public boolean isGameOver() {
+        return location.isGameOver;
+    }
+
+    public boolean isGameWon() {
+        return location.isGameWon;
+    }
+
+    public void giveUp() {
+        location.isGameOver = true;
+        location.isGameWon = false;
+        UserData userData = Server.getUserData();
+        byte currentLevel = userData.getCombatLevelReached();
+        userData.setCombatLevelReached((byte) (currentLevel - 1));
+        Server.updateUserData();
     }
 }

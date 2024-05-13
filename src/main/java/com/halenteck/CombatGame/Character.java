@@ -3,6 +3,7 @@ package com.halenteck.CombatGame;
 import com.halenteck.CombatGame.characters.*;
 import com.halenteck.server.Server;
 import com.halenteck.server.UserCharacterData;
+import com.halenteck.server.UserData;
 
 import java.util.Map;
 
@@ -52,21 +53,38 @@ public abstract class Character {
 
     public void collectItem(int i) {//when all the enemies at a location are killed, the item's collected
         items[i] = true;
-        increaseProgress();
+        setProgress();
     }
 
-    public void increaseProgress() {
+    public void setProgress() {
         UserCharacterData characterData = Server.getUserData().getCharacters()[characterID];
         byte characterProgress = characterData.getProgress();
+        byte newCharacterProgress;
         if (items[3]) {
-            characterProgress += 40;
+            newCharacterProgress = 100;
+            if (characterID < 4) {
+                unlockNextCharacter();
+            }
         } else if (items[2]) {
-            characterProgress += 25;
+            newCharacterProgress = 60;
         } else if (items[1]) {
-            characterProgress += 20;
+            newCharacterProgress = 35;
         } else if (items[0]) {
-            characterProgress += 15;
+            newCharacterProgress = 15;
+        } else {
+            newCharacterProgress = 0;
         }
-        characterData.setProgress(characterProgress);
+        characterData.setProgress((byte) Math.max(characterProgress, newCharacterProgress));
+    }
+
+    private void unlockNextCharacter() {
+        UserData userData = Server.getUserData();
+        UserCharacterData[] characters = userData.getCharacters();
+        UserCharacterData[] newCharacters = new UserCharacterData[characters.length + 1];
+        System.arraycopy(characters, 0, newCharacters, 0, characters.length);
+        UserCharacterData newCharacter = new UserCharacterData((byte) (characterID + 1), (byte) 0, new boolean[]{true, false}, (byte) 0, new byte[3], false);
+        newCharacters[characters.length] = newCharacter;
+        userData.setCharacters(newCharacters);
+        userData.setUnlockedCharacterCount((byte) newCharacters.length);
     }
 }

@@ -28,6 +28,8 @@ public class Bullet {
     }
 
     private boolean isBulletHittingTarget(Bullet bullet, Player target) {
+        float hitRadius = 0.8f;
+
         float targetX = target.getX();
         float targetY = target.getY();
         float targetZ = target.getZ();
@@ -36,9 +38,28 @@ public class Bullet {
         float bulletY = bullet.getPosition().y;
         float bulletZ = bullet.getPosition().z;
 
-        return (bulletX >= targetX - 0.2f && bulletX <= targetX + 0.2f) &&
+        if ((bulletX >= targetX - 0.2f && bulletX <= targetX + 0.2f) &&
                 (bulletY >= targetY && bulletY <= targetY + 1.7f ) &&
-                (bulletZ >= targetZ - 0.2f && bulletZ <= targetZ + 0.2f);
+                (bulletZ >= targetZ - 0.2f && bulletZ <= targetZ + 0.2f)) {
+            if (player.isAbilityActive() && player.getCharacterId() == 4) {
+                damage = 100;
+                return true;
+            }
+            else {
+                return true;
+            }
+        }
+        else if (player.isAbilityActive() && player.getCharacterId() == 4) {
+            if ((bulletX >= targetX - 0.2f - hitRadius && bulletX < targetX - 0.2f) ||
+                    (bulletX <= targetX + 0.2f + hitRadius && bulletX > targetX + 0.2f) ||
+                    (bulletY <= targetY + 1.7f + hitRadius && bulletY > targetY + 1.7f) ||
+                    (bulletZ >= targetZ - 0.2f - hitRadius && bulletZ < targetZ - 0.2f) ||
+                    (bulletZ <= targetZ + 0.2f + hitRadius && bulletZ > targetZ + 0.2f)) {
+                damage = 1;
+                return true;
+            }
+        }
+        return false;
     }
 
     public void update(float time) {

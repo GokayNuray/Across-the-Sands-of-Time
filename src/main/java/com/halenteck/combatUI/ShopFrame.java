@@ -15,9 +15,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopFrame extends JFrame {
     static JPanel characterDisplayPanel = new JPanel();
-    private static JPanel itemPanel = new JPanel();
     private JLabel currencyLabel = new JLabel("Currency: $" + Server.getUserData().getMoney(), SwingConstants.CENTER);
     private static ShopFrame instance;
+    private CardLayout cardLayout = new CardLayout();
+    private JPanel cards = new JPanel(cardLayout);
+
 
     public ShopFrame() {
 
@@ -55,12 +57,12 @@ public class ShopFrame extends JFrame {
         // character item display panels (creates panels for each character)
         JPanel[][] itemPanels = new JPanel[characterDisplayPanels.length][3];
         for (int i = 0; i < characterDisplayPanels.length; i++) {
-            itemPanels[i] = createItemPanel(i);
+            itemPanels[i] = createItemPanels(i);
         }
 
         // initially, first character info (weapon menu) is shown
-        itemPanel.add(itemPanels[0][0]);
-        mainShopPanel.add(itemPanel, BorderLayout.CENTER);
+        cards.add(itemPanels[0][0]);
+        mainShopPanel.add(cards, BorderLayout.CENTER);
         characterDisplayPanel.add(characterDisplayPanels[0]);
         add(characterDisplayPanel, BorderLayout.WEST);
 
@@ -71,12 +73,15 @@ public class ShopFrame extends JFrame {
         currencyLabel.setBackground(Color.YELLOW);
         shopButtonPanel.add(currencyLabel);
         JButton weaponButton = new JButton("Weapon");
+        weaponButton.setBackground(Color.GREEN);
         weaponButton.setFont(new Font("Sans Serif", Font.BOLD, 16)); // Adjust font size as needed
         weaponButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Adjust border style
         JButton armourButton = new JButton("Armour");
+        armourButton.setBackground(Color.WHITE);
         armourButton.setFont(new Font("Sans Serif", Font.BOLD, 16)); // Adjust font size as needed
         armourButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Adjust border style
         JButton abilityButton = new JButton("Special Ability");
+        abilityButton.setBackground(Color.WHITE);
         abilityButton.setFont(new Font("Sans Serif", Font.BOLD, 16)); // Adjust font size as needed
         abilityButton.setBorder(BorderFactory.createRaisedBevelBorder()); // Adjust border style
 
@@ -115,7 +120,6 @@ public class ShopFrame extends JFrame {
         characterSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-
                 int newValue = characterSlider.getValue();
                 int adjustedValue = Math.min(newValue, itemPanels.length - 1); // ensuring value is within bounds
                 characterSelection.set(adjustedValue);
@@ -165,36 +169,39 @@ public class ShopFrame extends JFrame {
 
         // update currency label
         currencyLabel.setText("Currency: $" + Server.getUserData().getMoney());
+
         // Update character shop panel based on slider value
-        itemPanel.removeAll();
-        itemPanel.revalidate();
-        JPanel[] panels = createItemPanel(characterId);
-        itemPanel.add(panels[shopId]);
-        itemPanel.revalidate();  // Inform the panel layout needs to be updated
+        JPanel[] panels = createItemPanels(characterId);
+        cards.removeAll(); // remove all components from cards
+        cards.add(panels[shopId], String.valueOf(shopId)); // Add the selected panel to the cards
+        cardLayout.show(cards, String.valueOf(shopId)); // Show the selected panel
 
         // Update character display panel based on slider value
-        characterDisplayPanel.removeAll();
+        characterDisplayPanel.removeAll(); // remove all components from characterDisplayPanel
         characterDisplayPanel.revalidate();
         characterDisplayPanel.add(createCharacterDisplayPanel(characterId));
         characterDisplayPanel.revalidate();  // Inform the frame layout needs to be updated
         revalidate();
     }
 
-    protected static JPanel[] createItemPanel(int characterIndex) {
+    protected static JPanel[] createItemPanels(int characterIndex) {
         JPanel[] panels = new JPanel[3];
+        Character character = Character.characters.get((byte) characterIndex);
 
         JPanel weaponPanel = new JPanel(new BorderLayout());
         // price panel
         JPanel weaponPricePanel = new JPanel(new GridLayout(1, 7));
-        weaponPricePanel.add(new JLabel("" + characterIndex));
-        JLabel weaponPriceLabel1 = new JLabel("$ 100", SwingConstants.LEFT);
+        weaponPricePanel.add(new JLabel());
+        JLabel weaponPriceLabel1 = new JLabel("$ 100", SwingConstants.CENTER);
+        weaponPriceLabel1.setFont(new Font("Sans Serif", Font.BOLD, 14));
         weaponPricePanel.add(weaponPriceLabel1);
         JButton buyGunButton1 = new JButton("BOUGHT");
         buyGunButton1.setEnabled(false);
         weaponPricePanel.add(buyGunButton1);
         weaponPricePanel.add(new JLabel());
-        JLabel gunPriceLabel2 = new JLabel("$ 200", SwingConstants.LEFT);
-        weaponPricePanel.add(gunPriceLabel2);
+        JLabel weaponPriceLabel2 = new JLabel("$ 200", SwingConstants.CENTER);
+        weaponPriceLabel2.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        weaponPricePanel.add(weaponPriceLabel2);
         JButton buyGunButton2 = new JButton("BUY");
         buyGunButton2.addActionListener(e -> {
             if (ToolStore.buyWeapon((byte) characterIndex)) {
@@ -216,7 +223,7 @@ public class ShopFrame extends JFrame {
         JPanel weaponDisplayPanel = new JPanel(new GridLayout(2, 2));
         // weapon image
         for (int i = 0; i < 2; i++) {
-            ImageIcon weaponImageIcon = new ImageIcon(ShopFrame.class.getResource("/weapon" + (i + 1) + ".png"));
+            ImageIcon weaponImageIcon = new ImageIcon(ShopFrame.class.getResource(character.resourcePath + "weapon" + (i + 1) + ".png"));
             Image scaledWeaponImage = weaponImageIcon.getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
             ImageIcon scaledWeaponImageIcon = new ImageIcon(scaledWeaponImage); // Create a new ImageIcon from the scaled image
             JLabel weaponImageLabel = new JLabel(scaledWeaponImageIcon);
@@ -227,26 +234,18 @@ public class ShopFrame extends JFrame {
             JLabel weaponNameLabel = new JLabel();
             switch (i) {
                 case 0:
-                    weaponNameLabel.setText("short-range weapon");
+                    weaponNameLabel = new JLabel("Short-Range Weapon", SwingConstants.CENTER);
+                    weaponNameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
                     break;
                 case 1:
-                    weaponNameLabel.setText("long-range gun");
+                    weaponNameLabel = new JLabel("Long-Range Weapon", SwingConstants.CENTER);
+                    weaponNameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
                     break;
             }
             weaponDisplayPanel.add(weaponNameLabel);
         }
         weaponPanel.add(weaponDisplayPanel, BorderLayout.CENTER);
-        // weapon equip panel
-        JPanel weaponEquipPanel = new JPanel(new GridLayout(1, 3));
-        for (int i = 0; i < 3; i++) {
-            if (Server.getUserData().getLastSelectedCharacter() == characterIndex) {
-                JLabel equippedWeaponLabel = new JLabel("Equipped!", SwingConstants.CENTER);
-                weaponEquipPanel.add(equippedWeaponLabel);
-            } else {
-                weaponEquipPanel.add(new JLabel());
-            }
-        }
-        weaponPanel.add(weaponEquipPanel, BorderLayout.SOUTH);
+        weaponPanel.add(new JPanel(), BorderLayout.SOUTH);
         panels[0] = weaponPanel;
 
         // armour panel
@@ -254,7 +253,8 @@ public class ShopFrame extends JFrame {
         // armour prices
         JPanel armourPricePanel = new JPanel(new GridLayout(1, 6));
         for (int i = 0; i < 3; i++) {
-            JLabel armourPriceLabel = new JLabel("$ " + (10 + i) * 5, SwingConstants.LEFT);
+            JLabel armourPriceLabel = new JLabel("$ " + (10 + i) * 5, SwingConstants.CENTER);
+            armourPriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
             armourPricePanel.add(armourPriceLabel);
             JButton buyArmourButton = new JButton("BUY");
             int finalI = i;
@@ -270,7 +270,6 @@ public class ShopFrame extends JFrame {
             armourPricePanel.add(buyArmourButton);
         }
 
-        weaponPricePanel.add(buyGunButton2);
         armourPanel.add(armourPricePanel, BorderLayout.NORTH);
         // armour display panel
         JPanel armourDisplayPanel = new JPanel(new GridLayout(2, 3));
@@ -286,13 +285,16 @@ public class ShopFrame extends JFrame {
             JLabel armourNameLabel = new JLabel();
             switch (i) {
                 case 0:
-                    armourNameLabel.setText("weak armour");
+                    armourNameLabel = new JLabel("Leather Armour", SwingConstants.CENTER);
+                    armourNameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
                     break;
                 case 1:
-                    armourNameLabel.setText("strong armour");
+                    armourNameLabel = new JLabel("Iron Armour", SwingConstants.CENTER);
+                    armourNameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
                     break;
                 case 2:
-                    armourNameLabel.setText("ultra armour");
+                    armourNameLabel = new JLabel("Gold Armour", SwingConstants.CENTER);
+                    armourNameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
                     break;
             }
             armourDisplayPanel.add(armourNameLabel);
@@ -303,6 +305,8 @@ public class ShopFrame extends JFrame {
         for (int i = 0; i < 3; i++) {
             if (Server.getUserData().getArmorLevel() - 1 == i) { // armour is the strongest one available
             JLabel equippedArmourLabel = new JLabel("Equipped!", SwingConstants.CENTER);
+            equippedArmourLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
+            equippedArmourLabel.setForeground(Color.GREEN);
             armourEquipPanel.add(equippedArmourLabel);
         }
         else {
@@ -334,28 +338,22 @@ public class ShopFrame extends JFrame {
         abilityPricePanel.add(new JLabel());
         abilityPanel.add(abilityPricePanel, BorderLayout.NORTH);
         // ability display panel
-        JPanel abilityDisplayPanel = new JPanel(new GridLayout(2, 3));
         // ability image
-        abilityDisplayPanel.add(new JLabel());
-        ImageIcon abilityImageIcon = new ImageIcon(ShopFrame.class.getResource("/specialability.png"));
-        Image scaledAbilityImage = abilityImageIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
-        ImageIcon scaledAbilityImageIcon = new ImageIcon(scaledAbilityImage); // Create a new ImageIcon from the scaled image
+        JPanel abilityDisplayPanel = new JPanel(new BorderLayout());
+        ImageIcon abilityImageIcon = new ImageIcon(ShopFrame.class.getResource(character.resourcePath + "specialability.png"));
+        Image scaledAbilityImage = abilityImageIcon.getImage().getScaledInstance(450, 450, Image.SCALE_SMOOTH);
+        ImageIcon scaledAbilityImageIcon = new ImageIcon(scaledAbilityImage);
         JLabel abilityImageLabel = new JLabel(scaledAbilityImageIcon);
-        abilityDisplayPanel.add(abilityImageLabel);
-        abilityDisplayPanel.add(new JLabel("deals 50-60", SwingConstants.CENTER));
-        abilityDisplayPanel.add(new JLabel());
-        JLabel abilityNameLabel = new JLabel("death row", SwingConstants.CENTER);
-        abilityDisplayPanel.add(abilityNameLabel);
-        abilityDisplayPanel.add(new JLabel());
+        abilityDisplayPanel.add(abilityImageLabel, BorderLayout.CENTER);
+        JLabel abilityNameLabel = new JLabel(character.ability.name, SwingConstants.CENTER);
+        abilityNameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        abilityDisplayPanel.add(abilityNameLabel, BorderLayout.SOUTH);
         abilityPanel.add(abilityDisplayPanel, BorderLayout.CENTER);
         // ability info panel
-        JPanel abilityInfoPanel = new JPanel(new GridLayout(2, 3));
-        abilityInfoPanel.add(new JLabel());
-        abilityInfoPanel.add(new JLabel("refreshes per 5 minute in FPS matches", SwingConstants.CENTER));
-        abilityInfoPanel.add(new JLabel());
-        abilityInfoPanel.add(new JLabel());
-        abilityInfoPanel.add(new JLabel("refreshes per 5 move in combat fights", SwingConstants.CENTER));
-        abilityInfoPanel.add(new JLabel());
+        JPanel abilityInfoPanel = new JPanel();
+        JLabel infoLabel = new JLabel("You can use this ability " + character.ability.usageLeft + " times per game.", SwingConstants.CENTER);
+        infoLabel.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+        abilityInfoPanel.add(infoLabel);
         abilityPanel.add(abilityInfoPanel, BorderLayout.SOUTH);
         panels[2] = abilityPanel;
 
@@ -394,6 +392,7 @@ public class ShopFrame extends JFrame {
         // character progress panel
         JPanel characterProgressPanel = new JPanel(new BorderLayout());
         JProgressBar characterProgressBar = new JProgressBar(0, 100);
+        System.out.println("Progress: " + Server.getUserData().getCharacters()[0].getProgress());
         characterProgressBar.setValue(Server.getUserData().getCharacters()[0].getProgress());
         characterProgressPanel.add(characterProgressBar, BorderLayout.CENTER);
         JLabel progressLabel = new JLabel(Server.getUserData().getCharacters()[0].getProgress() + "%", SwingConstants.CENTER);

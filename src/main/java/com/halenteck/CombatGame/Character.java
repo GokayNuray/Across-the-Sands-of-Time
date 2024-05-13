@@ -24,7 +24,7 @@ public abstract class Character {
     public int health;
     protected int attackPower;
     public boolean[] items = new boolean[4];
-    protected Weapons[] weapons = new Weapons[2];//index 0'da short range, index 1'de long range var
+    protected Weapons[] weapons = new Weapons[2];//index 0 - short range, index 1 - long range
     public Location[] maps;
     protected int shortRangeDamage;
     protected int longRangeDamage;

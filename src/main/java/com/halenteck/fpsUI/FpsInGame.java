@@ -88,19 +88,6 @@ public class FpsInGame extends JFrame {
 
         JTextField chatField = new JTextField();
         chatField.setBounds(65, 255, 200, 40);
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == '/') {
-                    chatField.setEditable(true);
-                    if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-                        chatField.setEditable(false);
-//                        sendChatMessage(chatField.getText());
-                    }
-                }
-            }
-        });
-        setFocusable(true);
         layeredPane.add(chatArea, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatButton, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatField, JLayeredPane.PALETTE_LAYER);
@@ -132,7 +119,19 @@ public class FpsInGame extends JFrame {
                 isAbilityUsed = false;
             }
         });
-        addKeyListener(new KeyAdapter() {
+        layeredPane.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == '/') {
+                    chatField.setEditable(true);
+                    if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                        chatField.setEditable(false);
+//                        sendChatMessage(chatField.getText());
+                    }
+                }
+            }
+        });
+        layeredPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyChar() == 'x' || e.getKeyChar() == 'X') {
@@ -158,7 +157,7 @@ public class FpsInGame extends JFrame {
         layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
         // viewing in-game scoreboard with tab
-        addKeyListener(new KeyAdapter() {
+        layeredPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyChar() == KeyEvent.VK_TAB) {
@@ -168,7 +167,7 @@ public class FpsInGame extends JFrame {
         });
 
         // key listener for the escape key
-        addKeyListener(new KeyAdapter() {
+        layeredPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
@@ -178,7 +177,6 @@ public class FpsInGame extends JFrame {
         });
 
         // Game Panel
-
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);

@@ -1,5 +1,6 @@
 package com.halenteck.fpsUI;
 
+import com.halenteck.fpsGame.Game;
 import com.halenteck.server.Server;
 
 import javax.swing.*;
@@ -90,6 +91,9 @@ public class LobbyFrame extends JFrame {
             JButton joinButton = new JButton("Join");
             joinButton.addActionListener(e -> {
                 Server.joinLobby(Server.getUserData().getPlayerName(), Integer.parseInt(lobbyData[0]));
+                Server.addServerListener(new Game(null, null, null));
+                new FpsInGame();
+                dispose();
             });
             serverInfoPanel.add(joinButton);
             serverListPanel.add(serverInfoPanel);

@@ -137,13 +137,16 @@ public class CharacterCollection extends JFrame{
                 else {
                     itemBox.setText(locations[3].getAward());
                 }
-
-                if (i <= 2 ? character.items[i] : character.items[3]) {
+                if (Server.getUserData().getCharacters()[characterID].getProgress() > 60) {
+                    itemBox.setSelected(true);
+                } else if (Server.getUserData().getCharacters()[characterID].getProgress() > 35 && i < 3) {
+                    itemBox.setSelected(true);
+                } else if (Server.getUserData().getCharacters()[characterID].getProgress() > 15 && i < 2) {
+                    itemBox.setSelected(true);
+                } else if (Server.getUserData().getCharacters()[characterID].getProgress() > 0 && i < 1) {
                     itemBox.setSelected(true);
                 }
-                else {
-                    itemBox.setEnabled(false); // cannot be checked
-                }
+                itemBox.setEnabled(false);
                 itemPanel.add(itemBox);
             }
         }

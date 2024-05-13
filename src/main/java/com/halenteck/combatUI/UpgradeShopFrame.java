@@ -12,10 +12,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.halenteck.combatUI.ShopFrame.createCharacterDisplayPanel;
+
 public class UpgradeShopFrame extends JFrame {
 
     private JPanel characterDisplayPanel = new JPanel();
-    private JPanel shopPanel = new JPanel(new BorderLayout());
+    private JPanel mainShopPanel = new JPanel();
+    JLabel currencyLabel;
     private static UpgradeShopFrame instance;
 
     // constructor
@@ -41,7 +44,7 @@ public class UpgradeShopFrame extends JFrame {
         // character-based display panels
         JPanel[] characterDisplayPanels = new JPanel[Server.getUserData().getUnlockedCharacterCount()];
         for (int i = 0; i < characterDisplayPanels.length; i++) {
-            characterDisplayPanels[i] = ShopFrame.createCharacterDisplayPanel(i);
+            characterDisplayPanels[i] = createCharacterDisplayPanel(i);
         }
 
         JPanel[] abilityPanels = new JPanel[Server.getUserData().getUnlockedCharacterCount()];
@@ -52,7 +55,7 @@ public class UpgradeShopFrame extends JFrame {
         // shop panel
         JPanel shopPanel = new JPanel(new BorderLayout());
         JPanel shopTitlePanel = new JPanel(new GridLayout(1, 2));
-        JLabel currencyLabel = new JLabel("Currency: $" + Server.getUserData().getMoney(), SwingConstants.LEFT);
+        currencyLabel = new JLabel("Currency: $" + Server.getUserData().getMoney(), SwingConstants.LEFT);
         JLabel shopTitle = new JLabel("Upgrade Abilities", SwingConstants.CENTER);
         shopTitle.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         currencyLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -66,7 +69,6 @@ public class UpgradeShopFrame extends JFrame {
         characterSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-
                 int newValue = characterSlider.getValue();
                 int adjustedValue = Math.min(newValue, abilityPanels.length - 1); // ensuring value is within bounds
                 characterSelection.set(adjustedValue);
@@ -75,8 +77,8 @@ public class UpgradeShopFrame extends JFrame {
         });
         characterSlider.setMinorTickSpacing(1);
 
-        // initially, first character info (weapon menu) is shown
-        shopPanel.add(abilityPanels[0], BorderLayout.CENTER);
+        mainShopPanel.add(abilityPanels[0]);
+        shopPanel.add(mainShopPanel, BorderLayout.CENTER);
         characterDisplayPanel.add(characterDisplayPanels[0]);
         add(characterDisplayPanel, BorderLayout.WEST);
         add(shopPanel, BorderLayout.CENTER);
@@ -116,25 +118,32 @@ public class UpgradeShopFrame extends JFrame {
 
     private void updatePanels(int characterId) {
 
+        // update currency label
+        currencyLabel.setText("Currency: $" + Server.getUserData().getMoney());
+
         // Update character shop panel based on slider value
-        shopPanel.removeAll();
-        shopPanel.revalidate();
-        JPanel[] panels = new JPanel[]{createAbilityPanel(characterId)};
-        shopPanel.add(panels[characterId]);
-        shopPanel.revalidate();  // Inform the panel layout needs to be updated
+        mainShopPanel.removeAll(); // remove all components from abilityPanel
+        mainShopPanel.revalidate();
+        mainShopPanel.add(createAbilityPanel(characterId));
+        mainShopPanel.revalidate();  // Inform the frame layout needs to be updated
+        revalidate();
 
         // Update character display panel based on slider value
-        ShopFrame.characterDisplayPanel.removeAll();
-        ShopFrame.characterDisplayPanel.revalidate();
-        ShopFrame.characterDisplayPanel.add(ShopFrame.createCharacterDisplayPanel(characterId));
-        ShopFrame.characterDisplayPanel.revalidate();  // Inform the frame layout needs to be updated
+        characterDisplayPanel.removeAll(); // remove all components from characterDisplayPanel
+        characterDisplayPanel.revalidate();
+        characterDisplayPanel.add(createCharacterDisplayPanel(characterId));
+        characterDisplayPanel.revalidate();  // Inform the frame layout needs to be updated
         revalidate();
     }
 
     private JPanel createAbilityPanel(int characterId) {
-        JPanel abilityPanel = new JPanel(new BorderLayout());
-        Character character = Character.characters.get(characterId);
+        Character character = Character.characters.get((byte) characterId);
+        JPanel abilityPanel = new JPanel();
+        abilityPanel.setLayout(new BoxLayout(abilityPanel, BoxLayout.Y_AXIS)); // Set layout to BoxLayout
+        abilityPanel.setPreferredSize(new Dimension(1250, 800)); // Set preferred size
+
         JPanel abilityInfoPanel = new JPanel(new BorderLayout());
+        abilityInfoPanel.setPreferredSize(new Dimension(300, 300));
         JPanel barPanel = new JPanel(new GridLayout(6, 1));
         int attackPower = 3;
         JLabel attackLabel = new JLabel("Attack Power: " + attackPower, SwingConstants.LEFT);
@@ -191,7 +200,7 @@ public class UpgradeShopFrame extends JFrame {
         pricePanel.add(mobilityUpgradeButton);
         abilityInfoPanel.add(pricePanel, BorderLayout.EAST);
         abilityInfoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        abilityPanel.add(abilityInfoPanel, BorderLayout.CENTER);
+        abilityPanel.add(abilityInfoPanel);
 
         JPanel itemPanel = new JPanel(new BorderLayout());
         JLabel itemLabel = new JLabel("Items", SwingConstants.CENTER);
@@ -199,7 +208,7 @@ public class UpgradeShopFrame extends JFrame {
         itemPanel.add(itemLabel, BorderLayout.NORTH);
         JPanel itemInfoPanel = new JPanel(new GridLayout(2, 2));
         for (int i = 0; i < 4; i++) {
-            JCheckBox itemCheckBox = new JCheckBox("Item " + i);
+            JCheckBox itemCheckBox = new JCheckBox(character.maps[i].getAward());
             if (Server.getUserData().getCharacters()[characterId].getProgress() > 60) {
                 itemCheckBox.setSelected(true);
             } else if (Server.getUserData().getCharacters()[characterId].getProgress() > 35 && i < 3) {

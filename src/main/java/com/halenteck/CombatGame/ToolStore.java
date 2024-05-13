@@ -58,7 +58,7 @@ public class ToolStore {
         UserData userData = Server.getUserData();
         UserCharacterData characterData = userData.getCharacters()[CharacterID];
         byte attackLevel = characterData.getAbilityLevels()[0];
-        if (attackLevel >= 3) {
+        if (attackLevel >= 4) {
             return false;
         }
         if (userData.getMoney() >= 4 * (attackLevel + 1)) {
@@ -74,7 +74,7 @@ public class ToolStore {
         UserData userData = Server.getUserData();
         UserCharacterData characterData = userData.getCharacters()[CharacterID];
         byte attackLevel = characterData.getAbilityLevels()[1];
-        if (attackLevel >= 3) {
+        if (attackLevel >= 5) {
             return false;
         }
         if (userData.getMoney() >= 4 * (attackLevel + 1)) {
@@ -90,7 +90,7 @@ public class ToolStore {
         UserData userData = Server.getUserData();
         UserCharacterData characterData = userData.getCharacters()[CharacterID];
         byte attackLevel = characterData.getAbilityLevels()[2];
-        if (attackLevel >= 3) {
+        if (attackLevel >= 4) {
             return false;
         }
         if (userData.getMoney() >= 4 * (attackLevel + 1)) {

@@ -41,8 +41,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean isRedTeam;
     private boolean isCrouching;
     private boolean isGrounded;
-    private boolean isFlying;
     private boolean abilityActive;
+    private boolean abilityThreadActive;
+    private boolean ableToUseAbility;
     private boolean shooting;
 
     //Abilities for 0, 1(done), 2(done), 3(done), 4 respectively, used to keep track
@@ -117,9 +118,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 if (shooting) {
                     shoot();
                 }
-                if (isFlying) {
-                    fly();
-                }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 move(velocity);
@@ -131,13 +129,41 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     throw new RuntimeException(e);
                 }
                 velocity.mul(0.8f,0.8f,0.8f);
-                if (!isGrounded) {
+                if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
                     velocity.add(0,-0.4f, 0);
                 }
                 if (velocity.x < 0.005) velocity.x = 0;
                 if (velocity.y < 0.005) velocity.y = 0;
                 if (velocity.z < 0.005) velocity.z = 0;
             }
+        }).start();
+    }
+
+    public void startAbilityThread() {
+        if (!abilityThreadActive) {
+            abilityThreadActive = true;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                abilityActive = false;
+                abilityThreadActive = false;
+                startCooldownThread();
+            }).start();
+        }
+    }
+
+    public void startCooldownThread() {
+        ableToUseAbility = false;
+        new Thread(() -> {
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            ableToUseAbility = true;
         }).start();
     }
 
@@ -160,13 +186,13 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 moveRight = true;
                 break;
             case KeyEvent.VK_Q:
-                abilityActive = true;
+                if (ableToUseAbility) {
+                    abilityActive = true;
+                    startAbilityThread();
+                }
             case KeyEvent.VK_R:
                 reload();
             case KeyEvent.VK_SPACE:
-                if (isAbilityActive() && characterId == 2) {
-                    isFlying = true;
-                }
                 jump();
                 break;
             case KeyEvent.VK_SHIFT:
@@ -190,12 +216,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case KeyEvent.VK_D:
                 moveRight = false;
                 break;
-            case KeyEvent.VK_Q:
-                abilityActive = false;
-            case KeyEvent.VK_SPACE:
-                if (!isAbilityActive() && characterId == 2) {
-                    isFlying = false;
-                }
             case KeyEvent.VK_SHIFT:
                 stand();
                 break;
@@ -318,15 +338,15 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void jump() {
-        if (isGrounded) {
+        if (isAbilityActive() && characterId == 2)
+        {
+            velocity.y = JUMP_FORCE;
+        }
+
+        else if (isGrounded) {
             isGrounded = false;
             velocity.y = JUMP_FORCE;
         }
-    }
-
-    public void fly() {
-        Vector3f acceleration = new Vector3f(0, speed / TICKS_PER_SECOND, 0);
-        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(acceleration);
     }
 
     public void crouch() {

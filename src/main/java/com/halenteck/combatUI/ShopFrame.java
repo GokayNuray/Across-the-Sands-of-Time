@@ -262,6 +262,8 @@ public class ShopFrame extends JFrame {
             buyArmourButton.addActionListener(e -> {
                 if (ToolStore.buyArmour((byte) finalI)) {
                     instance.updatePanels(characterIndex, 1);
+                    buyArmourButton.setText("BOUGHT");
+                    buyArmourButton.setEnabled(false);
                 }
             });
             if (Server.getUserData().getArmorLevel() >= (finalI + 1)) {

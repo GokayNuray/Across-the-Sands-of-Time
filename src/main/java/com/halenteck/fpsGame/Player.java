@@ -41,15 +41,16 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean isRedTeam;
     private boolean isCrouching;
     private boolean isGrounded;
+    private boolean isFlying;
     private boolean abilityActive;
     private boolean shooting;
 
-    //Abilities for 1, 2(done), 3, 4(done), 5 respectively, used to keep track
-    private boolean isInvisible;
-    private boolean isImmortal;
-    private boolean isFlying;
-    private boolean redBullets;
-    private boolean infAmmo;
+    //Abilities for 0, 1(done), 2(done), 3(done), 4 respectively, used to keep track
+    private boolean isInvisible0;
+    private boolean isImmortal1;
+    private boolean isFlying2;
+    private boolean redBullets3;
+    private boolean infAmmo4;
 
     private boolean moveForward;
     private boolean moveBackward;
@@ -116,6 +117,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 if (shooting) {
                     shoot();
                 }
+                if (isFlying) {
+                    fly();
+                }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 move(velocity);
@@ -157,7 +161,12 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 break;
             case KeyEvent.VK_Q:
                 abilityActive = true;
+            case KeyEvent.VK_R:
+                reload();
             case KeyEvent.VK_SPACE:
+                if (isAbilityActive() && characterId == 2) {
+                    isFlying = true;
+                }
                 jump();
                 break;
             case KeyEvent.VK_SHIFT:
@@ -183,6 +192,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 break;
             case KeyEvent.VK_Q:
                 abilityActive = false;
+            case KeyEvent.VK_SPACE:
+                if (!isAbilityActive() && characterId == 2) {
+                    isFlying = false;
+                }
             case KeyEvent.VK_SHIFT:
                 stand();
                 break;
@@ -300,8 +313,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void moveLeft() {
-        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(right.mul(speed / TICKS_PER_SECOND));
+        Vector3f left = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
+        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(left.mul(speed / TICKS_PER_SECOND));
     }
 
     public void jump() {
@@ -309,6 +322,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             isGrounded = false;
             velocity.y = JUMP_FORCE;
         }
+    }
+
+    public void fly() {
+        Vector3f acceleration = new Vector3f(0, speed / TICKS_PER_SECOND, 0);
+        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(acceleration);
     }
 
     public void crouch() {
@@ -377,7 +395,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void handleBullet(Bullet bullet) {
         if (bullet.doesBulletHitTarget(this))
         {
-            if (!(isAbilityActive() && characterId == 2)) {
+            if (!(isAbilityActive() && characterId == 1)) {
                 takeDamage(bullet.getDamage());
             }
         }
@@ -447,7 +465,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         return this.position.z;
     }
 
-    public int getKills() {
+    public byte getKills() {
         return kills;
     }
 
@@ -455,7 +473,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         kills++;
     }
 
-    public int getDeaths() {
+    public byte getDeaths() {
         return deaths;
     }
 

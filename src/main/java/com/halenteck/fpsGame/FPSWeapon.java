@@ -12,6 +12,8 @@ public abstract class FPSWeapon {
 
     protected boolean isReloading;
 
+    Player player;
+
     public FPSWeapon(String name, int damage, int magazineSize, float fireRate, float reloadTime) {
         this.name = name;
         this.damage = damage;

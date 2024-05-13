@@ -2,11 +2,14 @@ package com.halenteck.fpsGame;
 
 public abstract class FPSWeapon {
     protected String name;
+
     protected int damage;
     protected int magazineSize;
     protected int ammoInMagazine;
+
     protected float fireRate;
     protected float reloadTime;
+
     protected boolean isReloading;
 
     public FPSWeapon(String name, int damage, int magazineSize, float fireRate, float reloadTime) {

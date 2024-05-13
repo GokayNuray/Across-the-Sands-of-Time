@@ -11,15 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Game implements ServerListener {
+    private boolean isRunning;
+
     private Team redTeam;
     private Team blueTeam;
-    private boolean isRunning;
     private Map<Byte, Player> players;
-
     private Player thisPlayer;
 
-    World world;
-    OpenGLComponent renderer;
+    private World world;
+    private OpenGLComponent renderer;
 
     public Game(World world, Player thisPlayer, OpenGLComponent renderer) {
         Server.addServerListener(this);

@@ -3,10 +3,13 @@ package com.halenteck.fpsGame;
 import org.joml.Vector3f;
 
 public class Bullet {
+    private static final float SPEED = 50f;
+
     private Vector3f position;
     private Vector3f velocity;
+
     private int damage;
-    private static final float SPEED = 50f;
+
     private Player player;
 
     public Bullet(Vector3f startPosition, Vector3f direction, int damage) {

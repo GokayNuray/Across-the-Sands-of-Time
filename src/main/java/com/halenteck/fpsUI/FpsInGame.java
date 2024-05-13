@@ -125,6 +125,8 @@ public class FpsInGame extends JFrame {
             }
         });
 
+        abilityTimer.start();
+
         // shortcut for returning to game selection menu
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
         Action escapeAction = new AbstractAction() {
@@ -135,49 +137,50 @@ public class FpsInGame extends JFrame {
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
         getRootPane().getActionMap().put("ESCAPE", escapeAction);
-        layeredPane.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == '/') {
-                    chatField.setEditable(true);
-                    if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-                        chatField.setEditable(false);
-//                        sendChatMessage(chatField.getText());
-                    }
-                }
-            }
-        });
-        layeredPane.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == 'x' || e.getKeyChar() == 'X') {
-                    if (isAbilityActive && !isAbilityUsed) {
-                        specialAbilityButton.setEnabled(false);
-                        isAbilityUsed = true;
-                    }
-                }
-            }
-        });
 
-        // viewing in-game scoreboard with tab
-        layeredPane.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == KeyEvent.VK_TAB) {
-                    new InGameLeaderboard();
-                }
+        KeyStroke slashKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_SLASH, 0, false);
+        Action slashAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                chatField.setEditable(true);
             }
-        });
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(slashKeyStroke, "SLASH");
+        getRootPane().getActionMap().put("SLASH", slashAction);
 
-        // key listener for the escape key
-        layeredPane.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
-                    new FpsEndGame(false);
+        KeyStroke enterKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
+        Action enterAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                chatField.setEditable(false);
+                chatArea.append("You: " + chatField.getText() + "\n");
+                chatField.setText("");
+            }
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(enterKeyStroke, "ENTER");
+        getRootPane().getActionMap().put("ENTER", enterAction);
+
+        // key listener for the x key
+        KeyStroke xKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_X, 0, false);
+        Action xAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if (isAbilityActive && !isAbilityUsed) {
+                    specialAbilityButton.setEnabled(false);
+                    isAbilityUsed = true;
                 }
             }
-        });
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(xKeyStroke, "X");
+        getRootPane().getActionMap().put("X", xAction);
+
+
+        // viewing in-game scoreboard with tab while tab is long pressed
+        KeyStroke tabKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0, false);
+        Action tabAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                new InGameLeaderboard();
+            }
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(tabKeyStroke, "TAB");
+        getRootPane().getActionMap().put("TAB", tabAction);
 
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);

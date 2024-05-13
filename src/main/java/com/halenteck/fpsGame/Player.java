@@ -377,7 +377,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void handleBullet(Bullet bullet) {
         if (bullet.doesBulletHitTarget(this))
         {
-            if (isAbilityActive() && characterId == 2) {
+            if (!(isAbilityActive() && characterId == 2)) {
                 takeDamage(bullet.getDamage());
             }
         }

@@ -123,14 +123,15 @@ public class Game implements ServerListener {
     @Override
     public void onPlayerMove(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerMoveData()[0];
-        Vector3f newPosition = new Vector3f((Float) packetData.getOnPlayerMoveData()[1], (Float) packetData.getOnPlayerMoveData()[2], (Float) packetData.getOnPlayerMoveData()[3]);
+        float[] posArray = (float[]) packetData.getOnPlayerMoveData()[1];
+        Vector3f newPosition = new Vector3f((Float) posArray[0], (Float) posArray[1], (Float) posArray[2]);
         Player player = players.get(playerId);
 
         if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerMove packet");
         }
 
-        player.setPosition(newPosition);
+        player.move(newPosition);
     }
 
     @Override
@@ -226,9 +227,12 @@ public class Game implements ServerListener {
         player.setPosition(respawnPosition);
     }
 
+    //TODO: Ability is commented.
     @Override
     public void onPlayerAbility(PacketData packetData) {
-        //TODO: Player ability usage implementation.
+        Byte playerId = (Byte) packetData.getOnPlayerAbilityData()[0];
+        Player player = players.get(playerId);
+        //Server.ability();
     }
 
     @Override

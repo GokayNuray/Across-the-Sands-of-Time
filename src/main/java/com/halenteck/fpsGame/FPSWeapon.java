@@ -149,6 +149,10 @@ public class FPSWeapon {
         return ammoInMagazine;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public float getRange() {
         return range;
     }

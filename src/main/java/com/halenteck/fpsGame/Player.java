@@ -137,6 +137,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     long temp = lastShot;
                     if (System.currentTimeMillis() - lastShot > (1000 / currentWeapon.getFireRate())) {
                         shoot();
+                        Server.shoot();
                         lastShot = System.currentTimeMillis();
                     }
                 }
@@ -465,18 +466,17 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         otherWeapon = secondary;
     }
 
-    public Bullet shoot() {
+    public void shoot() {
         if (currentWeapon.canFire()) {
             currentWeapon.fire();
-            return new Bullet(this.position, directionVector, currentWeapon.getDamage());
-        } else if (currentWeapon.isReloading()) {
-            if (currentWeapon.isReloading()) {
-                return null;
-            }
+            Server.shoot();
         } else {
             currentWeapon.reload();
         }
-        return null;
+    }
+
+    public Bullet spawnBullet() {
+        return new Bullet(this.position, directionVector, currentWeapon.getDamage(), this);
     }
 
     public void switchWeapon() {

@@ -13,11 +13,12 @@ public class Bullet {
     private Player player;
     private FPSWeapon weapon;
 
-    public Bullet(Vector3f startPosition, Vector3f direction, int damage) {
-        this.position = new Vector3f(startPosition.x, startPosition.y, startPosition.z);
+    public Bullet(Vector3f startPosition, Vector3f direction, int damage, Player player) {
+        this.position = new Vector3f(startPosition.x, startPosition.y + 1.7f, startPosition.z);
         direction.normalize();
         this.velocity = new Vector3f(direction.x * SPEED, direction.y * SPEED, direction.z * SPEED);
         this.damage = damage;
+        this.player = player;
     }
 
     public boolean doesBulletHitTarget(Player player) {
@@ -42,7 +43,7 @@ public class Bullet {
         if ((bulletX >= targetX - 0.2f && bulletX <= targetX + 0.2f) &&
                 (bulletY >= targetY && bulletY <= targetY + 1.7f ) &&
                 (bulletZ >= targetZ - 0.2f && bulletZ <= targetZ + 0.2f)) {
-            if (player.isAbilityActive() && player.getCharacterId() == 0x03) {
+            if (this.player.isAbilityActive() && this.player.getCharacterId() == 0x03) {
                 damage = 100;
                 return true;
             }
@@ -51,7 +52,7 @@ public class Bullet {
                 return true;
             }
         }
-        else if (player.isAbilityActive() && player.getCharacterId() == 0x03) {
+        else if (this.player.isAbilityActive() && this.player.getCharacterId() == 0x03) {
             if ((bulletX >= targetX - 0.2f - hitRadius && bulletX < targetX - 0.2f) ||
                     (bulletX <= targetX + 0.2f + hitRadius && bulletX > targetX + 0.2f) ||
                     (bulletY <= targetY + 1.7f + hitRadius && bulletY > targetY + 1.7f) ||
@@ -65,7 +66,7 @@ public class Bullet {
     }
 
     public void update(float time) {
-        position.add(new Vector3f(velocity.mul(time)));
+        position.add(new Vector3f(velocity.mul(0.1f)));
     }
 
     public Vector3f getPosition() {

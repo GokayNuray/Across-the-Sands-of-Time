@@ -247,7 +247,6 @@ public class Game implements ServerListener {
     public void onPlayerAbility(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerAbilityData()[0];
         Player player = players.get(playerId);
-        //Server.ability();
     }
 
     @Override
@@ -259,7 +258,8 @@ public class Game implements ServerListener {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerShoot packet");
         }
 
-        Bullet bullet = player.shoot();
+        player.shoot();
+        Bullet bullet = player.spawnBullet();
         thisPlayer.handleBullet(bullet);
     }
 

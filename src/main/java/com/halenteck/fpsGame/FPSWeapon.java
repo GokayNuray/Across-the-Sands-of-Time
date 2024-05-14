@@ -3,6 +3,7 @@ package com.halenteck.fpsGame;
 public class FPSWeapon {
     private String name;
 
+    private int id;
     private int damage;
     private int magazineSize;
     private int ammoInMagazine;
@@ -16,6 +17,7 @@ public class FPSWeapon {
     Player player;
 
     public FPSWeapon(int id) {
+        this.id = id;
         setStats(id);
         this.isReloading = false;
         ammoInMagazine = magazineSize;
@@ -33,12 +35,25 @@ public class FPSWeapon {
     }
 
     public void reload() {
-        if (!isReloading)
-        {
-            isReloading = true;
+        if(id < 5) {
+            if (!isReloading)
+            {
+                startReloadThread();
+            }
+        }
+    }
+
+    public void startReloadThread() {
+        isReloading = true;
+        new Thread(() -> {
+            try {
+                Thread.sleep((long)getReloadTime() * 1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             ammoInMagazine = magazineSize;
             isReloading = false;
-        }
+        }).start();
     }
 
     public void setStats(int id) {
@@ -132,6 +147,10 @@ public class FPSWeapon {
 
     public int getAmmoInMagazine() {
         return ammoInMagazine;
+    }
+
+    public float getRange() {
+        return range;
     }
 
     public float getFireRate() {

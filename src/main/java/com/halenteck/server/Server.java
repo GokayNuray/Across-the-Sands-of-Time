@@ -377,10 +377,12 @@ public final class Server {
 
     public static void movePlayer(float x, float y, float z) {
         try {
-            out.writeByte(MOVE);
-            out.writeFloat(x);
-            out.writeFloat(y);
-            out.writeFloat(z);
+            synchronized ("Server commands") {
+                out.writeByte(MOVE);
+                out.writeFloat(x);
+                out.writeFloat(y);
+                out.writeFloat(z);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -388,9 +390,11 @@ public final class Server {
 
     public static void rotatePlayer(float yaw, float pitch) {
         try {
-            out.writeByte(ROTATE);
-            out.writeFloat(yaw);
-            out.writeFloat(pitch);
+            synchronized ("Server commands") {
+                out.writeByte(ROTATE);
+                out.writeFloat(yaw);
+                out.writeFloat(pitch);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -398,7 +402,9 @@ public final class Server {
 
     public static void crouchStateChange() {
         try {
-            out.writeByte(CROUCH_STATE_CHANGE);
+            synchronized ("Server commands") {
+                out.writeByte(CROUCH_STATE_CHANGE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -406,8 +412,10 @@ public final class Server {
 
     public static void weaponChange(int weapon) {
         try {
-            out.writeByte(WEAPON_CHANGE);
-            out.writeInt(weapon);
+            synchronized ("Server commands") {
+                out.writeByte(WEAPON_CHANGE);
+                out.writeInt(weapon);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -415,7 +423,9 @@ public final class Server {
 
     public static void shoot() {
         try {
-            out.writeByte(SHOOT);
+            synchronized ("Server commands") {
+                out.writeByte(SHOOT);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -423,8 +433,10 @@ public final class Server {
 
     public static void ability(int ability) {
         try {
-            out.writeByte(ABILITY);
-            out.writeInt(ability);
+            synchronized ("Server commands") {
+                out.writeByte(ABILITY);
+                out.writeInt(ability);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -432,8 +444,10 @@ public final class Server {
 
     public static void chat(String message) {
         try {
-            out.writeByte(CHAT);
-            out.writeUTF(message);
+            synchronized ("Server commands") {
+                out.writeByte(CHAT);
+                out.writeUTF(message);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -441,7 +455,9 @@ public final class Server {
 
     public static void damaged() {
         try {
-            out.writeByte(DAMAGED);
+            synchronized ("Server commands") {
+                out.writeByte(DAMAGED);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -449,8 +465,10 @@ public final class Server {
 
     public static void death(byte killerId) {
         try {
-            out.writeByte(DEATH);
-            out.writeByte(killerId);
+            synchronized ("Server commands") {
+                out.writeByte(DEATH);
+                out.writeByte(killerId);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -458,12 +476,14 @@ public final class Server {
 
     public static void respawn(float x, float y, float z, float yaw, float pitch) {
         try {
-            out.writeByte(RESPAWN);
-            out.writeFloat(x);
-            out.writeFloat(y);
-            out.writeFloat(z);
-            out.writeFloat(yaw);
-            out.writeFloat(pitch);
+            synchronized ("Server commands") {
+                out.writeByte(RESPAWN);
+                out.writeFloat(x);
+                out.writeFloat(y);
+                out.writeFloat(z);
+                out.writeFloat(yaw);
+                out.writeFloat(pitch);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

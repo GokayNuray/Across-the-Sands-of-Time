@@ -21,7 +21,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private Vector3f accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer;
     private Vector3f directionVector;
 
-    private FPSWeapon weapon;
+    private FPSWeapon currentWeapon;
+    private FPSWeapon otherWeapon;
     private Entity entity;
     private OpenGLComponent renderer;
     private Team team;
@@ -165,11 +166,17 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void startAbilityThread() {
         if (!abilityThreadActive) {
             abilityThreadActive = true;
+            if (characterId == 0x04 && abilityActive) {
+                currentWeapon.setInfAmmo();
+            }
             new Thread(() -> {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
+                }
+                if (characterId == 0x04 && abilityActive) {
+                    currentWeapon.setRegularAmmo();
                 }
                 abilityActive = false;
                 abilityThreadActive = false;
@@ -395,7 +402,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void jump() {
-        if (isAbilityActive() && characterId == 2) {
+        if (isAbilityActive() && characterId == 0x02) {
             velocity.y = JUMP_FORCE;
         } else if (isGrounded) {
             isGrounded = false;
@@ -434,35 +441,43 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    public void createWeapons(int id) {
+        FPSWeapon primary = new FPSWeapon(weaponId);
+        FPSWeapon secondary = new FPSWeapon(weaponId + 5);
+        currentWeapon = primary;
+        otherWeapon = secondary;
+    }
+
     public Bullet shoot() {
-        if (weapon.canFire()) {
-            weapon.fire();
-            return new Bullet(this.position, directionVector, weapon.getDamage());
-        } else if (weapon.isReloading()) {
-            if (weapon.isReloading()) {
+        if (currentWeapon.canFire()) {
+            currentWeapon.fire();
+            return new Bullet(this.position, directionVector, currentWeapon.getDamage());
+        } else if (currentWeapon.isReloading()) {
+            if (currentWeapon.isReloading()) {
                 return null;
             }
         } else {
-            weapon.reload();
+            currentWeapon.reload();
         }
         return null;
     }
 
     public void reload() {
-        if (weapon.getAmmoInMagazine() < weapon.getMagazineSize()) {
-            weapon.reload();
+        if (currentWeapon.getAmmoInMagazine() < currentWeapon.getMagazineSize()) {
+            currentWeapon.reload();
         } else {
             return;
         }
     }
 
     public void switchWeapon() {
-        //TODO: Switch function.
+        setWeapon(otherWeapon);
+        otherWeapon = currentWeapon;
     }
 
     public void handleBullet(Bullet bullet) {
         if (bullet.doesBulletHitTarget(this)) {
-            if (!(isAbilityActive() && characterId == 1)) {
+            if (!(isAbilityActive() && characterId == 0x01)) {
                 takeDamage(bullet.getDamage());
             }
         }
@@ -519,11 +534,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public FPSWeapon getWeapon() {
-        return weapon;
+        return currentWeapon;
     }
 
     public void setWeapon(FPSWeapon weapon) {
-        this.weapon = weapon;
+        currentWeapon = weapon;
     }
 
     public float getX() {
@@ -568,6 +583,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public Vector3f getDirectionVector() {
         return directionVector;
+    }
+
+    public int getWeaponId() {
+        return weaponId;
     }
 
     public void setPosition(Vector3f newPosition) {

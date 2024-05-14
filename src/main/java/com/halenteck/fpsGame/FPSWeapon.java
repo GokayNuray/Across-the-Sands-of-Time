@@ -106,6 +106,14 @@ public class FPSWeapon {
         }
     }
 
+    public void setInfAmmo() {
+        ammoInMagazine = 100000;
+    }
+
+    public void setRegularAmmo() {
+        ammoInMagazine = magazineSize;
+    }
+
     public boolean canFire() {
         return ammoInMagazine > 0 && !isReloading;
     }

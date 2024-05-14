@@ -42,7 +42,7 @@ public class Bullet {
         if ((bulletX >= targetX - 0.2f && bulletX <= targetX + 0.2f) &&
                 (bulletY >= targetY && bulletY <= targetY + 1.7f ) &&
                 (bulletZ >= targetZ - 0.2f && bulletZ <= targetZ + 0.2f)) {
-            if (player.isAbilityActive() && player.getCharacterId() == 3) {
+            if (player.isAbilityActive() && player.getCharacterId() == 0x03) {
                 damage = 100;
                 return true;
             }
@@ -51,7 +51,7 @@ public class Bullet {
                 return true;
             }
         }
-        else if (player.isAbilityActive() && player.getCharacterId() == 3) {
+        else if (player.isAbilityActive() && player.getCharacterId() == 0x03) {
             if ((bulletX >= targetX - 0.2f - hitRadius && bulletX < targetX - 0.2f) ||
                     (bulletX <= targetX + 0.2f + hitRadius && bulletX > targetX + 0.2f) ||
                     (bulletY <= targetY + 1.7f + hitRadius && bulletY > targetY + 1.7f) ||

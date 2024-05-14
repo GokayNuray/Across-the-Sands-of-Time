@@ -42,10 +42,9 @@ public class Game implements ServerListener {
 
         thisPlayer.attachRenderer(renderer);
         thisPlayer.setDebugConsole(debugger);//TODO dont forget to remove this
+        thisPlayer.createWeapons(thisPlayer.getWeaponId());
         renderer.addEntity(world.getModel());
         thisPlayer.startMovementThread();
-
-
     }
 
     public void loop() {

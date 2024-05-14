@@ -205,16 +205,16 @@ public class ShopFrame extends JFrame {
         weaponPricePanel.add(weaponPriceLabel2);
         JButton buyGunButton2 = new JButton("BUY");
         buyGunButton2.addActionListener(e -> {
-            if (ToolStore.buyWeapon((byte) 1)) {
+            if (ToolStore.buyWeapon((byte) (characterIndex))) {
+                buyGunButton2.setText("BOUGHT");
+                buyGunButton2.setEnabled(false);
                 instance.updatePanels(characterIndex, 0);
-                buyGunButton2.setText("BOUGHT");
-                buyGunButton2.setEnabled(false);
-            }
-            if (Server.getUserData().getCharacters()[characterIndex].getUnlockedWeapons().length > 1) {
-                buyGunButton2.setText("BOUGHT");
-                buyGunButton2.setEnabled(false);
             }
         });
+        if (Server.getUserData().getCharacters()[characterIndex].getUnlockedWeapons()[1]) {
+            buyGunButton2.setText("BOUGHT");
+            buyGunButton2.setEnabled(false);
+        }
         weaponPricePanel.add(buyGunButton2);
         weaponPricePanel.add(new JLabel());
         weaponPanel.add(weaponPricePanel, BorderLayout.NORTH);
@@ -354,7 +354,7 @@ public class ShopFrame extends JFrame {
         abilityPricePanel.add(abilityPriceLabel);
         JButton buyAbilityButton = new JButton("BUY");
         buyAbilityButton.addActionListener(e -> {
-            if (ToolStore.buyAbility((byte) characterIndex)) {
+            if (ToolStore.buyAbility((byte) (characterIndex))) {
                 instance.updatePanels(characterIndex, 2);
                 buyAbilityButton.setText("BOUGHT");
                 buyAbilityButton.setEnabled(false);

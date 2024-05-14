@@ -62,7 +62,7 @@ public class InGameFrame extends JFrame {
             updatePanels();
         });
         giveUpButton.setBounds((int) bounds.getWidth() - 190, 10, 100, 50);
-        if (Server.getUserData().getCombatLevelReached() % 4 == 0) {
+        if (Server.getUserData().getCombatLevelReached() == 0) {
             giveUpButton.setEnabled(false);
             giveUpButton.setToolTipText("You can't give up on the first level of a character!");
         }
@@ -152,7 +152,7 @@ public class InGameFrame extends JFrame {
             game.longRangeAttack();
         });
         longAttackButton.setBounds(250 + playerImageBounds.width + 10, 350, 100, 100);
-        if (!Server.getUserData().getCharacters()[Server.getUserData().getLastSelectedCharacter() - 1].getUnlockedWeapons()[1]) {
+        if (!Server.getUserData().getCharacters()[Server.getUserData().getUnlockedCharacterCount() - 1].getUnlockedWeapons()[1]) {
             longAttackButton.setEnabled(false);
             longAttackButton.setToolTipText("Not available as no long-range weapons were found!");
         }
@@ -160,7 +160,7 @@ public class InGameFrame extends JFrame {
         layeredPane.add(longAttackButton, JLayeredPane.PALETTE_LAYER); // Add to layer 1
         specialAbilityButton = new JButton("\uD83C\uDF1F");
         specialAbilityButton.setToolTipText("Special Ability");
-        if (!Server.getUserData().getCharacters()[Server.getUserData().getLastSelectedCharacter() - 1].isSpecialAbilityUnlocked()
+        if (!Server.getUserData().getCharacters()[Server.getUserData().getUnlockedCharacterCount() - 1].isSpecialAbilityUnlocked()
                 || !isAbilityActive) {
             specialAbilityButton.setEnabled(false);
             specialAbilityButton.setToolTipText("Special Ability is locked");

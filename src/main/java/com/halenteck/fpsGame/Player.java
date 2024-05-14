@@ -86,9 +86,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.attackPower = attackPower;
         this.kills = kill;
         this.deaths = death;
-        this.characterId = characterId;
+        this.characterId = 2;
         this.accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer = new Vector3f(0, 0, 0);
         this.velocity = new Vector3f(0, 0, 0);
+        ableToUseAbility = true;
 
         speed = SPEED;
 
@@ -141,10 +142,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 debugText.append("IPosition: ").append(Math.floor(position.x)).append(" ").append(Math.floor(position.y)).append(" ").append(Math.floor(position.z)).append(" ");
                 debugText.append("Velocity: ").append(velocity).append(" ");
                 debugText.append("Acceleration: ").append(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer).append("\n");
+                debugText.append("Ability : ").append(abilityActive).append("\n");
                 debugLabel.setText(debugText.toString());
                 move(velocity);
-                if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
-                    velocity.add(0, -0.019f, 0);
+                if (!isGrounded) {
+                    velocity.add(0, -0.029f, 0);
                 }
                 velocity.mul(0.8f, 0.8f, 0.8f);
                 if (Math.abs(velocity.x) < 0.005) velocity.x = 0;
@@ -168,6 +170,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             if (characterId == 0x04 && abilityActive) {
                 currentWeapon.setInfAmmo();
             }
+            abilityActive = true;
             new Thread(() -> {
                 try {
                     Thread.sleep(10000);
@@ -179,13 +182,13 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 }
                 abilityActive = false;
                 abilityThreadActive = false;
+                ableToUseAbility = false;
                 startCooldownThread();
             }).start();
         }
     }
 
     public void startCooldownThread() {
-        ableToUseAbility = false;
         new Thread(() -> {
             try {
                 Thread.sleep(15000);
@@ -220,6 +223,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     abilityActive = true;
                     startAbilityThread();
                 }
+                break;
             case KeyEvent.VK_R:
                 reload();
             case KeyEvent.VK_SPACE:
@@ -403,9 +407,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void jump() {
         if (isAbilityActive() && characterId == 0x02) {
             velocity.y = JUMP_FORCE;
-        } else if (isGrounded) {
             isGrounded = false;
+        } else if (isGrounded) {
             velocity.y = JUMP_FORCE;
+            isGrounded = false;
         }
     }
 

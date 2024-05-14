@@ -11,8 +11,8 @@ import java.awt.event.*;
 
 public class Player implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
     private static final float TICKS_PER_SECOND = 20;
-    private static final float SPEED = 1;
-    private static final float JUMP_FORCE = 4;
+    private static final float SPEED = 0.3f;
+    private static final float JUMP_FORCE = 1;
     private static final float CROUCH_MULTIPLIER = 0.5f;
 
     private Vector3f position;
@@ -97,7 +97,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case 0x04 -> modelId = Models.CHARACTER5;
             default -> throw new IllegalArgumentException("invalid character id: " + characterId);
         }
-        this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, 0, 0, 1);
+        this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, 0, 0, 0.01f);
         this.world = world;
     }
 
@@ -135,7 +135,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 move(velocity);
                 entity.move(position.x, position.y, position.z);
                 if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
-                    velocity.add(0, -2, 0);
+                    velocity.add(0, -0.1f, 0);
                 }
                 velocity.mul(0.8f, 0.8f, 0.8f);
                 if (Math.abs(velocity.x) < 0.005) velocity.x = 0;
@@ -417,7 +417,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         directionVector = new Vector3f(directionX, directionY, directionZ);
 
         entity.setRotation(yaw, pitch);
-        renderer.setCameraRotation(yaw, pitch);
+        if (renderer != null) {
+            renderer.setCameraRotation(yaw, pitch);
+            Server.rotatePlayer(yaw, pitch);
+        }
     }
 
     public Bullet shoot() {

@@ -70,6 +70,7 @@ public class LobbyFrame extends JFrame {
             String name = JOptionPane.showInputDialog(this, "Enter server name:");
             int id = Server.createLobby(name);
             new FpsInGame(id);
+            dispose();
         });
         titlePanel.add(createLobby);
         titlePanel.setPreferredSize(new Dimension(FRAME_WIDTH, 50));

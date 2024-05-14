@@ -28,7 +28,7 @@ public class Game implements ServerListener {
         this.redTeam = new Team();
         this.blueTeam = new Team();
         this.isRunning = true;
-        this.world = new World(Models.CHARACTER1, null);
+        this.world = new World(Models.WORLD_MAP1, "test/testworld2/BlockData.txt");
         this.renderer = renderer;
 
         Server.addServerListener(this);
@@ -37,7 +37,7 @@ public class Game implements ServerListener {
         }
 
         thisPlayer.attachRenderer(renderer);
-        renderer.addRenderable(world.getModel());
+        renderer.addEntity(world.getModel());
         thisPlayer.startMovementThread();
 
     }

@@ -118,11 +118,7 @@ public class Renderable implements Cloneable {
     }
 
     void scale(float x, float y, float z) {
-        for (int i = 0; i < vertices.length; i += 3) {
-            vertices[i] *= x;
-            vertices[i + 1] *= y;
-            vertices[i + 2] *= z;
-        }
+        scale.mul(x, y, z);
 
         updated = true;
     }
@@ -161,6 +157,7 @@ public class Renderable implements Cloneable {
             clone.indices = indices.clone();
             clone.texturePath = texturePath;
             clone.position = new Vector3f(position);
+            clone.scale = new Vector3f(scale);
             return clone;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();

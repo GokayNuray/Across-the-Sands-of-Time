@@ -102,9 +102,9 @@ public class RenderTester {
             {
                 Thread movementThread = new Thread(() -> {
                     while (true) {
-                        float moveDistance = 3;
+                        float moveDistance = 0.3f;
                         if (isCtrlPressed) {
-                            moveDistance *= 0.01f;
+                            moveDistance *= 0.1f;
                         }
                         if (isWPressed) {
                             openGLComponent.moveCameraForward(moveDistance);
@@ -251,17 +251,20 @@ public class RenderTester {
         Renderable cube = ModelLoader.createRectangularPrism(new float[]{-4, -1, -1}, new float[]{-2, 1, 1});
         openGLComponent.addRenderable(cube);
 
-        Entity worldMap = new Entity(Models.WORLD_MAP1, 0, 0, 0, 0, 0, 100);
-        worldMap.translate(100, -3, -30);
+        Entity worldMap = new Entity(Models.WORLD_MAP1, 0, 0.5f, 0, 0, 0, 1);
+        worldMap.translate(0, 0, 0);
         openGLComponent.addEntity(worldMap);
 
-        Entity animated = new Entity(Models.ANIM_TEST, 0, 0, 0, 0, 0, 1f);
+        Entity animated = new Entity(Models.CHARACTER1, 0, 1, -10, 0, 0, 0.01f);
         openGLComponent.addEntity(animated);
+
+        Entity animated2 = new Entity(Models.CHARACTER1, 0, 1, 10, 0, 0, 0.01f);
+        openGLComponent.addEntity(animated2);
 
         new Thread(() -> {
             while (true) {
                 animated.rotate(0.5f, 0);
-                animated.translate((float) 0, 0.1f, 0);
+                //animated.translate((float) 0, 0.1f, 0);
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

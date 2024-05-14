@@ -136,7 +136,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 StringBuilder debugText = new StringBuilder();
-                debugText.append("Position: ").append(Math.floor(position.x)).append(" ").append(Math.floor(position.y)).append(" ").append(Math.floor(position.z)).append(" ");
+                debugText.append("Position: ").append(position).append(" ");
+                debugText.append("IPosition: ").append(Math.floor(position.x)).append(" ").append(Math.floor(position.y)).append(" ").append(Math.floor(position.z)).append(" ");
                 debugText.append("Velocity: ").append(velocity).append(" ");
                 debugText.append("Acceleration: ").append(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer).append("\n");
                 debugLabel.setText(debugText.toString());
@@ -321,11 +322,13 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     private void moveX(float x) {
+        if (x == 0) return;
         float newX = position.x + x;
         int direction = (int) Math.signum(x);
-        if (world.isFull(newX - 0.2f, position.y, position.z) ||
-                world.isFull(newX + 0.2f, position.y, position.z)) {
-            position.x = (float) ((int) x + 0.5 + direction * 0.3f);
+        if (world.isFull(newX - 0.2F, position.y, position.z) ||
+                world.isFull(newX + 0.2F, position.y, position.z)) {
+            position.x = (float) (Math.floor(position.x) + 0.5f + direction * 0.3f);
+            velocity.x = 0;
             return;
         }
         position.x = newX;
@@ -353,15 +356,15 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     private void moveZ(float z) {
+        if (z == 0) return;
         float newZ = position.z + z;
         int direction = (int) Math.signum(z);
-
         if (world.isFull(position.x, position.y, newZ - 0.2f) ||
                 world.isFull(position.x, position.y, newZ + 0.2f)) {
-            position.z = newZ - direction * 0.1f;
+            position.z = (float) (Math.floor(position.z) + 0.5f + direction * 0.3f);
+            velocity.z = 0;
             return;
         }
-
         position.z = newZ;
     }
 

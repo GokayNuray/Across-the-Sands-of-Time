@@ -62,35 +62,35 @@ public class FPSWeapon {
                 name = "AK-47";
                 damage = 33;
                 magazineSize = 30;
-                fireRate = 4;
+                fireRate = 14;
                 reloadTime = 3;
                 break;
             case 1:
                 name = "M4";
                 damage = 20;
                 magazineSize = 31;
-                fireRate = 5;
+                fireRate = 18;
                 reloadTime = 2;
                 break;
             case 2:
                 name = "MP5";
                 damage = 15;
                 magazineSize = 31;
-                fireRate = 8;
+                fireRate = 31;
                 reloadTime = 2;
                 break;
             case 3:
                 name = "UF-2";
-                damage = 7;
+                damage = 3;
                 magazineSize = 150;
-                fireRate = 20;
+                fireRate = 50;
                 reloadTime = 1;
                 break;
             case 4:
                 name = "MK1";
                 damage = 60;
                 magazineSize = 10;
-                fireRate = 1;
+                fireRate = 3;
                 reloadTime = 3;
                 break;
             case 5:

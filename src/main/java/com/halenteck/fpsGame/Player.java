@@ -46,6 +46,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private float pitch = 0;
     private float speed;
 
+    long lastShot;
+
     private boolean isRedTeam;
     private boolean isCrouching;
     private boolean isGrounded;
@@ -132,7 +134,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     moveRight();
                 }
                 if (shooting) {
-                    shoot();
+                    long temp = lastShot;
+                    if (System.currentTimeMillis() - lastShot > (1000 / currentWeapon.getFireRate())) {
+                        shoot();
+                        lastShot = System.currentTimeMillis();
+                    }
                 }
                 if (jump) {
                     jump();

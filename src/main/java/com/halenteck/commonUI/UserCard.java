@@ -1,6 +1,6 @@
 package com.halenteck.commonUI;
 
-import com.halenteck.server.Server;
+import com.halenteck.server.UserData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 public class UserCard extends JFrame {
 
 
-    UserCard() {
+    UserCard(UserData userData) {
 
         setTitle("User Card");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,51 +28,51 @@ public class UserCard extends JFrame {
         });
 
         // User Card Panel
-        JPanel userCardPanel = new JPanel(new GridLayout(6,1));
+        JPanel userCardPanel = new JPanel(new GridLayout(6, 1));
 
-        JLabel userCardLabel = new JLabel("You're viewing stats for: " + Server.getUserData().getPlayerName(), SwingConstants.LEFT);
+        JLabel userCardLabel = new JLabel("You're viewing stats for: " + userData.getPlayerName(), SwingConstants.LEFT);
         userCardLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         userCardPanel.add(userCardLabel);
 
         // data retrieved to show level and xp
         // write the level number inside a circle
 
-        JLabel levelLabel = new JLabel("Level: " + Server.getUserData().getLevel(), SwingConstants.LEFT);
+        JLabel levelLabel = new JLabel("Level: " + userData.getLevel(), SwingConstants.LEFT);
         levelLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         userCardPanel.add(levelLabel);
         // level bar panel
-        JPanel levelPanel = new JPanel(new GridLayout(1,2));
+        JPanel levelPanel = new JPanel(new GridLayout(1, 2));
         JProgressBar levelBar = new JProgressBar();
-        levelBar.setValue(Server.getUserData().getXp()); // current xp / level up xp * 100
+        levelBar.setValue(userData.getXp()); // current xp / level up xp * 100
         levelBar.setStringPainted(true);
 
-        JLabel xpLabel = new JLabel("XP: " + Server.getUserData().getXp(), SwingConstants.CENTER);
+        JLabel xpLabel = new JLabel("XP: " + userData.getXp(), SwingConstants.CENTER);
         xpLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         levelPanel.add(levelBar);
         levelPanel.add(xpLabel);
         userCardPanel.add(levelPanel);
 
         // data retrieved to show character number
-        JPanel characterPanel = new JPanel(new GridLayout(1,2));
-        JLabel characterLabel = new JLabel("Unlocked Characters: " + Server.getUserData().getUnlockedCharacterCount(), SwingConstants.LEFT);
+        JPanel characterPanel = new JPanel(new GridLayout(1, 2));
+        JLabel characterLabel = new JLabel("Unlocked Characters: " + userData.getUnlockedCharacterCount(), SwingConstants.LEFT);
         // getCharacterCount() to get the number of characters unlocked
         characterLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         characterPanel.add(characterLabel);
         JButton characterButton = new JButton("View Character Collection");
         characterButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
         characterButton.addActionListener(e -> {
-            new CharacterCollection();
+            new CharacterCollection(userData);
             dispose();
         });
         characterPanel.add(characterButton);
         userCardPanel.add(characterPanel);
 
         // Ranked Info
-        JLabel rankedLabel = new JLabel("Ranked Points: " + Server.getUserData().getRankPoints(), SwingConstants.LEFT);
+        JLabel rankedLabel = new JLabel("Ranked Points: " + userData.getRankPoints(), SwingConstants.LEFT);
         // getRankedPoints() to get the number of ranked points
         rankedLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         userCardPanel.add(rankedLabel);
-        JLabel leaderboardLabel = new JLabel("Global Rank: null", SwingConstants.LEFT);
+        JLabel leaderboardLabel = new JLabel("Global Rank: " + userData.getGlobalRank(), SwingConstants.LEFT);
         leaderboardLabel.setFont(new Font("Sans Serif", Font.PLAIN, 20));
         // getGlobalRank() to get the global rank
         userCardPanel.add(leaderboardLabel);
@@ -81,12 +81,11 @@ public class UserCard extends JFrame {
         add(userCardPanel, BorderLayout.CENTER);
 
 
-
         // Return Panel
-        JPanel returnPanel = new JPanel(new GridLayout(1,2));
+        JPanel returnPanel = new JPanel(new GridLayout(1, 2));
         JButton returnButton = new JButton("Return to Game Selection Menu");
         returnButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
-        String finalUserName = Server.getUserData().getPlayerName();
+        String finalUserName = userData.getPlayerName();
         returnButton.addActionListener(e -> {
             new GameSelectionMenu();
             dispose();

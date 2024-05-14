@@ -12,6 +12,7 @@ public final class Server {
     private static final byte LOGIN = 0x00;
     private static final byte REGISTER = 0x01;
     private static final byte UPDATE_USER_DATA = 0x02;
+    private static final byte GET_USER_DATA = 0x03;
 
     private static final byte GET_LEADERBOARD = 0x04;
     private static final byte GET_LOBBY_LIST = 0x10;
@@ -254,6 +255,20 @@ public final class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static UserData getUserData(String name) {
+        try {
+            out.writeByte(GET_USER_DATA);
+            out.writeUTF(name);
+            if (!in.readBoolean()) {
+                return null;
+            }
+            return UserData.readUserData(in);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

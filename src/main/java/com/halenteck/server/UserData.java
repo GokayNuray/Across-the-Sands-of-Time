@@ -17,6 +17,7 @@ public class UserData {
     private byte armorLevel;
     private byte lastSelectedCharacter;
     private byte combatLevelReached;
+    private int globalRank;
 
     public UserData(String playerName,
                     boolean isFirstTime,
@@ -26,7 +27,8 @@ public class UserData {
                     byte unlockedCharacterCount, UserCharacterData[] characters,
                     byte armorLevel,
                     byte lastSelectedCharacter,
-                    byte combatLevelReached
+                    byte combatLevelReached,
+                    int globalRank
     ) {
         this.playerName = playerName;
         this.isFirstTime = isFirstTime;
@@ -39,6 +41,7 @@ public class UserData {
         this.armorLevel = armorLevel;
         this.lastSelectedCharacter = lastSelectedCharacter;
         this.combatLevelReached = combatLevelReached;
+        this.globalRank = globalRank;
     }
 
     public static UserData readUserData(DataInputStream in) throws IOException {
@@ -68,7 +71,8 @@ public class UserData {
         byte armorLevel = in.readByte();
         byte lastSelectedCharacter = in.readByte();
         byte combatLevelReached = in.readByte();
-        return new UserData(playerName, isFirstTime, level, xp, rankPoints, money, unlockedCharacterCount, characters, armorLevel, lastSelectedCharacter, combatLevelReached);
+        int globalRank = in.readInt();
+        return new UserData(playerName, isFirstTime, level, xp, rankPoints, money, unlockedCharacterCount, characters, armorLevel, lastSelectedCharacter, combatLevelReached, globalRank);
     }
 
     public static void writeUserData(DataOutputStream out, UserData userData) throws IOException {
@@ -186,5 +190,8 @@ public class UserData {
         this.combatLevelReached = combatLevelReached;
     }
 
+    public int getGlobalRank() {
+        return globalRank;
+    }
 }
 

@@ -2,7 +2,7 @@ package com.halenteck.commonUI;
 
 import com.halenteck.combatUI.ShopFrame;
 import com.halenteck.fpsUI.LobbyFrame;
-import com.halenteck.server.*;
+import com.halenteck.server.Server;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,12 +25,12 @@ public class GameSelectionMenu extends JFrame {
         welcomeLabel.setFont(new Font("Sans Serif", Font.BOLD, 24));
         welcomePanel.add(welcomeLabel);
         JLabel welcomeInfo = new JLabel("               Select a mode to join the fun", SwingConstants.LEFT);
-        welcomeInfo.setFont(new Font("Sans Serif", Font.ITALIC,20 ));
+        welcomeInfo.setFont(new Font("Sans Serif", Font.ITALIC, 20));
         welcomePanel.add(welcomeInfo);
         add(welcomePanel, BorderLayout.NORTH);
 
         // Button Panel
-        JPanel buttonPanel = new JPanel(new GridLayout(1,2));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
         JButton combatButton = new JButton("Enter Combat Mode");
         combatButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
         combatButton.addActionListener(new ActionListener() {
@@ -106,7 +106,7 @@ public class GameSelectionMenu extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
 
         // Stats Panel
-        JPanel statsPanel = new JPanel(new GridLayout(3,3));
+        JPanel statsPanel = new JPanel(new GridLayout(3, 3));
         JLabel statsLabel = new JLabel("or view stats", SwingConstants.CENTER);
         statsLabel.setFont(new Font("Sans Serif", Font.ITALIC, 20));
         statsPanel.add(statsLabel);
@@ -119,7 +119,7 @@ public class GameSelectionMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open Stats Frame
-                new UserCard();
+                new UserCard(Server.getUserData());
                 dispose();
             }
         });

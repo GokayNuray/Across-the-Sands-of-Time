@@ -50,7 +50,7 @@ public class LeaderboardFrame extends JFrame {
         int[] userPoints = (int[]) leaderboardInfo[2];
 
         for (int i = 0; i < userNames.length; i++) {
-            JPanel userPanel = new JPanel(new GridLayout(1, 3));
+            JPanel userPanel = new JPanel(new GridLayout(1, 4));
             userPanel.setPreferredSize(new Dimension((int) bounds.getWidth(), (int) (bounds.getHeight() / 10)));
             JPanel userNamePanel = new JPanel(new BorderLayout());
             userNamePanel.add(new JLabel(String.valueOf((i + 1)), SwingConstants.CENTER), BorderLayout.WEST);
@@ -58,6 +58,13 @@ public class LeaderboardFrame extends JFrame {
             userPanel.add(userNamePanel);
             userPanel.add(new JLabel("" + userLevels[i], SwingConstants.CENTER));
             userPanel.add(new JLabel("" + userPoints[i], SwingConstants.CENTER));
+            JButton viewProfileButton = new JButton("View Profile");
+            int finalI = i;
+            viewProfileButton.addActionListener(e -> {
+                new UserCard(Server.getUserData(userNames[finalI]));
+                dispose();
+            });
+            userPanel.add(viewProfileButton);
             infoPanel.add(userPanel);
         }
         leaderboardPanel.add(infoPanel, BorderLayout.CENTER);

@@ -82,16 +82,18 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.pitch = pitch;
         this.directionVector = new Vector3f(0, 0, -1);
         this.isCrouching = isCrouching;
-        this.weaponId = weaponId;
+        this.weaponId = 0; //TODO: Temp.
         this.attackPower = attackPower;
         this.kills = kill;
         this.deaths = death;
-        this.characterId = 2;
+        this.characterId = 2; //TODO: Temp.
         this.accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer = new Vector3f(0, 0, 0);
         this.velocity = new Vector3f(0, 0, 0);
         ableToUseAbility = true;
 
         speed = SPEED;
+
+        createWeapons(weaponId);
 
         int modelId;
         switch (characterId) {
@@ -138,6 +140,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 StringBuilder debugText = new StringBuilder();
+                debugText.append("Ammo: ").append(currentWeapon.getAmmoInMagazine() + "/" + currentWeapon.getMagazineSize()).append(" ");
+                debugText.append("reload: ").append(currentWeapon.isReloading()).append(" ");
+                debugText.append("dmg: ").append(currentWeapon.getDamage()).append(" ");
+                debugText.append("rng: ").append(currentWeapon.getRange()).append(" ");
                 debugText.append("Position: ").append(position).append(" ");
                 debugText.append("IPosition: ").append(Math.floor(position.x)).append(" ").append(Math.floor(position.y)).append(" ").append(Math.floor(position.z)).append(" ");
                 debugText.append("Velocity: ").append(velocity).append(" ");
@@ -225,7 +231,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 }
                 break;
             case KeyEvent.VK_R:
-                reload();
+                currentWeapon.reload();
+                break;
             case KeyEvent.VK_SPACE:
                 jump = true;
                 break;
@@ -466,17 +473,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         return null;
     }
 
-    public void reload() {
-        if (currentWeapon.getAmmoInMagazine() < currentWeapon.getMagazineSize()) {
-            currentWeapon.reload();
-        } else {
-            return;
-        }
-    }
-
     public void switchWeapon() {
+        FPSWeapon temp = currentWeapon;
         setWeapon(otherWeapon);
-        otherWeapon = currentWeapon;
+        otherWeapon = temp;
     }
 
     public void handleBullet(Bullet bullet) {

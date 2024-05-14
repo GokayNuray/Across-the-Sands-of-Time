@@ -57,19 +57,12 @@ public final class ModelLoader {
 
             AIVector3D.Buffer aiVertices = aiMesh.mVertices();
             float[] vertices = new float[numVertices * 3];
-            if (filePath.contains("dae")) {
-                System.out.println("mesh: " + aiMesh.mName().dataString());
-            }
             for (int j = 0; j < numVertices; j++) {
                 AIVector3D aiVertex = aiVertices.get();
                 vertices[j * 3] = aiVertex.x();
                 vertices[j * 3 + 1] = aiVertex.y();
                 vertices[j * 3 + 2] = aiVertex.z();
-                if (filePath.contains("dae")) {
-                    System.out.println("vertex: " + vertices[j * 3] + ", " + vertices[j * 3 + 1] + ", " + vertices[j * 3 + 2]);
-                }
             }
-            System.out.println();
 
             AIVector3D.Buffer aiTexCoords = aiMesh.mTextureCoords(0);
             float[] texCoords = new float[numVertices * 2];

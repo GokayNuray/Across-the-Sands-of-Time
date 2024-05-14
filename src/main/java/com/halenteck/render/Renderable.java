@@ -160,6 +160,7 @@ public class Renderable implements Cloneable {
             clone.texCoords = texCoords.clone();
             clone.indices = indices.clone();
             clone.texturePath = texturePath;
+            clone.position = new Vector3f(position);
             return clone;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();

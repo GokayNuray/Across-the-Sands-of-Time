@@ -298,11 +298,14 @@ public final class Server {
         throw new RuntimeException("Failed to get lobby list");
     }
 
-    public static void joinLobby(String playerName, int lobbyId) {
+    public static boolean joinLobby(String playerName, int lobbyId) {
         try {
             out.writeByte(JOIN_LOBBY);
             out.writeInt(lobbyId);
             out.writeUTF(playerName);
+            if (!in.readBoolean()) {
+                return false;
+            }
             String lobbyName = in.readUTF();
             int playerCount = in.readByte();
             System.out.println("Joined lobby: " + lobbyName + " Players: " + playerCount);
@@ -326,13 +329,16 @@ public final class Server {
                 System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
             }
             long creationTime = in.readLong();
+            byte thisPlayerId = in.readByte();
             int[] score = new int[]{in.readInt(), in.readInt()};
-            listener.onLobbyJoin(new PacketData(lobbyName, playerData, score, creationTime));
+            listener.onLobbyJoin(new PacketData(lobbyName, playerData, thisPlayerId, score, creationTime));
 
             startServerPacketListenerThread();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public static void quickJoinLobby(String playerName) {
@@ -345,19 +351,20 @@ public final class Server {
         }
     }
 
-    public static void createLobby(String playerName, String lobbyName) {
+    public static int createLobby(String lobbyName) {
         try {
             if (lobbyName.contains(",")) {
                 System.out.println("Lobby name can't contain commas");
-                return;
+                return -1;
             }
             out.writeByte(CREATE_LOBBY);
             out.writeUTF(lobbyName);
             int lobbyId = in.readInt();
-            joinLobby(playerName, lobbyId);
+            return lobbyId;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public static void leaveLobby() {

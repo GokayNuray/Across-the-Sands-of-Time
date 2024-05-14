@@ -3,12 +3,12 @@ package com.halenteck.fpsUI;
 import com.halenteck.CombatGame.Character;
 import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.fpsGame.Game;
+import com.halenteck.render.OpenGLComponent;
 import com.halenteck.server.Server;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class FpsInGame extends JFrame {
@@ -16,7 +16,7 @@ public class FpsInGame extends JFrame {
         try {
             Server.connect();
             Server.login("Babapiiro31", "Gokaynu2!");
-            new FpsInGame();
+            new FpsInGame(-1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -33,7 +33,7 @@ public class FpsInGame extends JFrame {
     JButton specialAbilityButton;
     JLayeredPane layeredPane;
 
-    public FpsInGame() {
+    public FpsInGame(int id) {
         Character character = Character.characters.get(Server.getUserData().getLastSelectedCharacter());
         setTitle("FPS Match");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -115,7 +115,7 @@ public class FpsInGame extends JFrame {
         JLabel returnLabel = new JLabel("Press ESC to return to the main menu");
         returnLabel.setFont(new Font("Arial", Font.BOLD, 15));
         returnLabel.setForeground(Color.PINK);
-        returnLabel.setBounds(10, (int) bounds.getHeight() - 70, 300, 20);
+        returnLabel.setBounds(10, (int) bounds.getHeight() - 170, 300, 20);
         layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
         Timer abilityTimer = new Timer(1000, e -> {
@@ -182,9 +182,25 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(tabKeyStroke, "TAB");
         getRootPane().getActionMap().put("TAB", tabAction);
 
+        if (id == -1) {
+            return;
+        }
+
+        OpenGLComponent openGLComponent = new OpenGLComponent();
+        openGLComponent.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
+        layeredPane.add(openGLComponent, JLayeredPane.DEFAULT_LAYER);
+
+        try {
+            new Game(id, openGLComponent);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+        openGLComponent.startRender();
     }
 
     public void updatePanels() {

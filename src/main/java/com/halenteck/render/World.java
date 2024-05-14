@@ -18,8 +18,11 @@ public class World {
         return model;
     }
 
-    public boolean isFull(int x, int y, int z) {
-        return true; //method not implemented yet
+    public boolean isFull(float x, float y, float z) {
+        int iX = (int) (Math.floor(x));
+        int iY = (int) (Math.floor(y));
+        int iZ = (int) (Math.floor(z));
+        return iY <= -1; //method not implemented yet
         //return collisionData[x + y * 100 + z * 10000];
     }
 

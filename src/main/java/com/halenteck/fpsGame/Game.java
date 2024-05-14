@@ -1,5 +1,6 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.render.Models;
 import com.halenteck.render.OpenGLComponent;
 import com.halenteck.render.World;
 import com.halenteck.server.PacketData;
@@ -21,17 +22,24 @@ public class Game implements ServerListener {
     private World world;
     private OpenGLComponent renderer;
 
-    public Game(World world, Player thisPlayer, OpenGLComponent renderer) {
+    public Game(int lobbyId, OpenGLComponent renderer) {
         Server.addServerListener(this);
         this.players = new HashMap<>();
         this.redTeam = new Team();
         this.blueTeam = new Team();
         this.isRunning = true;
-        this.world = world;
-        this.thisPlayer = thisPlayer;
+        this.world = new World(Models.CHARACTER1, null);
         this.renderer = renderer;
 
+        Server.addServerListener(this);
+        if (!Server.joinLobby(Server.getUserData().getPlayerName(), lobbyId)) {
+            throw new IllegalArgumentException("Lobby is Full.");
+        }
+
+        thisPlayer.attachRenderer(renderer);
         renderer.addRenderable(world.getModel());
+        thisPlayer.startMovementThread();
+
     }
 
     public void loop() {
@@ -83,11 +91,13 @@ public class Game implements ServerListener {
         Object[] data = packetData.getOnLobbyJoinDataData();
         String lobbyName = (String) data[0];
         Object[][] players = (Object[][]) data[1];
-        boolean isRedTeam = (Boolean) data[2];
+        byte thisPlayerId = (byte) data[2];
         int[] currentScore = (int[]) data[3];
         long gameStartTime = (Long) data[4];
 
         joinPlayer(players);
+
+        thisPlayer = this.players.get(thisPlayerId);
     }
 
     @Override
@@ -124,14 +134,15 @@ public class Game implements ServerListener {
     public void onPlayerMove(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerMoveData()[0];
         float[] posArray = (float[]) packetData.getOnPlayerMoveData()[1];
-        Vector3f newPosition = new Vector3f((Float) posArray[0], (Float) posArray[1], (Float) posArray[2]);
+        Vector3f dPosition = new Vector3f(posArray[0], posArray[1], posArray[2]);
         Player player = players.get(playerId);
 
         if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerMove packet");
         }
 
-        player.move(newPosition);
+        player.move(dPosition);
+        System.out.println(player.getName() + " moved to " + player.getPosition());
     }
 
     @Override

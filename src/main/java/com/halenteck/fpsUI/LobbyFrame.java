@@ -1,6 +1,5 @@
 package com.halenteck.fpsUI;
 
-import com.halenteck.fpsGame.Game;
 import com.halenteck.server.Server;
 
 import javax.swing.*;
@@ -13,6 +12,16 @@ public class LobbyFrame extends JFrame {
 
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 500;
+
+    public static void main(String[] args) {
+        try {
+            Server.connect();
+            Server.login("Babapiiro31", "Gokaynu2!");
+            new LobbyFrame(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public LobbyFrame(boolean rankedGame) {
 
@@ -43,7 +52,7 @@ public class LobbyFrame extends JFrame {
         Border border2 = BorderFactory.createLineBorder(Color.BLACK);
 
         // title panel
-        JPanel titlePanel = new JPanel(new GridLayout(1,4));
+        JPanel titlePanel = new JPanel(new GridLayout(1, 4));
         JLabel serverNameLabel = new JLabel("Server Name", SwingConstants.CENTER);
         serverNameLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
         serverNameLabel.setBorder(border2);
@@ -59,7 +68,8 @@ public class LobbyFrame extends JFrame {
         JButton createLobby = new JButton("Create Server");
         createLobby.addActionListener(e -> {
             String name = JOptionPane.showInputDialog(this, "Enter server name:");
-            Server.createLobby(Server.getUserData().getPlayerName(), name);
+            int id = Server.createLobby(name);
+            new FpsInGame(id);
         });
         titlePanel.add(createLobby);
         titlePanel.setPreferredSize(new Dimension(FRAME_WIDTH, 50));
@@ -73,8 +83,10 @@ public class LobbyFrame extends JFrame {
 
             String[] lobbyData = lobby.split(","); // lobby id, name, player count, creation time
 
+            int id = Integer.parseInt(lobbyData[0]);
+
             JPanel serverInfoPanel = new JPanel();
-            serverInfoPanel.setLayout(new GridLayout(1,4));
+            serverInfoPanel.setLayout(new GridLayout(1, 4));
             JLabel serverName = new JLabel(lobbyData[1], SwingConstants.CENTER); // lobby name
             serverName.setBorder(border2);
             serverInfoPanel.add(serverName);
@@ -90,9 +102,7 @@ public class LobbyFrame extends JFrame {
             serverInfoPanel.add(serverTimeLeft);
             JButton joinButton = new JButton("Join");
             joinButton.addActionListener(e -> {
-                Server.joinLobby(Server.getUserData().getPlayerName(), Integer.parseInt(lobbyData[0]));
-                Server.addServerListener(new Game(null, null, null));
-                new FpsInGame();
+                new FpsInGame(id);
                 dispose();
             });
             serverInfoPanel.add(joinButton);

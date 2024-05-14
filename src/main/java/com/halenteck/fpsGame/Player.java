@@ -2,7 +2,9 @@ package com.halenteck.fpsGame;
 
 import com.halenteck.render.Entity;
 import com.halenteck.render.Models;
+import com.halenteck.render.OpenGLComponent;
 import com.halenteck.render.World;
+import com.halenteck.server.Server;
 import org.joml.Vector3f;
 
 import java.awt.event.*;
@@ -20,6 +22,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     private FPSWeapon weapon;
     private Entity entity;
+    private OpenGLComponent renderer;
     private Team team;
 
     private String name;
@@ -33,6 +36,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private int armor;
     private int weaponId;
     private int attackPower;
+
+    private int lastMouseX;
+    private int lastMouseY;
 
     private float yaw = -180;
     private float pitch = 0;
@@ -57,6 +63,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean moveBackward;
     private boolean moveLeft;
     private boolean moveRight;
+    private boolean jump;
 
     World world;
 
@@ -69,12 +76,14 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.position = startPosition;
         this.yaw = yaw;
         this.pitch = pitch;
+        this.directionVector = new Vector3f(0, 0, -1);
         this.isCrouching = isCrouching;
         this.weaponId = weaponId;
         this.attackPower = attackPower;
         this.kills = kill;
         this.deaths = death;
         this.characterId = characterId;
+        this.accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer = new Vector3f(0, 0, 0);
         this.velocity = new Vector3f(0, 0, 0);
 
         speed = SPEED;
@@ -118,23 +127,28 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 if (shooting) {
                     shoot();
                 }
+                if (jump) {
+                    jump();
+                }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 move(velocity);
                 entity.move(position.x, position.y, position.z);
+                if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
+                    velocity.add(0, -2, 0);
+                }
+                velocity.mul(0.8f, 0.8f, 0.8f);
+                if (Math.abs(velocity.x) < 0.005) velocity.x = 0;
+                if (Math.abs(velocity.y) < 0.005) velocity.y = 0;
+                if (Math.abs(velocity.z) < 0.005) velocity.z = 0;
+
+                accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.set(0, 0, 0);
 
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                velocity.mul(0.8f,0.8f,0.8f);
-                if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
-                    velocity.add(0,-0.4f, 0);
-                }
-                if (velocity.x < 0.005) velocity.x = 0;
-                if (velocity.y < 0.005) velocity.y = 0;
-                if (velocity.z < 0.005) velocity.z = 0;
             }
         }).start();
     }
@@ -168,7 +182,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -193,7 +208,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case KeyEvent.VK_R:
                 reload();
             case KeyEvent.VK_SPACE:
-                jump();
+                jump = true;
                 break;
             case KeyEvent.VK_SHIFT:
                 crouch();
@@ -216,6 +231,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case KeyEvent.VK_D:
                 moveRight = false;
                 break;
+            case KeyEvent.VK_SPACE:
+                jump = false;
+                break;
             case KeyEvent.VK_SHIFT:
                 stand();
                 break;
@@ -223,7 +241,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -244,22 +263,27 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        float lastMouseX = yaw;
-        float lastMouseY = pitch;
-        float dx = e.getX() - lastMouseX;
-        float dy = e.getY() - lastMouseY;
+        int dx = e.getX() - lastMouseX;
+        int dy = e.getY() - lastMouseY;
+        lastMouseX = e.getX();
+        lastMouseY = e.getY();
         rotate(dx, dy);
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {}
+    public void mouseMoved(MouseEvent e) {
+        lastMouseX = e.getX();
+        lastMouseY = e.getY();
+    }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -270,19 +294,32 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void move(Vector3f velocity) {
+        float dX = position.x;
+        float dY = position.y;
+        float dZ = position.z;
         moveX(velocity.x);
         moveY(velocity.y);
         moveZ(velocity.z);
+        entity.move(position.x, position.y, position.z);
+        dX = position.x - dX;
+        dY = position.y - dY;
+        dZ = position.z - dZ;
+        if (renderer != null) {
+            renderer.moveCamera(position);
+            if (Math.abs(dX) > 0.001 || Math.abs(dY) > 0.001 || Math.abs(dZ) > 0.001) {
+                Server.movePlayer(dX, dY, dZ);
+            }
+        }
     }
 
     private void moveX(float x) {
         float newX = position.x + x;
         int direction = (int) Math.signum(x);
-            if (world.isFull((int) (newX - 0.2f), (int) position.y, (int) position.z) ||
-                    world.isFull((int) (newX + 0.2f), (int) position.y, (int) position.z)) {
-                position.x = (float) ((int) x + 0.5 + direction * 0.3f);
-                return;
-            }
+        if (world.isFull(newX - 0.2f, position.y, position.z) ||
+                world.isFull(newX + 0.2f, position.y, position.z)) {
+            position.x = (float) ((int) x + 0.5 + direction * 0.3f);
+            return;
+        }
         position.x = newX;
     }
 
@@ -290,15 +327,18 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         float newY = position.y + y;
         int direction = (int) Math.signum(y);
 
-        if (world.isFull((int) position.x, (int) (newY), (int) position.z) ||
-                world.isFull((int) position.x, (int) (newY + 1.7f), (int) position.z)) {
-            position.y = newY - direction * 0.1f;
+        if (world.isFull(position.x, newY, position.z) ||
+                world.isFull(position.x, newY + 1.7f, position.z)) {
+            position.y = (float) Math.floor(position.y);
+            velocity.y = 0;
+            isGrounded = true;
             return;
         }
 
         isGrounded = false;
-        if (world.isFull((int) position.x, (int) (newY - 0.001f), (int) position.z)) {
+        if (world.isFull(position.x, (newY - 0.001f), position.z)) {
             isGrounded = true;
+            velocity.y = 0;
         }
 
         position.y = newY;
@@ -308,8 +348,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         float newZ = position.z + z;
         int direction = (int) Math.signum(z);
 
-        if (world.isFull((int) position.x, (int) position.y, (int) (newZ - 0.2f)) ||
-                world.isFull((int) position.x, (int) position.y, (int) (newZ + 0.2f))) {
+        if (world.isFull(position.x, position.y, newZ - 0.2f) ||
+                world.isFull(position.x, position.y, newZ + 0.2f)) {
             position.z = newZ - direction * 0.1f;
             return;
         }
@@ -318,81 +358,77 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void moveForward() {
-        Vector3f acceleration = new Vector3f(directionVector).mul(speed / TICKS_PER_SECOND);
+        Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.set(acceleration.x, 0, acceleration.z).normalize().mul(speed);
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(acceleration);
     }
 
     public void moveBackward() {
-        Vector3f acceleration = new Vector3f(directionVector).mul(speed / TICKS_PER_SECOND);
+        Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.set(acceleration.x, 0, acceleration.z).normalize().mul(speed);
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(acceleration);
     }
 
     public void moveRight() {
-        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(right.mul(speed / TICKS_PER_SECOND));
+        Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.set(acceleration.x, 0, acceleration.z).normalize();
+        Vector3f right = acceleration.cross(new Vector3f(0, 1, 0));
+        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(right.mul(speed));
     }
 
     public void moveLeft() {
-        Vector3f left = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
-        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(left.mul(speed / TICKS_PER_SECOND));
+        Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.set(acceleration.x, 0, acceleration.z).normalize();
+        Vector3f right = acceleration.cross(new Vector3f(0, 1, 0));
+        accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(right.mul(speed));
     }
 
     public void jump() {
-        if (isAbilityActive() && characterId == 2)
-        {
+        if (isAbilityActive() && characterId == 2) {
             velocity.y = JUMP_FORCE;
-        }
-
-        else if (isGrounded) {
+        } else if (isGrounded) {
             isGrounded = false;
             velocity.y = JUMP_FORCE;
         }
     }
 
     public void crouch() {
-        if (!isCrouching)
-        {
+        if (!isCrouching) {
             isCrouching = true;
             speed = SPEED * CROUCH_MULTIPLIER;
         }
     }
 
     public void stand() {
-        if (isCrouching)
-        {
+        if (isCrouching) {
             isCrouching = false;
             speed = SPEED / CROUCH_MULTIPLIER;
         }
     }
 
     public void rotate(float dYaw, float dPitch) {
-        yaw += dYaw;
-        pitch += dPitch;
-        if (pitch > 85) pitch = 85;
+        yaw -= dYaw;
+        pitch -= dPitch;
+        if (pitch > 90) pitch = 90;
         if (pitch < -90) pitch = -90;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         directionVector = new Vector3f(directionX, directionY, directionZ);
 
-        entity.rotate(yaw, pitch);
+        entity.setRotation(yaw, pitch);
+        renderer.setCameraRotation(yaw, pitch);
     }
 
     public Bullet shoot() {
-        if (weapon.canFire())
-        {
+        if (weapon.canFire()) {
             weapon.fire();
             return new Bullet(this.position, directionVector, weapon.getDamage());
-        }
-        else if (weapon.isReloading())
-        {
-            if (weapon.isReloading())
-            {
+        } else if (weapon.isReloading()) {
+            if (weapon.isReloading()) {
                 return null;
             }
-        }
-        else
-        {
+        } else {
             weapon.reload();
         }
         return null;
@@ -401,9 +437,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void reload() {
         if (weapon.getAmmoInMagazine() < weapon.magazineSize) {
             weapon.reload();
-        }
-        else
-        {
+        } else {
             return;
         }
     }
@@ -413,8 +447,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void handleBullet(Bullet bullet) {
-        if (bullet.doesBulletHitTarget(this))
-        {
+        if (bullet.doesBulletHitTarget(this)) {
             if (!(isAbilityActive() && characterId == 1)) {
                 takeDamage(bullet.getDamage());
             }
@@ -422,15 +455,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void takeDamage(int damage) {
-        if (armor > 0)
-        {
-            if (armor < damage)
-            {
+        if (armor > 0) {
+            if (armor < damage) {
                 damage = damage - armor;
                 health = health - damage;
-            }
-            else
-            {
+            } else {
                 armor = armor - damage;
             }
         }
@@ -443,6 +472,16 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void die() {
         this.incrementDeaths();
         health = -1;
+    }
+
+    public void attachRenderer(OpenGLComponent renderer) {
+        renderer.addKeyListener(this);
+        renderer.addMouseListener(this);
+        renderer.addMouseMotionListener(this);
+        renderer.addMouseWheelListener(this);
+        renderer.moveCamera(position);
+        renderer.removeEntity(entity);
+        this.renderer = renderer;
     }
 
     public void setTeam(Team team) {

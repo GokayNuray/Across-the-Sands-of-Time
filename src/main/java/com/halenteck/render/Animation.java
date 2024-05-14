@@ -26,7 +26,6 @@ public class Animation {
                 float[] scaling = scalings[i];
 
                 Matrix4f matrix = new Matrix4f().identity();
-                System.out.println(position[0] + ", " + position[1] + ", " + position[2]);
                 matrix.translate(position[0], position[1], position[2]);
                 Quaternionf quaternion = new Quaternionf(rotation[0], rotation[1], rotation[2], rotation[3]);
                 matrix.rotate(quaternion);
@@ -55,7 +54,6 @@ public class Animation {
     }
 
     public Animation(Animation animation, Entity entity) {
-        System.out.println("Cloning animation " + animation.name);
         this.name = animation.name;
         this.duration = animation.duration;
         this.ticksPerSecond = animation.ticksPerSecond;
@@ -68,11 +66,9 @@ public class Animation {
         for (Renderable renderable : renderables) {
             this.renderables.put(renderable.getName(), renderable);
         }
-        System.out.println("Cloned animation " + animation.name);
     }
 
     public void start() {
-        System.out.println("Starting animation " + name);
         time = System.currentTimeMillis();
 
         update(0);

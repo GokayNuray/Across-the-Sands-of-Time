@@ -152,9 +152,18 @@ public class OpenGLComponent extends AWTGLCanvas {
         }
     }
 
+
     public void addEntity(Entity entity) {
         synchronized ("renderables") {
             entity.getRenderables(renderables);
+        }
+    }
+
+    public void removeEntity(Entity entity) {
+        synchronized ("renderables") {
+            List<Renderable> toRemove = new ArrayList<>();
+            entity.getRenderables(toRemove);
+            renderables.removeAll(toRemove);
         }
     }
 
@@ -196,12 +205,24 @@ public class OpenGLComponent extends AWTGLCanvas {
         cameraPosition.sub(new Vector3f(0, 1, 0).mul(distance));
     }
 
+    public void moveCamera(Vector3f direction) {
+        cameraPosition = new Vector3f(direction);
+    }
 
     public void rotateCamera(float dYaw, float dPitch) {
         yaw += dYaw;
         pitch += dPitch;
         if (pitch > 90) pitch = 90;
         if (pitch < -90) pitch = -90;
+        float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        float directionY = (float) Math.sin(Math.toRadians(pitch));
+        float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        directionVector = new Vector3f(directionX, directionY, directionZ);
+    }
+
+    public void setCameraRotation(float yaw, float pitch) {
+        this.yaw = yaw;
+        this.pitch = pitch;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));

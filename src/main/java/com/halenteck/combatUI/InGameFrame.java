@@ -15,7 +15,7 @@ public class InGameFrame extends JFrame {
     public int playerHealth;
     public int enemyHealth;
     public int enemyCount;
-    public boolean isAbilityActive;
+    public boolean isAbilityActive = false;
     JProgressBar playerHealthBar;
     JProgressBar enemyHealthBar;
     JLabel enemyImageLabel;
@@ -39,7 +39,6 @@ public class InGameFrame extends JFrame {
     }
 
     public InGameFrame() throws Exception {
-        isAbilityActive = false;
         playerX = 250;
         enemyX = (int) bounds.getWidth() - 450;
         game = new Game(this);
@@ -161,7 +160,7 @@ public class InGameFrame extends JFrame {
         specialAbilityButton = new JButton("\uD83C\uDF1F");
         specialAbilityButton.setToolTipText("Special Ability");
         if (!Server.getUserData().getCharacters()[Server.getUserData().getUnlockedCharacterCount() - 1].isSpecialAbilityUnlocked()
-                || !isAbilityActive) {
+                || character.ability.usageLeft <= 0 || game.getLocation().isAbilityActive()){
             specialAbilityButton.setEnabled(false);
             specialAbilityButton.setToolTipText("Special Ability is locked");
         }
@@ -220,6 +219,13 @@ public class InGameFrame extends JFrame {
         specialAbilityButton.setBounds(playerX + playerImageLabel.getWidth() + 10, 500, 100, 100);
         moveBackwardButton.setBounds(playerX + playerImageLabel.getWidth() - 425, 450, 100, 100);
         moveForwardButton.setBounds(playerX + playerImageLabel.getWidth() - 425, 300, 100, 100);
+
+        // refresh the ability button
+        if (!Server.getUserData().getCharacters()[Server.getUserData().getUnlockedCharacterCount() - 1].isSpecialAbilityUnlocked()
+                || game.getLocation().getPlayer().ability.usageLeft <= 0 || game.getLocation().isAbilityActive()) {
+            specialAbilityButton.setEnabled(false);
+            specialAbilityButton.setToolTipText("Special Ability is locked");
+        }
 
     }
 

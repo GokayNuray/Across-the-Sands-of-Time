@@ -205,18 +205,16 @@ public class ShopFrame extends JFrame {
         weaponPricePanel.add(weaponPriceLabel2);
         JButton buyGunButton2 = new JButton("BUY");
         buyGunButton2.addActionListener(e -> {
-            if (ToolStore.buyWeapon((byte) characterIndex)) {
+            if (ToolStore.buyWeapon((byte) 1)) {
                 instance.updatePanels(characterIndex, 0);
+                buyGunButton2.setText("BOUGHT");
+                buyGunButton2.setEnabled(false);
             }
             if (Server.getUserData().getCharacters()[characterIndex].getUnlockedWeapons().length > 1) {
                 buyGunButton2.setText("BOUGHT");
                 buyGunButton2.setEnabled(false);
             }
         });
-        if (Server.getUserData().getCharacters()[characterIndex].getUnlockedWeapons().length > 1) {
-            buyGunButton2.setText("BOUGHT");
-            buyGunButton2.setEnabled(false);
-        }
         weaponPricePanel.add(buyGunButton2);
         weaponPricePanel.add(new JLabel());
         weaponPanel.add(weaponPricePanel, BorderLayout.NORTH);
@@ -253,26 +251,54 @@ public class ShopFrame extends JFrame {
         JPanel armourPanel = new JPanel(new BorderLayout());
         // armour prices
         JPanel armourPricePanel = new JPanel(new GridLayout(1, 6));
-        for (int i = 0; i < 3; i++) {
-            JLabel armourPriceLabel = new JLabel("$ " + (10 + i) * 5, SwingConstants.CENTER);
-            armourPriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
-            armourPricePanel.add(armourPriceLabel);
-            JButton buyArmourButton = new JButton("BUY");
-            int finalI = i;
-            buyArmourButton.addActionListener(e -> {
-                if (ToolStore.buyArmour((byte) finalI)) {
-                    instance.updatePanels(characterIndex, 1);
-                    buyArmourButton.setText("BOUGHT");
-                    buyArmourButton.setEnabled(false);
-                }
-            });
-            if (Server.getUserData().getArmorLevel() >= (finalI + 1)) {
-                buyArmourButton.setText("BOUGHT");
-                buyArmourButton.setEnabled(false);
+        JLabel armour1PriceLabel = new JLabel("$ " + (10 + 1) * 5, SwingConstants.CENTER);
+        armour1PriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        armourPricePanel.add(armour1PriceLabel);
+        JButton buyArmour1Button = new JButton("BUY");
+        buyArmour1Button.addActionListener(e -> {
+            if (ToolStore.buyArmour((byte) 1)) {
+                instance.updatePanels(characterIndex, 1);
+                buyArmour1Button.setText("BOUGHT");
+                buyArmour1Button.setEnabled(false);
             }
-            armourPricePanel.add(buyArmourButton);
+        });
+        if (Server.getUserData().getArmorLevel() >= 1) {
+            buyArmour1Button.setText("BOUGHT");
+            buyArmour1Button.setEnabled(false);
         }
-
+        armourPricePanel.add(buyArmour1Button);
+        JLabel armour2PriceLabel = new JLabel("$ " + (10 + 2) * 10, SwingConstants.CENTER);
+        armour2PriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        armourPricePanel.add(armour2PriceLabel);
+        JButton buyArmour2Button = new JButton("BUY");
+        buyArmour2Button.addActionListener(e -> {
+            if (ToolStore.buyArmour((byte) 2)) {
+                instance.updatePanels(characterIndex, 1);
+                buyArmour2Button.setText("BOUGHT");
+                buyArmour2Button.setEnabled(false);
+            }
+        });
+        if (Server.getUserData().getArmorLevel() >= 2) {
+            buyArmour2Button.setText("BOUGHT");
+            buyArmour2Button.setEnabled(false);
+        }
+        armourPricePanel.add(buyArmour2Button);
+        JLabel armour3PriceLabel = new JLabel("$ " + (10 + 3) * 15, SwingConstants.CENTER);
+        armour3PriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
+        armourPricePanel.add(armour3PriceLabel);
+        JButton buyArmour3Button = new JButton("BUY");
+        buyArmour3Button.addActionListener(e -> {
+            if (ToolStore.buyArmour((byte) 3)) {
+                instance.updatePanels(characterIndex, 1);
+                buyArmour3Button.setText("BOUGHT");
+                buyArmour3Button.setEnabled(false);
+            }
+        });
+        if (Server.getUserData().getArmorLevel() >= 3) {
+            buyArmour3Button.setText("BOUGHT");
+            buyArmour3Button.setEnabled(false);
+        }
+        armourPricePanel.add(buyArmour3Button);
         armourPanel.add(armourPricePanel, BorderLayout.NORTH);
         // armour display panel
         JPanel armourDisplayPanel = new JPanel(new GridLayout(2, 3));
@@ -307,14 +333,14 @@ public class ShopFrame extends JFrame {
         JPanel armourEquipPanel = new JPanel(new GridLayout(1, 3));
         for (int i = 0; i < 3; i++) {
             if (Server.getUserData().getArmorLevel() - 1 == i) { // armour is the strongest one available
-            JLabel equippedArmourLabel = new JLabel("Equipped!", SwingConstants.CENTER);
-            equippedArmourLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
-            equippedArmourLabel.setForeground(Color.GREEN);
-            armourEquipPanel.add(equippedArmourLabel);
-        }
-        else {
-            armourEquipPanel.add(new JLabel());
-        }
+                JLabel equippedArmourLabel = new JLabel("Equipped!", SwingConstants.CENTER);
+                equippedArmourLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
+                equippedArmourLabel.setForeground(Color.GREEN);
+                armourEquipPanel.add(equippedArmourLabel);
+            }
+            else {
+                armourEquipPanel.add(new JLabel());
+            }
         }
         armourPanel.add(armourEquipPanel, BorderLayout.SOUTH);
         panels[1] = armourPanel;
@@ -330,6 +356,8 @@ public class ShopFrame extends JFrame {
         buyAbilityButton.addActionListener(e -> {
             if (ToolStore.buyAbility((byte) characterIndex)) {
                 instance.updatePanels(characterIndex, 2);
+                buyAbilityButton.setText("BOUGHT");
+                buyAbilityButton.setEnabled(false);
             }
         });
         if (Server.getUserData().getCharacters()[characterIndex].isSpecialAbilityUnlocked()) {

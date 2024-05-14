@@ -1,5 +1,6 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.fpsUI.FpsInGame;
 import com.halenteck.render.Models;
 import com.halenteck.render.OpenGLComponent;
 import com.halenteck.render.World;
@@ -8,6 +9,7 @@ import com.halenteck.server.Server;
 import com.halenteck.server.ServerListener;
 import org.joml.Vector3f;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,15 +23,17 @@ public class Game implements ServerListener {
 
     private World world;
     private OpenGLComponent renderer;
+    private JLabel debugger;
 
-    public Game(int lobbyId, OpenGLComponent renderer) {
+    public Game(int lobbyId, FpsInGame fpsInGame) {
         Server.addServerListener(this);
         this.players = new HashMap<>();
         this.redTeam = new Team();
         this.blueTeam = new Team();
         this.isRunning = true;
         this.world = new World(Models.WORLD_MAP1, "test/testworld2/BlockData.txt");
-        this.renderer = renderer;
+        this.renderer = fpsInGame.getRenderer();
+        this.debugger = fpsInGame.getDebugLabel();
 
         Server.addServerListener(this);
         if (!Server.joinLobby(Server.getUserData().getPlayerName(), lobbyId)) {
@@ -37,8 +41,10 @@ public class Game implements ServerListener {
         }
 
         thisPlayer.attachRenderer(renderer);
+        thisPlayer.setDebugConsole(debugger);//TODO dont forget to remove this
         renderer.addEntity(world.getModel());
         thisPlayer.startMovementThread();
+
 
     }
 

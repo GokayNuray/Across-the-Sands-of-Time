@@ -12,7 +12,7 @@ public class World {
     private Set<BlockCoordinates> blocks;
 
     public World(int model, String collisionDataPath) {
-        this.model = new Entity(model, 0, -0.5f, 0, 0, 0, 1);
+        this.model = new Entity(model, 0.5f, 0.5f, 0.5f, 0, 0, 1);
         this.blocks = World.loadCollisionData(collisionDataPath);
     }
 

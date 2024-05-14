@@ -32,6 +32,8 @@ public class FpsInGame extends JFrame {
     Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();
     JButton specialAbilityButton;
     JLayeredPane layeredPane;
+    JLabel debugLabel;
+    OpenGLComponent renderer;
 
     public FpsInGame(int id) {
         Character character = Character.characters.get(Server.getUserData().getLastSelectedCharacter());
@@ -186,12 +188,16 @@ public class FpsInGame extends JFrame {
             return;
         }
 
-        OpenGLComponent openGLComponent = new OpenGLComponent();
-        openGLComponent.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
-        layeredPane.add(openGLComponent, JLayeredPane.DEFAULT_LAYER);
+        debugLabel = new JLabel();
+        debugLabel.setBounds(360, 100, 900, 30);
+        layeredPane.add(debugLabel, JLayeredPane.PALETTE_LAYER);
+
+        renderer = new OpenGLComponent();
+        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
+        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
 
         try {
-            new Game(id, openGLComponent);
+            new Game(id, this);
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -200,7 +206,7 @@ public class FpsInGame extends JFrame {
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-        openGLComponent.startRender();
+        renderer.startRender();
     }
 
     public void updatePanels() {
@@ -213,4 +219,11 @@ public class FpsInGame extends JFrame {
 //        }
     }
 
+    public JLabel getDebugLabel() {
+        return debugLabel;
+    }
+
+    public OpenGLComponent getRenderer() {
+        return renderer;
+    }
 }

@@ -7,11 +7,12 @@ import com.halenteck.render.World;
 import com.halenteck.server.Server;
 import org.joml.Vector3f;
 
+import javax.swing.*;
 import java.awt.event.*;
 
 public class Player implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
     private static final float TICKS_PER_SECOND = 20;
-    private static final float SPEED = 0.3f;
+    private static final float SPEED = 0.1f;
     private static final float JUMP_FORCE = 1;
     private static final float CROUCH_MULTIPLIER = 0.5f;
 
@@ -66,6 +67,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean jump;
 
     World world;
+
+    private JLabel debugLabel;
 
     public Player(Byte id, boolean isRedTeam, String name, Vector3f startPosition,
                   float yaw, float pitch, boolean isCrouching, int weaponId,
@@ -132,6 +135,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
+                StringBuilder debugText = new StringBuilder();
+                debugText.append("Position: ").append(Math.floor(position.x)).append(" ").append(Math.floor(position.y)).append(" ").append(Math.floor(position.z)).append(" ");
+                debugText.append("Velocity: ").append(velocity).append(" ");
+                debugText.append("Acceleration: ").append(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer).append("\n");
+                debugLabel.setText(debugText.toString());
                 move(velocity);
                 entity.move(position.x, position.y, position.z);
                 if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
@@ -305,7 +313,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         dY = position.y - dY;
         dZ = position.z - dZ;
         if (renderer != null) {
-            renderer.moveCamera(position);
+            renderer.moveCamera(new Vector3f(position.x, position.y + 1.7f, position.z));
             if (Math.abs(dX) > 0.001 || Math.abs(dY) > 0.001 || Math.abs(dZ) > 0.001) {
                 Server.movePlayer(dX, dY, dZ);
             }
@@ -409,8 +417,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void rotate(float dYaw, float dPitch) {
         yaw -= dYaw;
         pitch -= dPitch;
-        if (pitch > 90) pitch = 90;
-        if (pitch < -90) pitch = -90;
+        if (pitch > 89.99f) pitch = 89.99f;
+        if (pitch < -89.99f) pitch = -89.99f;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
@@ -482,7 +490,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         renderer.addMouseListener(this);
         renderer.addMouseMotionListener(this);
         renderer.addMouseWheelListener(this);
-        renderer.moveCamera(position);
+        renderer.moveCamera(new Vector3f(position.x, position.y + 1.7f, position.z));
         renderer.removeEntity(entity);
         this.renderer = renderer;
     }
@@ -573,5 +581,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public Entity getEntity() {
         return entity;
+    }
+
+    public void setDebugConsole(JLabel chatArea) {
+        this.debugLabel = chatArea;
     }
 }

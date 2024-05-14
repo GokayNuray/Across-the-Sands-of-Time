@@ -11,6 +11,7 @@ public class Bullet {
     private int damage;
 
     private Player player;
+    private FPSWeapon weapon;
 
     public Bullet(Vector3f startPosition, Vector3f direction, int damage) {
         this.position = new Vector3f(startPosition.x, startPosition.y, startPosition.z);
@@ -46,6 +47,7 @@ public class Bullet {
                 return true;
             }
             else {
+                damage = weapon.getDamage();
                 return true;
             }
         }
@@ -55,7 +57,7 @@ public class Bullet {
                     (bulletY <= targetY + 1.7f + hitRadius && bulletY > targetY + 1.7f) ||
                     (bulletZ >= targetZ - 0.2f - hitRadius && bulletZ < targetZ - 0.2f) ||
                     (bulletZ <= targetZ + 0.2f + hitRadius && bulletZ > targetZ + 0.2f)) {
-                damage = 1;
+                damage = weapon.getDamage() / 30;
                 return true;
             }
         }

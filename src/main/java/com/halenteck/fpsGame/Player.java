@@ -449,7 +449,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void reload() {
-        if (weapon.getAmmoInMagazine() < weapon.magazineSize) {
+        if (weapon.getAmmoInMagazine() < weapon.getMagazineSize()) {
             weapon.reload();
         } else {
             return;

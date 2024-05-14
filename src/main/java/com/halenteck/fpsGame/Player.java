@@ -42,7 +42,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private int lastMouseX;
     private int lastMouseY;
 
-    private float yaw = -180;
+    private float yaw = 0;
     private float pitch = 0;
     private float speed;
 
@@ -101,7 +101,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case 0x04 -> modelId = Models.CHARACTER5;
             default -> throw new IllegalArgumentException("invalid character id: " + characterId);
         }
-        this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, 0, 0, 0.01f);
+        this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, yaw, pitch, 1);
         this.world = world;
     }
 
@@ -143,7 +143,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 debugText.append("Acceleration: ").append(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer).append("\n");
                 debugLabel.setText(debugText.toString());
                 move(velocity);
-                entity.move(position.x, position.y, position.z);
                 if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
                     velocity.add(0, -0.019f, 0);
                 }
@@ -316,7 +315,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         moveX(velocity.x);
         moveY(velocity.y);
         moveZ(velocity.z);
-        entity.move(position.x, position.y, position.z);
+        entity.moveTo(position.x, position.y, position.z);
         dX = position.x - dX;
         dY = position.y - dY;
         dZ = position.z - dZ;
@@ -437,7 +436,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         entity.setRotation(yaw, pitch);
         if (renderer != null) {
             renderer.setCameraRotation(yaw, pitch);
-            Server.rotatePlayer(yaw, pitch);
+            Server.rotatePlayer(dYaw, dPitch);
         }
     }
 
@@ -509,6 +508,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         renderer.addMouseMotionListener(this);
         renderer.addMouseWheelListener(this);
         renderer.moveCamera(new Vector3f(position.x, position.y + 1.7f, position.z));
+        renderer.setCameraRotation(yaw, pitch);
         renderer.removeEntity(entity);
         this.renderer = renderer;
     }

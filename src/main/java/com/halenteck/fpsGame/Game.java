@@ -147,7 +147,6 @@ public class Game implements ServerListener {
         }
 
         player.move(dPosition);
-        System.out.println(player.getName() + " moved to " + player.getPosition());
     }
 
     @Override

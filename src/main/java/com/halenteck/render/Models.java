@@ -1,5 +1,7 @@
 package com.halenteck.render;
 
+import org.joml.Vector3f;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,9 @@ public final class Models {
         models.put(WORLD_MAP1, ModelLoader.loadModel("src/main/resources/test/testworld2/testworld3.obj"));
         models.put(CHARACTER1, ModelLoader.loadModel("src/main/resources/test/animTest/model.fbx"));
         animations.put(CHARACTER1, ModelLoader.loadAnimations("src/main/resources/test/animTest/model.fbx"));
+
+        models.get(CHARACTER1).forEach(r -> r.setModelScale(new Vector3f(0.01f, 0.01f, 0.01f)));
+        models.get(CHARACTER1).forEach(r -> r.setModelYaw((float) Math.toRadians(180)));
     }
 
     public static List<Renderable> getModel(int modelId) {

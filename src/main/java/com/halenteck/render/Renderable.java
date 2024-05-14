@@ -14,6 +14,11 @@ public class Renderable implements Cloneable {
     private boolean built = false;
     private boolean updated = false;
 
+    private Vector3f modelPosition = new Vector3f();
+    private float modelYaw = 0;
+    private float modelPitch = 0;
+    private Vector3f modelScale = new Vector3f(1, 1, 1);
+
     private float[] vertices;
     private float[] colors;
     private float[] texCoords;
@@ -94,9 +99,9 @@ public class Renderable implements Cloneable {
         FloatBuffer vertexBuffer2 = BufferUtils.createFloatBuffer(vertices.length);
         for (int i = 0; i < vertices.length; i += 3) {
             Vector3f vertex = new Vector3f(vertexBuffer.get(), vertexBuffer.get(), vertexBuffer.get());
-            Matrix4f transformation = new Matrix4f().scale(scale).rotate(yaw, 0, 1, 0).rotate(pitch, 1, 0, 0);
+            Matrix4f transformation = new Matrix4f().scale(new Vector3f(scale).mul(modelScale)).rotate(yaw + modelYaw, 0, 1, 0).rotate(pitch + modelPitch, 1, 0, 0);
             transformation.transformPosition(vertex);
-            vertex.add(position);
+            vertex.add(position).add(modelPosition);
             vertexBuffer2.put(vertex.x).put(vertex.y).put(vertex.z);
         }
         vertexBuffer2.flip();
@@ -121,6 +126,22 @@ public class Renderable implements Cloneable {
         scale.mul(x, y, z);
 
         updated = true;
+    }
+
+    void setModelPosition(Vector3f modelPosition) {
+        this.modelPosition = modelPosition;
+    }
+
+    void setModelYaw(float modelYaw) {
+        this.modelYaw = modelYaw;
+    }
+
+    void setModelPitch(float modelPitch) {
+        this.modelPitch = modelPitch;
+    }
+
+    void setModelScale(Vector3f modelScale) {
+        this.modelScale = modelScale;
     }
 
     public String getName() {

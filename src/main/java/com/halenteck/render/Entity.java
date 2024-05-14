@@ -35,7 +35,7 @@ public class Entity {
         renderables.forEach(r -> r.translate(x, y, z));
     }
 
-    public void move(float x, float y, float z) {
+    public void moveTo(float x, float y, float z) {
         float dX = x - this.x;
         float dY = y - this.y;
         float dZ = z - this.z;

@@ -12,8 +12,8 @@ import java.awt.event.*;
 
 public class Player implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
     private static final float TICKS_PER_SECOND = 20;
-    private static final float SPEED = 0.1f;
-    private static final float JUMP_FORCE = 1;
+    private static final float SPEED = 0.02f;
+    private static final float JUMP_FORCE = 0.5f;
     private static final float CROUCH_MULTIPLIER = 0.5f;
 
     private Vector3f position;
@@ -143,7 +143,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 move(velocity);
                 entity.move(position.x, position.y, position.z);
                 if (!isGrounded && !(isAbilityActive() && characterId == 2)) {
-                    velocity.add(0, -0.1f, 0);
+                    velocity.add(0, -0.019f, 0);
                 }
                 velocity.mul(0.8f, 0.8f, 0.8f);
                 if (Math.abs(velocity.x) < 0.005) velocity.x = 0;
@@ -153,7 +153,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.set(0, 0, 0);
 
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -410,7 +410,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void stand() {
         if (isCrouching) {
             isCrouching = false;
-            speed = SPEED / CROUCH_MULTIPLIER;
+            speed = SPEED;
         }
     }
 

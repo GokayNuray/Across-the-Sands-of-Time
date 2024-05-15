@@ -1,11 +1,12 @@
 package com.halenteck.render;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Entity {
 
-    private Animation animation;
+    private Map<String, Animation> animations = new HashMap<>();
 
     private List<Renderable> renderables;
     private float x = 0;
@@ -22,8 +23,10 @@ public class Entity {
 
         Map<String, Animation> animations = Models.getAnimations(modelId);
         if (animations != null) {
-            this.animation = new Animation(animations.get("wave"), this);
-            this.animation.start();
+            for (Map.Entry<String, Animation> entry : animations.entrySet()) {
+                Animation animation = new Animation(entry.getValue(), this);
+                this.animations.put(entry.getKey(), animation);
+            }
         }
 
     }
@@ -33,6 +36,10 @@ public class Entity {
         this.y += y;
         this.z += z;
         renderables.forEach(r -> r.translate(x, y, z));
+        Animation walk = animations.get("walk");
+        if (walk != null) {
+            walk.start();
+        }
     }
 
     public void moveTo(float x, float y, float z) {
@@ -62,5 +69,12 @@ public class Entity {
 
     public void getRenderables(List<Renderable> renderables) {
         renderables.addAll(this.renderables);
+    }
+
+    public void startAnimation(String name) {
+        Animation animation = animations.get(name);
+        if (animation != null) {
+            animation.start();
+        }
     }
 }

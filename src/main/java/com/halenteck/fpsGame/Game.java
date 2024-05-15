@@ -1,5 +1,6 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.fpsUI.FpsEndGame;
 import com.halenteck.fpsUI.FpsInGame;
 import com.halenteck.render.Models;
 import com.halenteck.render.OpenGLComponent;
@@ -8,6 +9,7 @@ import com.halenteck.server.PacketData;
 import com.halenteck.server.Server;
 import com.halenteck.server.ServerListener;
 import org.joml.Vector3f;
+import org.lwjgl.awthacks.NonClearGraphics;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -265,6 +267,7 @@ public class Game implements ServerListener {
 
     @Override
     public void onGameOver(PacketData packetData) {
-        //TODO: Game over implementation.
+        isRunning = false;
+        new FpsEndGame(false);
     }
 }

@@ -15,60 +15,88 @@ public class LogInFrame extends JFrame {
         setTitle("Across the Sands of Time");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        JPanel emptyPanel = new JPanel();
+        emptyPanel.setBackground(new Color(198,152,116));
 
         // Create Login Panel
         JPanel centerPanel = new JPanel();
+        centerPanel.setBackground(new Color(213, 176, 124));
         centerPanel.setLayout(new GridLayout(4, 2));
 
         // Username Panel
         JPanel usernamePanel = new JPanel(new GridLayout(2, 0));
+        usernamePanel.setBackground(new Color(213, 176, 124));
         JLabel usernameLabel = new JLabel("username", SwingConstants.LEFT);
-        usernameLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        usernameLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         JTextField usernameField = new JTextField();
-        usernameField.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+        usernameField.setFont(new Font("Sans Serif", Font.PLAIN, 18));
         usernamePanel.add(usernameLabel);
         usernamePanel.add(usernameField);
         centerPanel.add(usernamePanel);
 
-        JTextArea usernameInfo = new JTextArea("username (6-12 digits) can only contain letters, numbers and '_' character.");
-        usernameInfo.setLineWrap(true); // Enable line wrapping
-        usernameInfo.setWrapStyleWord(true); // Wrap text at word boundaries (optional)
+        JTextArea usernameInfo = new JTextArea("Username (6-12 digits) can only contain letters, numbers and '_' character.");
+        usernameInfo.setColumns(70);
+        usernameInfo.setSize(usernameInfo.getPreferredSize().width, 1);
+        usernameInfo.setFont(new Font("Sans Serif", Font.PLAIN, 18));
+        usernameInfo.setLineWrap(true);
+        usernameInfo.setWrapStyleWord(true);
         usernameInfo.setEditable(false);
         centerPanel.add(usernameInfo);
 
         // Password Panel
         JPanel passwordPanel = new JPanel(new GridLayout(2, 0));
+        passwordPanel.setBackground(new Color(213, 176, 124));
         JLabel passwordLabel = new JLabel("password", SwingConstants.LEFT);
-        passwordLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        passwordLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         JPasswordField passwordField = new JPasswordField();
-        passwordField.setFont(new Font("Sans Serif", Font.PLAIN, 16));
+        passwordField.setFont(new Font("Sans Serif", Font.PLAIN, 18));
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
         centerPanel.add(passwordPanel);
 
-        JTextArea passwordInfo = new JTextArea("password (8-16 digits) must contain 1 uppercase, 1 lowercase, " +
+        JTextArea passwordInfo = new JTextArea("Password (8-16 digits) must contain 1 uppercase, 1 lowercase, " +
                 "1 numerical and 1 special-case (*,?,!,_,-) character.");
-        passwordInfo.setLineWrap(true); // Enable line wrapping
+        passwordInfo.setColumns(70);
+        passwordInfo.setSize(passwordInfo.getPreferredSize().width, 1);
+        passwordInfo.setFont(new Font("Sans Serif", Font.PLAIN, 18));
+        passwordInfo.setLineWrap(true);
         passwordInfo.setWrapStyleWord(true);
         passwordInfo.setEditable(false);
         centerPanel.add(passwordInfo);
-
-        centerPanel.add(new JPanel()); // empty panel
+        centerPanel.add(emptyPanel); // empty panel
+        centerPanel.add(new JPanel() {
+            {
+                setBackground(new Color(213,176,124));
+            }
+        });
 
         // Registration Button
         JPanel registerPanel = new JPanel(new GridLayout(1, 2));
+        registerPanel.setBackground(new Color(213, 176, 124));
         JLabel registerLabel = new JLabel("First Time Here?", SwingConstants.LEFT);
+        registerLabel.setFont(new Font("Sans Serif", Font.ITALIC, 18));
         JButton registerButton = new JButton("Register");
+        registerButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        registerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+        registerButton.setBackground(new Color(198, 152, 116));
         registerPanel.add(registerLabel);
         registerPanel.add(registerButton);
         centerPanel.add(registerPanel);
 
-        centerPanel.add(new JPanel()); //empty panel
-
+        centerPanel.add(new JPanel() {
+            {
+                setBackground(new Color(213,176,124)); // Set to blue color
+            }
+        });
         // LogIn Panel
         JPanel loginPanel = new JPanel(new GridLayout(1, 2));
+        loginPanel.setBackground(new Color(213, 176, 124));
         JLabel loginLabel = new JLabel("Already Have an Account?", SwingConstants.LEFT);
+        loginLabel.setFont(new Font("Sans Serif", Font.ITALIC, 18));
         JButton loginButton = new JButton("Log In");
+        loginButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        loginButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+        loginButton.setBackground(new Color(198, 152, 116));
         loginPanel.add(loginLabel);
         loginPanel.add(loginButton);
         centerPanel.add(loginPanel);
@@ -76,24 +104,30 @@ public class LogInFrame extends JFrame {
         add(centerPanel, BorderLayout.CENTER);
 
         // Image Panel
+        JPanel imagePanel = new JPanel();
+        imagePanel.setBackground(new Color(213, 176, 124));
         ImageIcon imageIcon = new ImageIcon(this.getClass().getResource("/logo.jpg"));
         Image scaledImage = imageIcon.getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH); // Scales to 150 width, 100 height while maintaining aspect ratio
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage); // Create a new ImageIcon from the scaled image
         JLabel imageLabel = new JLabel(scaledImageIcon);
-        add(imageLabel, BorderLayout.WEST);
+        imageLabel.setBackground(new Color(213,176,124));
+        imagePanel.add(imageLabel);
+        add(imagePanel, BorderLayout.WEST);
 
 
         // Welcome Panel
-        JPanel northPanel = new JPanel(new GridLayout(2, 0));
-
-        JLabel welcomeLabel = new JLabel("Welcome to", SwingConstants.LEFT);
-        welcomeLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
-        northPanel.add(new JPanel()); // empty panel
+        JPanel northPanel = new JPanel(new GridLayout(2, 3));
+        northPanel.setBackground(new Color(198,152,116));
+        northPanel.add(emptyPanel);
+        JLabel welcomeLabel = new JLabel("Welcome to", SwingConstants.RIGHT);
+        welcomeLabel.setFont(new Font("Sans Serif", Font.BOLD, 25));
         northPanel.add(welcomeLabel);
-        northPanel.add(new JPanel()); // empty panel
+        northPanel.add(emptyPanel); // empty panel
+        northPanel.add(emptyPanel); // empty panel
+        northPanel.add(emptyPanel); // empty panel
         JLabel nameLabel = new JLabel("Across the Sands of Time!", SwingConstants.RIGHT);
-        nameLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
-        northPanel.add(new JPanel()); // empty panel
+        nameLabel.setFont(new Font("Sans Serif", Font.BOLD, 25));
+        northPanel.add(emptyPanel); // empty panel
         northPanel.add(nameLabel);
         add(northPanel, BorderLayout.NORTH);
 

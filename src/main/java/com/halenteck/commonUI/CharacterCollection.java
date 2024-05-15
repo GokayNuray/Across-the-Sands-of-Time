@@ -59,7 +59,9 @@ public class CharacterCollection extends JFrame {
         }
 
         JButton returnButton = new JButton("Return to Stats Page");
-        returnButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        returnButton.setFont(new Font("Sans Serif", Font.BOLD, 24));
+        returnButton.setBackground(new Color(213,176,124));
+        returnButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         returnButton.addActionListener(e -> {
             new UserCard(userData);
             dispose();

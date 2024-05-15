@@ -19,7 +19,11 @@ public class GameSelectionMenu extends JFrame {
         setLayout(new BorderLayout());
 
         // Welcome Panel
-        JPanel welcomePanel = new JPanel();
+        JPanel welcomePanel = new JPanel() {
+            {
+                setBackground(new Color(213,176,124));
+            }
+        };
         welcomePanel.setLayout(new GridLayout(2, 0));
         JLabel welcomeLabel = new JLabel("       Hello, welcome " + Server.getUserData().getPlayerName() + "!", SwingConstants.LEFT);
         welcomeLabel.setFont(new Font("Sans Serif", Font.BOLD, 24));
@@ -32,7 +36,10 @@ public class GameSelectionMenu extends JFrame {
         // Button Panel
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
         JButton combatButton = new JButton("Enter Combat Mode");
-        combatButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        combatButton.setFont(new Font("Sans Serif", Font.BOLD, 40));
+        combatButton.setFont(new Font("Sans Serif", Font.BOLD, 40));
+        combatButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+        combatButton.setBackground(new Color(198,152,116));
         combatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -44,7 +51,9 @@ public class GameSelectionMenu extends JFrame {
         buttonPanel.add(combatButton);
 
         JButton fpsButton = new JButton("Join FPS Match");
-        fpsButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        fpsButton.setFont(new Font("Sans Serif", Font.BOLD, 40));
+        fpsButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+        fpsButton.setBackground(new Color(198,152,116));
         fpsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,8 +64,12 @@ public class GameSelectionMenu extends JFrame {
                 // Create Ranked and Casual buttons
                 JButton rankedButton = new JButton("Join Ranked Match");
                 JButton casualButton = new JButton("Join Casual Match");
-                rankedButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
-                casualButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+                rankedButton.setFont(new Font("Sans Serif", Font.BOLD, 40));
+                casualButton.setFont(new Font("Sans Serif", Font.BOLD, 40));
+                rankedButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+                casualButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+                rankedButton.setBackground(new Color(198,152,116));
+                casualButton.setBackground(new Color(198,152,116));
 
                 // Add Ranked and Casual buttons
                 buttonPanel.add(rankedButton);
@@ -107,14 +120,25 @@ public class GameSelectionMenu extends JFrame {
 
         // Stats Panel
         JPanel statsPanel = new JPanel(new GridLayout(3, 3));
+        statsPanel.setBackground(new Color(213,176,124));
         JLabel statsLabel = new JLabel("or view stats", SwingConstants.CENTER);
         statsLabel.setFont(new Font("Sans Serif", Font.ITALIC, 20));
         statsPanel.add(statsLabel);
-        statsPanel.add(new JPanel());
-        statsPanel.add(new JPanel());
+        statsPanel.add(new JPanel() {
+            {
+                setBackground(new Color(213,176,124));
+            }
+        });
+        statsPanel.add(new JPanel() {
+            {
+                setBackground(new Color(213,176,124));
+            }
+        });
 
         JButton statsButton = new JButton("View Your Stats");
         statsButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        statsButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        statsButton.setBackground(new Color(198,152,116));
         statsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -128,6 +152,8 @@ public class GameSelectionMenu extends JFrame {
 
         JButton leaderboardButton = new JButton("View Leaderboard");
         leaderboardButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        leaderboardButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        leaderboardButton.setBackground(new Color(198,152,116));
         leaderboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -138,13 +164,27 @@ public class GameSelectionMenu extends JFrame {
         });
 
         statsPanel.add(leaderboardButton);
-        statsPanel.add(new JPanel());
-        statsPanel.add(new JPanel());
-        statsPanel.add(new JPanel());
+        statsPanel.add(new JPanel() {
+            {
+                setBackground(new Color(213,176,124));
+            }
+        });
+        statsPanel.add(new JPanel() {
+            {
+                setBackground(new Color(213,176,124));
+            }
+        });
+        statsPanel.add(new JPanel() {
+            {
+                setBackground(new Color(213,176,124));
+            }
+        });
 
         // Logout Panel
         JButton logOutButton = new JButton("Logout");
         logOutButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        logOutButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        logOutButton.setBackground(new Color(198,152,116));
         logOutButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         logOutButton.addActionListener(new ActionListener() {
             @Override

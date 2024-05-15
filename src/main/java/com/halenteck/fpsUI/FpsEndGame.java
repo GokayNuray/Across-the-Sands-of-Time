@@ -11,18 +11,19 @@ public class FpsEndGame extends JFrame {
     private static final int FRAME_WIDTH = 600;
     private static final int FRAME_HEIGHT = 400;
 
-    public FpsEndGame(boolean rankedGame) {
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+    public FpsEndGame(boolean isGameWon) {
         setTitle("Game Over");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+
 
         // End Game Panel
         JPanel endGamePanel = new JPanel(new GridLayout(4,1));
 
-        JLabel endGameLabel = new JLabel("Your team has " + "won/lost!", SwingConstants.CENTER); // Add win/loss condition
-        endGameLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
+        JLabel endGameLabel = new JLabel(isGameWon ? "Victory!" : "Defeat!", SwingConstants.CENTER);
+        endGameLabel.setFont(new Font("Sans Serif", Font.BOLD, 25));
         endGamePanel.add(endGameLabel);
-        if (rankedGame) {
+        if (isGameWon) {
             JLabel rankChangeLabel = new JLabel("+ 20 WP / -15 LP", SwingConstants.CENTER);
             rankChangeLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
             endGamePanel.add(rankChangeLabel);
@@ -39,7 +40,7 @@ public class FpsEndGame extends JFrame {
         deathsLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         statsPanel.add(deathsLabel);
         statsPanel.add(new JPanel());
-        if (rankedGame) {
+        if (isGameWon) {
             JLabel pointsLabel = new JLabel("Overall Points: 5", SwingConstants.CENTER); // Add rank
             pointsLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
             statsPanel.add(pointsLabel);
@@ -61,21 +62,21 @@ public class FpsEndGame extends JFrame {
         joinMatchButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
         joinMatchButton.addActionListener(e -> {
             new GameSelectionMenu();
-            dispose();
         });
         buttonPanel.add(joinMatchButton);
 
         JButton returnButton = new JButton("Return to Game Selection Menu");
         returnButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
         returnButton.addActionListener(e -> {
-            new LobbyFrame(rankedGame);
-            dispose();
+            new LobbyFrame(isGameWon);
         });
         buttonPanel.add(returnButton);
 
         endGamePanel.add(buttonPanel);
         endGamePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(endGamePanel);
+        System.out.println("End Game Frame created");
+        setVisible(true);
     }
 
 }

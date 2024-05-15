@@ -34,6 +34,7 @@ public class FpsInGame extends JFrame {
     JLayeredPane layeredPane;
     JLabel debugLabel;
     OpenGLComponent renderer;
+    JTextArea chat;
 
     public FpsInGame(int id) {
         Character character = Character.characters.get(Server.getUserData().getLastSelectedCharacter());
@@ -69,19 +70,19 @@ public class FpsInGame extends JFrame {
         JButton chatButton = new JButton("\uD83D\uDCAC");
         chatButton.setBounds(10, 50, 50, 50);
         chatButton.setEnabled(false);
-        JTextArea chatArea = new JTextArea();
-        chatArea.setBounds(65, 50, 200, 200);
-        chatArea.setEditable(false);
-        chatArea.setLineWrap(true);
-        chatArea.setWrapStyleWord(true);
-        chatArea.setBackground(Color.WHITE);
-        chatArea.setForeground(Color.BLACK);
-        chatArea.setFont(new Font("Arial", Font.PLAIN, 12));
-        chatArea.setText("Welcome to the game chat!");
+        chat = new JTextArea();
+        chat.setBounds(65, 50, 200, 200);
+        chat.setEditable(false);
+        chat.setLineWrap(true);
+        chat.setWrapStyleWord(true);
+        chat.setBackground(Color.WHITE);
+        chat.setForeground(Color.BLACK);
+        chat.setFont(new Font("Arial", Font.PLAIN, 12));
+        chat.setText("Welcome to the game chat!\n");
 
         JTextField chatField = new JTextField();
         chatField.setBounds(65, 255, 200, 40);
-        layeredPane.add(chatArea, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(chat, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatButton, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatField, JLayeredPane.PALETTE_LAYER);
 
@@ -153,7 +154,9 @@ public class FpsInGame extends JFrame {
         Action enterAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 chatField.setEditable(false);
-                chatArea.append("You: " + chatField.getText() + "\n");
+                chat.append("You: " + chatField.getText() + "\n");
+                chat.setCaretPosition(chat.getDocument().getLength());
+                Server.chat(chatField.getText());
                 chatField.setText("");
             }
         };
@@ -225,5 +228,9 @@ public class FpsInGame extends JFrame {
 
     public OpenGLComponent getRenderer() {
         return renderer;
+    }
+
+    public JTextArea getChat() {
+        return chat;
     }
 }

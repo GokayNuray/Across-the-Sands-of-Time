@@ -456,6 +456,12 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void setRotation(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
+        if (pitch > 89.99f) pitch = 89.99f;
+        if (pitch < -89.99f) pitch = -89.99f;
+        float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        float directionY = (float) Math.sin(Math.toRadians(pitch));
+        float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+        directionVector = new Vector3f(directionX, directionY, directionZ);
         entity.setRotation(yaw, pitch);
     }
 

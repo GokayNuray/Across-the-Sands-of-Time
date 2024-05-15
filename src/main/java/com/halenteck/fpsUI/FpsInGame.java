@@ -8,7 +8,8 @@ import com.halenteck.server.Server;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 public class FpsInGame extends JFrame {
     public static void main(String[] args) {
@@ -243,10 +244,10 @@ public class FpsInGame extends JFrame {
         getRootPane().getActionMap().put("T", tAction);
 
         ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
-        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH);
+        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
         JLabel crosshairLabel = new JLabel(finalCrosshair);
-        crosshairLabel.setBounds((int) (bounds.getWidth()/2) - 10, (int) (bounds.getHeight()/2) - 10,20,20);
+        crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
         layeredPane.add(crosshairLabel);
 
         if (id == -1) {
@@ -304,7 +305,7 @@ public class FpsInGame extends JFrame {
         kdaLabel.setText(kills + "/" + deaths);
 
         // Create a JLabel
-        JLabel joinLabel = new JLabel("", SwingConstants.CENTER);
+        /*JLabel joinLabel = new JLabel("", SwingConstants.CENTER);
         if (player.isRedTeam()) {
             joinLabel.setForeground(Color.RED);
             joinLabel.setText("You are on RED team");
@@ -326,7 +327,7 @@ public class FpsInGame extends JFrame {
         });
 
         // Start the Timer when the user joins
-        joinTimer.start();
+        joinTimer.start();*/
     }
 
     public JLabel getDebugLabel() {
@@ -336,6 +337,7 @@ public class FpsInGame extends JFrame {
     public OpenGLComponent getRenderer() {
         return renderer;
     }
+
     public void showPopUp(JFrame frame) {
         frame.setLocationRelativeTo(this);
         frame.setVisible(true);

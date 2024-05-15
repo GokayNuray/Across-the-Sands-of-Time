@@ -1,5 +1,6 @@
 package com.halenteck.render;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ public class Entity {
     private Map<String, Animation> animations = new HashMap<>();
 
     private List<Renderable> renderables;
+    private List<Renderable> headRenderables;
     private float x = 0;
     private float y = 0;
     private float z = 0;
@@ -17,6 +19,7 @@ public class Entity {
 
     public Entity(int modelId, float x, float y, float z, float yaw, float pitch, float scale) {
         this.renderables = Models.getModel(modelId);
+        headRenderables = new ArrayList<>();
         rotate(yaw, pitch);
         scale(scale, scale, scale);
         translate(x, y, z);
@@ -26,6 +29,12 @@ public class Entity {
             for (Map.Entry<String, Animation> entry : animations.entrySet()) {
                 Animation animation = new Animation(entry.getValue(), this);
                 this.animations.put(entry.getKey(), animation);
+            }
+        }
+
+        for (Renderable renderable : renderables) {
+            if (renderable.getName().equals("Head_1") || renderable.getName().equals("Right Arm") || renderable.getName().equals("Left Arm")) {
+                headRenderables.add(renderable);
             }
         }
 
@@ -55,6 +64,7 @@ public class Entity {
         float yawRad = (float) Math.toRadians(yaw);
         float pitchRad = (float) Math.toRadians(pitch);
         renderables.forEach(r -> r.increaseYaw(yawRad));
+        headRenderables.forEach(r -> r.increasePitch(pitchRad));
     }
 
     public void setRotation(float yaw, float pitch) {

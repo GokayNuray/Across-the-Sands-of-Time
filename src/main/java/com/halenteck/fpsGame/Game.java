@@ -132,7 +132,7 @@ public class Game implements ServerListener {
             byte death = (Byte) playerData[8];
 
             //TODO: characterId is temporarily set to 0
-            Player newPlayer = new Player(playerId, isRedTeam, name, startPosition, yaw, pitch, crouching, weaponId, attackPower, kill, death, (byte) 0, world);
+            Player newPlayer = new Player(playerId, isRedTeam, name, startPosition, yaw, pitch, weaponId, attackPower, kill, death, (byte) 0, world);
             players.put(playerId, newPlayer);
 
             renderer.addEntity(newPlayer.getEntity());
@@ -164,22 +164,6 @@ public class Game implements ServerListener {
 
         float[] rotateData = (float[]) packetData.getOnPlayerRotateData()[1];
         player.rotate(rotateData[0], rotateData[1]);
-    }
-
-    @Override
-    public void onPlayerCrouchStateChange(PacketData packetData) {
-        Byte playerId = (Byte) packetData.getOnPlayerCrouchStateChangeData()[0];
-        Player player = players.get(playerId);
-
-        if (player == null) {
-            throw new IllegalArgumentException("Incorrect player ID in onPlayerCrouchStateChange packet");
-        }
-
-        if (player.getCrouchState()) {
-            player.stand();
-        } else {
-            player.crouch();
-        }
     }
 
     @Override

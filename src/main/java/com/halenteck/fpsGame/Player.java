@@ -14,7 +14,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private static final float TICKS_PER_SECOND = 20;
     private static final float SPEED = 0.02f;
     private static final float JUMP_FORCE = 0.5f;
-    private static final float CROUCH_MULTIPLIER = 0.5f;
 
     private Vector3f position;
     private Vector3f velocity;
@@ -49,7 +48,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     long lastShot;
 
     private boolean isRedTeam;
-    private boolean isCrouching;
     private boolean isGrounded;
     private boolean abilityActive;
     private boolean abilityThreadActive;
@@ -74,7 +72,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private JLabel debugLabel;
 
     public Player(Byte id, boolean isRedTeam, String name, Vector3f startPosition,
-                  float yaw, float pitch, boolean isCrouching, int weaponId,
+                  float yaw, float pitch, int weaponId,
                   int attackPower, byte kill, byte death, byte characterId, World world) {
         this.id = id;
         this.isRedTeam = isRedTeam;
@@ -83,7 +81,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.yaw = yaw;
         this.pitch = pitch;
         this.directionVector = new Vector3f(0, 0, -1);
-        this.isCrouching = isCrouching;
         this.weaponId = 0; //TODO: Temp.
         this.attackPower = attackPower;
         this.kills = kill;
@@ -113,7 +110,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public Player(Vector3f startPosition) {
         this.position = startPosition;
         this.velocity = new Vector3f(0, 0, 0);
-        isCrouching = false;
         isGrounded = true;
         speed = SPEED;
     }
@@ -147,6 +143,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 StringBuilder debugText = new StringBuilder();
+                debugText.append("helf: ").append(health).append(" ");
+                debugText.append("armor: ").append(armor).append(" ");
                 debugText.append("Ammo: ").append(currentWeapon.getAmmoInMagazine() + "/" + currentWeapon.getMagazineSize()).append(" ");
                 debugText.append("reload: ").append(currentWeapon.isReloading()).append(" ");
                 debugText.append("dmg: ").append(currentWeapon.getDamage()).append(" ");
@@ -243,9 +241,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case KeyEvent.VK_SPACE:
                 jump = true;
                 break;
-            case KeyEvent.VK_SHIFT:
-                crouch();
-                break;
         }
     }
 
@@ -266,9 +261,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 break;
             case KeyEvent.VK_SPACE:
                 jump = false;
-                break;
-            case KeyEvent.VK_SHIFT:
-                stand();
                 break;
         }
     }
@@ -428,20 +420,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
-    public void crouch() {
-        if (!isCrouching) {
-            isCrouching = true;
-            speed = SPEED * CROUCH_MULTIPLIER;
-        }
-    }
-
-    public void stand() {
-        if (isCrouching) {
-            isCrouching = false;
-            speed = SPEED;
-        }
-    }
-
     public void rotate(float dYaw, float dPitch) {
         yaw -= dYaw;
         pitch -= dPitch;
@@ -495,14 +473,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void takeDamage(int damage) {
-        if (armor > 0) {
-            if (armor < damage) {
-                damage = damage - armor;
-                health = health - damage;
-            } else {
-                armor = armor - damage;
-            }
-        }
+        health = health - damage;
 
         if (health <= 0) {
             this.die();
@@ -511,7 +482,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public void die() {
         this.incrementDeaths();
-        health = -1;
+        health = 0;
     }
 
     public void attachRenderer(OpenGLComponent renderer) {
@@ -579,10 +550,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public void incrementDeaths() {
         deaths++;
-    }
-
-    public boolean getCrouchState() {
-        return isCrouching;
     }
 
     public Vector3f getPosition() {

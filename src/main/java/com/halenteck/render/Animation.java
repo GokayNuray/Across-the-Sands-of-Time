@@ -45,6 +45,9 @@ public class Animation {
     private Map<String, Renderable> renderables;
     private double time;
 
+    private boolean started = false;
+    private boolean continueing = false;
+
     public Animation(String name, double duration, double ticksPerSecond, AnimationNode[] animationNodes, Map<String, Node> nodeMap) {
         this.name = name;
         this.duration = duration;
@@ -69,6 +72,11 @@ public class Animation {
     }
 
     public void start() {
+        continueing = true;
+        if (started) {
+            return;
+        }
+        started = true;
         time = System.currentTimeMillis();
 
         update(0);
@@ -80,7 +88,9 @@ public class Animation {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                update();
+                if (continueing) {
+                    update();
+                }
             }
         }).start();
     }
@@ -99,6 +109,9 @@ public class Animation {
         Map<String, Matrix4f> transformations = new HashMap<>();
         for (AnimationNode animationNode : animationNodes) {
             int index = (int) (indexRatio * animationNode.transformation.length);
+            if (index == animationNode.transformation.length - 1) {
+                continueing = false;
+            }
             float[] transformationArr = animationNode.transformation[index];
             Matrix4f transformation = new Matrix4f(
                     transformationArr[0], transformationArr[1], transformationArr[2], transformationArr[3],

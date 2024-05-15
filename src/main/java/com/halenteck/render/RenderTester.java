@@ -255,10 +255,10 @@ public class RenderTester {
         worldMap.translate(0, 0, 0);
         openGLComponent.addEntity(worldMap);
 
-        Entity animated = new Entity(Models.CHARACTER1, 0, 1, -10, 0, 0, 0.01f);
+        Entity animated = new Entity(Models.CHARACTER1, 0, 1, -10, 0, 0, 1f);
         openGLComponent.addEntity(animated);
 
-        Entity animated2 = new Entity(Models.CHARACTER1, 0, 1, 10, 0, 0, 0.01f);
+        Entity animated2 = new Entity(Models.CHARACTER1, 0, 1, 10, 0, 0, 1f);
         openGLComponent.addEntity(animated2);
 
         new Thread(() -> {

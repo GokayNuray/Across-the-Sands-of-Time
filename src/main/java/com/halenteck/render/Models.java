@@ -35,8 +35,8 @@ public final class Models {
         models.put(SQUARE_PRISM, List.of(ModelLoader.createRectangularPrism(new float[]{-0.5f, 0, -0.5f}, new float[]{0.5f, 2, 0.5f})));
         models.put(TEST2, ModelLoader.loadModel("src/main/resources/test/test2/test2.obj"));
         models.put(WORLD_MAP1, ModelLoader.loadModel("src/main/resources/test/testworld2/testworld3.obj"));
-        models.put(CHARACTER1, ModelLoader.loadModel("src/main/resources/test/animTest/model2.fbx"));
-        animations.put(CHARACTER1, ModelLoader.loadAnimations("src/main/resources/test/animTest/model2.fbx"));
+        models.put(CHARACTER1, ModelLoader.loadModel("src/main/resources/test/animTest/model.fbx"));
+        animations.put(CHARACTER1, ModelLoader.loadAnimations("src/main/resources/test/animTest/model.fbx"));
 
         models.get(CHARACTER1).forEach(r -> r.setModelScale(new Vector3f(0.01f, 0.01f, 0.01f)));
         models.get(CHARACTER1).forEach(r -> r.setModelYaw((float) Math.toRadians(180)));

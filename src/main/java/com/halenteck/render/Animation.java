@@ -84,7 +84,7 @@ public class Animation {
         new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(1000 / 24);
+                    Thread.sleep(1000 / 60);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -109,7 +109,7 @@ public class Animation {
         Map<String, Matrix4f> transformations = new HashMap<>();
         for (AnimationNode animationNode : animationNodes) {
             int index = (int) (indexRatio * animationNode.transformation.length);
-            if (index == animationNode.transformation.length - 1) {
+            if (index == 0) {
                 continueing = false;
             }
             float[] transformationArr = animationNode.transformation[index];

@@ -10,7 +10,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,6 +19,8 @@ public class ShopFrame extends JFrame {
     private static ShopFrame instance;
     private CardLayout cardLayout = new CardLayout();
     private JPanel cards = new JPanel(cardLayout);
+
+    private JSlider characterSlider;
 
 
     public ShopFrame() {
@@ -116,7 +117,7 @@ public class ShopFrame extends JFrame {
 
 
         // horizontal slider for switching between character-based panels
-        JSlider characterSlider = new JSlider(JSlider.HORIZONTAL, 0, characterDisplayPanels.length - 1, 0);
+        characterSlider = new JSlider(JSlider.HORIZONTAL, 0, characterDisplayPanels.length - 1, 0);
         mainShopPanel.add(characterSlider, BorderLayout.SOUTH);
         characterSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -166,7 +167,7 @@ public class ShopFrame extends JFrame {
     }
 
     private void updatePanels(int characterId, int shopId) {
-        System.out.println("Character ID: " + characterId + ", Shop ID: " + shopId);
+        characterSlider.setMaximum(Server.getUserData().getUnlockedCharacterCount() - 1);
 
         // update currency label
         currencyLabel.setText("Currency: $" + Server.getUserData().getMoney());
@@ -193,14 +194,14 @@ public class ShopFrame extends JFrame {
         // price panel
         JPanel weaponPricePanel = new JPanel(new GridLayout(1, 7));
         weaponPricePanel.add(new JLabel());
-        JLabel weaponPriceLabel1 = new JLabel("$ 100", SwingConstants.CENTER);
+        JLabel weaponPriceLabel1 = new JLabel("$ 6", SwingConstants.CENTER);
         weaponPriceLabel1.setFont(new Font("Sans Serif", Font.BOLD, 14));
         weaponPricePanel.add(weaponPriceLabel1);
         JButton buyGunButton1 = new JButton("BOUGHT");
         buyGunButton1.setEnabled(false);
         weaponPricePanel.add(buyGunButton1);
         weaponPricePanel.add(new JLabel());
-        JLabel weaponPriceLabel2 = new JLabel("$ 200", SwingConstants.CENTER);
+        JLabel weaponPriceLabel2 = new JLabel("$ 9", SwingConstants.CENTER);
         weaponPriceLabel2.setFont(new Font("Sans Serif", Font.BOLD, 14));
         weaponPricePanel.add(weaponPriceLabel2);
         JButton buyGunButton2 = new JButton("BUY");
@@ -251,7 +252,7 @@ public class ShopFrame extends JFrame {
         JPanel armourPanel = new JPanel(new BorderLayout());
         // armour prices
         JPanel armourPricePanel = new JPanel(new GridLayout(1, 6));
-        JLabel armour1PriceLabel = new JLabel("$ " + (10 + 1) * 5, SwingConstants.CENTER);
+        JLabel armour1PriceLabel = new JLabel("$ " + 11, SwingConstants.CENTER);
         armour1PriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
         armourPricePanel.add(armour1PriceLabel);
         JButton buyArmour1Button = new JButton("BUY");
@@ -267,7 +268,7 @@ public class ShopFrame extends JFrame {
             buyArmour1Button.setEnabled(false);
         }
         armourPricePanel.add(buyArmour1Button);
-        JLabel armour2PriceLabel = new JLabel("$ " + (10 + 2) * 10, SwingConstants.CENTER);
+        JLabel armour2PriceLabel = new JLabel("$ " + 14, SwingConstants.CENTER);
         armour2PriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
         armourPricePanel.add(armour2PriceLabel);
         JButton buyArmour2Button = new JButton("BUY");
@@ -283,7 +284,7 @@ public class ShopFrame extends JFrame {
             buyArmour2Button.setEnabled(false);
         }
         armourPricePanel.add(buyArmour2Button);
-        JLabel armour3PriceLabel = new JLabel("$ " + (10 + 3) * 15, SwingConstants.CENTER);
+        JLabel armour3PriceLabel = new JLabel("$ " + 18, SwingConstants.CENTER);
         armour3PriceLabel.setFont(new Font("Sans Serif", Font.BOLD, 14));
         armourPricePanel.add(armour3PriceLabel);
         JButton buyArmour3Button = new JButton("BUY");
@@ -337,8 +338,7 @@ public class ShopFrame extends JFrame {
                 equippedArmourLabel.setFont(new Font("Sans Serif", Font.BOLD, 16));
                 equippedArmourLabel.setForeground(Color.GREEN);
                 armourEquipPanel.add(equippedArmourLabel);
-            }
-            else {
+            } else {
                 armourEquipPanel.add(new JLabel());
             }
         }
@@ -350,7 +350,7 @@ public class ShopFrame extends JFrame {
         JPanel abilityPricePanel = new JPanel(new GridLayout(1, 6));
         abilityPricePanel.add(new JLabel());
         abilityPricePanel.add(new JLabel());
-        JLabel abilityPriceLabel = new JLabel("$ 500", SwingConstants.CENTER);
+        JLabel abilityPriceLabel = new JLabel("$ 11", SwingConstants.CENTER);
         abilityPricePanel.add(abilityPriceLabel);
         JButton buyAbilityButton = new JButton("BUY");
         buyAbilityButton.addActionListener(e -> {
@@ -465,6 +465,7 @@ public class ShopFrame extends JFrame {
         if (instance == null) {
             instance = new ShopFrame();
         }
+        instance.updatePanels(0, 0);
         return instance;
     }
 }

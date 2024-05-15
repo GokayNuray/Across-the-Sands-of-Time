@@ -99,10 +99,17 @@ public class FpsInGame extends JFrame {
         layeredPane.add(chatField, JLayeredPane.PALETTE_LAYER);
 
         //team score labels
-        JLabel redScoreLabel = new JLabel("Red: " + redScore);
+        JLabel redScoreLabel = new JLabel("Red: " + redScore, SwingConstants.CENTER);
+        redScoreLabel.setForeground(Color.RED);
         redScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        redScoreLabel.setBounds(10, 700, 100, 20);
+        redScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150), 20, 100, 20);
         layeredPane.add(redScoreLabel, JLayeredPane.PALETTE_LAYER);
+
+        JLabel blueScoreLabel = new JLabel("Blue: " + blueSCore, SwingConstants.CENTER);
+        blueScoreLabel.setForeground(Color.BLUE);
+        blueScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        blueScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150) + 100, 20, 100, 20);
+        layeredPane.add(blueScoreLabel, JLayeredPane.PALETTE_LAYER);
 
 
         // weapon showcases
@@ -288,6 +295,31 @@ public class FpsInGame extends JFrame {
         ammoLabel.setText(ammoInMagazine + "/" + magazineSize);
         ammoLabel.setForeground(Color.BLACK);
         kdaLabel.setText(kills + "/" + deaths);
+
+        // Create a JLabel
+        JLabel joinLabel = new JLabel("", SwingConstants.CENTER);
+        if (player.isRedTeam()) {
+            joinLabel.setForeground(Color.RED);
+            joinLabel.setText("You are on RED team");
+        } else {
+            joinLabel.setForeground(Color.BLUE);
+            joinLabel.setText("You are on BLUE team");
+        }
+        joinLabel.setFont(new Font("Arial", Font.BOLD, 80));
+        joinLabel.setBounds(300, 250, 900, 300);
+        joinLabel.setOpaque(false);
+        layeredPane.add(joinLabel, JLayeredPane.PALETTE_LAYER);
+
+        // Create a Timer
+        Timer joinTimer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                joinLabel.setVisible(false);
+            }
+        });
+
+        // Start the Timer when the user joins
+        joinTimer.start();
     }
 
     public JLabel getDebugLabel() {

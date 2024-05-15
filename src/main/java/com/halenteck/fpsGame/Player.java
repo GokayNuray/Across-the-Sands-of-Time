@@ -636,4 +636,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void setDebugConsole(JLabel chatArea) {
         this.debugLabel = chatArea;
     }
+
+    public boolean isRedTeam() { return isRedTeam;
+    }
 }

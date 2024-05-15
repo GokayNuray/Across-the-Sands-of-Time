@@ -423,10 +423,10 @@ public class ShopFrame extends JFrame {
         // character progress panel
         JPanel characterProgressPanel = new JPanel(new BorderLayout());
         JProgressBar characterProgressBar = new JProgressBar(0, 100);
-        System.out.println("Progress: " + Server.getUserData().getCharacters()[0].getProgress());
-        characterProgressBar.setValue(Server.getUserData().getCharacters()[0].getProgress());
+        System.out.println("Progress: " + Server.getUserData().getCharacters()[characterIndex].getProgress());
+        characterProgressBar.setValue(Server.getUserData().getCharacters()[characterIndex].getProgress());
         characterProgressPanel.add(characterProgressBar, BorderLayout.CENTER);
-        JLabel progressLabel = new JLabel(Server.getUserData().getCharacters()[0].getProgress() + "%", SwingConstants.CENTER);
+        JLabel progressLabel = new JLabel(Server.getUserData().getCharacters()[characterIndex].getProgress() + "%", SwingConstants.CENTER);
         characterProgressPanel.add(progressLabel, BorderLayout.EAST);
         characterPanel.add(characterProgressPanel, BorderLayout.SOUTH);
         characterDisplayPanel.add(characterPanel, BorderLayout.CENTER);

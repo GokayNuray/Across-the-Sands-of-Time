@@ -153,6 +153,7 @@ public class FpsInGame extends JFrame {
         Action slashAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 chatField.setEditable(true);
+                chatField.requestFocus();
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(slashKeyStroke, "SLASH");
@@ -179,8 +180,10 @@ public class FpsInGame extends JFrame {
         Action xAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 if (isAbilityActive && !isAbilityUsed) {
+                    specialAbilityButton.requestFocus();
                     specialAbilityButton.setEnabled(false);
                     isAbilityUsed = true;
+                    specialAbilityButton.getParent().requestFocus();
                 }
             }
         };

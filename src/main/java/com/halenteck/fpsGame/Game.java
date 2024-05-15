@@ -253,6 +253,5 @@ public class Game implements ServerListener {
     @Override
     public void onGameOver(PacketData packetData) {
         isRunning = false;
-        new FpsEndGame(false, (int) packetData.getOnGameOverData()[0], (int) packetData.getOnGameOverData()[1]);
     }
 }

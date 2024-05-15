@@ -273,19 +273,15 @@ public class Game implements ServerListener {
         boolean isRed = thisPlayer.isRedTeam();
         if (gameUI.blueScore > gameUI.redScore) {
             if (isRed) {
-                new FpsEndGame(false, gameUI.kills, gameUI.deaths);
-                gameUI.dispose();
+                gameUI.showPopUp(new FpsEndGame(false, gameUI.kills, gameUI.deaths));
             } else {
-                new FpsEndGame(true, gameUI.kills, gameUI.deaths);
-                gameUI.dispose();
+                gameUI.showPopUp(new FpsEndGame(true, gameUI.kills, gameUI.deaths));
             }
         } else {
             if (!isRed) {
-                new FpsEndGame(false, gameUI.kills, gameUI.deaths);
-                gameUI.dispose();
+                gameUI.showPopUp(new FpsEndGame(false, gameUI.kills, gameUI.deaths));
             } else {
-                new FpsEndGame(true, gameUI.kills, gameUI.deaths);
-                gameUI.dispose();
+                gameUI.showPopUp(new FpsEndGame(true, gameUI.kills, gameUI.deaths));
             }
         }
     }

@@ -28,4 +28,7 @@ public class Enemy {
         return number;
     }
 
+    public String getName() {
+        return name;
+    }
 }

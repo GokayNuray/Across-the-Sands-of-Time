@@ -72,7 +72,7 @@ public class InGameFrame extends JFrame {
         playerName.setFont(new Font("Arial", Font.BOLD, 30));
         playerName.setBounds(200, 100, 200, 50);
         layeredPane.add(playerName, JLayeredPane.PALETTE_LAYER); // Add to layer 1
-        JLabel enemyName = new JLabel("Bats", SwingConstants.LEFT);
+        JLabel enemyName = new JLabel(game.getLocation().getEnemies().getName(), SwingConstants.LEFT);
         enemyName.setBounds((int) bounds.getWidth() - 350, 100, 200, 50);
         enemyName.setFont(new Font("Arial", Font.BOLD, 30));
         layeredPane.add(enemyName, JLayeredPane.PALETTE_LAYER); // Add to layer 1
@@ -160,7 +160,7 @@ public class InGameFrame extends JFrame {
         specialAbilityButton = new JButton("\uD83C\uDF1F");
         specialAbilityButton.setToolTipText("Special Ability");
         if (!Server.getUserData().getCharacters()[Server.getUserData().getUnlockedCharacterCount() - 1].isSpecialAbilityUnlocked()
-                || character.ability.usageLeft <= 0 || game.getLocation().isAbilityActive()){
+                || character.ability.usageLeft <= 0 || game.getLocation().isAbilityActive()) {
             specialAbilityButton.setEnabled(false);
             specialAbilityButton.setToolTipText("Special Ability is locked");
         }

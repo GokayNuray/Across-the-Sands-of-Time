@@ -124,13 +124,6 @@ public final class Server {
                             listener.onPlayerRotate(data);
                             break;
                         }
-                        case PLAYER_CROUCH_STATE_CHANGE: {
-                            byte id = in.readByte();
-
-                            PacketData data = new PacketData(id);
-                            listener.onPlayerCrouchStateChange(data);
-                            break;
-                        }
                         case PLAYER_WEAPON_CHANGE: {
                             byte id = in.readByte();
                             int weapon = in.readInt();

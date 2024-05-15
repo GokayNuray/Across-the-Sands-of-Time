@@ -36,7 +36,7 @@ public class Entity {
         this.y += y;
         this.z += z;
         renderables.forEach(r -> r.translate(x, y, z));
-        Animation walk = animations.get("walk");
+        Animation walk = animations.get("walkWithGun");
         if (walk != null) {
             walk.start();
         }

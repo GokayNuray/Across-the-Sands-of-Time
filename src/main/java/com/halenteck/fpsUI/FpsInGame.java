@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 
 public class FpsInGame extends JFrame {
     public static void main(String[] args) {
@@ -28,8 +29,8 @@ public class FpsInGame extends JFrame {
     public boolean isGameWon = false;
     public int playerHealth;
     public int playerArmour;
-    public boolean isAbilityActive;
-    public boolean isAbilityUsed;
+    public boolean isAbilityActive = true;
+    public boolean isAbilityUsed = false;
     public int magazineSize = 0;
     public int ammoInMagazine = 0;
     public int kills = 0;
@@ -130,15 +131,6 @@ public class FpsInGame extends JFrame {
         returnLabel.setBounds(10, (int) bounds.getHeight() - 55, 300, 20);
         layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
-        Timer abilityTimer = new Timer(1000, e -> {
-            if (isAbilityActive && isAbilityUsed) {
-                specialAbilityButton.setEnabled(true);
-                isAbilityUsed = false;
-            }
-        });
-
-        abilityTimer.start();
-
         // shortcut for returning to game selection menu
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
         Action escapeAction = new AbstractAction() {
@@ -175,15 +167,27 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(enterKeyStroke, "ENTER");
         getRootPane().getActionMap().put("ENTER", enterAction);
 
+        // Start a timer that will disable the button after a delay
+        Timer timer = new Timer(60000, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                specialAbilityButton.setEnabled(true);
+                isAbilityUsed = false;
+            }
+        });
+        timer.setRepeats(false);
+
         // key listener for the x key
         KeyStroke xKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_X, 0, false);
         Action xAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
+                System.out.println("X key pressed. isAbilityActive: " + isAbilityActive + ", isAbilityUsed: " + isAbilityUsed);
+
                 if (isAbilityActive && !isAbilityUsed) {
                     specialAbilityButton.requestFocus();
                     specialAbilityButton.setEnabled(false);
                     isAbilityUsed = true;
-                    specialAbilityButton.getParent().requestFocus();
+                    timer.start();
                 }
             }
         };
@@ -192,14 +196,28 @@ public class FpsInGame extends JFrame {
 
 
         // viewing in-game scoreboard with tab while tab is long pressed
-        KeyStroke tabKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0, false);
-        Action tabAction = new AbstractAction() {
+
+        final boolean[] isLeaderboardOpen = {false};
+        final InGameLeaderboard[] leaderboard = {null};
+
+        KeyStroke shiftKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, false);
+        Action shiftAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                new InGameLeaderboard();
+                System.out.println("SHIFT action triggered");
+                if (isLeaderboardOpen[0]) {
+                    // Close the leaderboard
+                    leaderboard[0].dispose();
+                    isLeaderboardOpen[0] = false;
+                } else {
+                    // Open the leaderboard
+                    leaderboard[0] = new InGameLeaderboard(FpsInGame.this);
+                    showPopUp(leaderboard[0]);
+                    isLeaderboardOpen[0] = true;
+                }
             }
         };
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(tabKeyStroke, "TAB");
-        getRootPane().getActionMap().put("TAB", tabAction);
+        getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(shiftKeyStroke, "SHIFT");
+        getRootPane().getActionMap().put("SHIFT", shiftAction);
 
         if (id == -1) {
             return;

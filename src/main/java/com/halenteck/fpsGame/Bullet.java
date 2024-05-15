@@ -3,7 +3,7 @@ package com.halenteck.fpsGame;
 import org.joml.Vector3f;
 
 public class Bullet {
-    private static final float SPEED = 50f;
+    private static final float SPEED = 1f;
 
     private Vector3f position;
     private Vector3f velocity;
@@ -13,12 +13,13 @@ public class Bullet {
     private Player player;
     private FPSWeapon weapon;
 
-    public Bullet(Vector3f startPosition, Vector3f direction, int damage, Player player) {
+    public Bullet(Vector3f startPosition, Vector3f direction, int damage, Player player, FPSWeapon weapon) {
         this.position = new Vector3f(startPosition.x, startPosition.y + 1.7f, startPosition.z);
         direction.normalize();
         this.velocity = new Vector3f(direction.x * SPEED, direction.y * SPEED, direction.z * SPEED);
         this.damage = damage;
         this.player = player;
+        this.weapon = weapon;
     }
 
     public boolean doesBulletHitTarget(Player player) {
@@ -66,7 +67,8 @@ public class Bullet {
     }
 
     public void update(float time) {
-        position.add(new Vector3f(velocity.mul(0.1f)));
+        position.add(new Vector3f(velocity).mul(0.1f));
+        System.out.println(position);
     }
 
     public Vector3f getPosition() {

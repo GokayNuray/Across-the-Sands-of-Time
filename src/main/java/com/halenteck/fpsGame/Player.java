@@ -476,7 +476,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public Bullet spawnBullet() {
-        return new Bullet(this.position, directionVector, currentWeapon.getDamage(), this);
+        return new Bullet(this.position, directionVector, currentWeapon.getDamage(), this, this.getWeapon());
     }
 
     public void switchWeapon() {
@@ -487,6 +487,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public void handleBullet(Bullet bullet) {
         if (bullet.doesBulletHitTarget(this)) {
+            System.out.println("yea");//TODO: TEST
             if (!(isAbilityActive() && characterId == 0x01)) {
                 takeDamage(bullet.getDamage());
             }

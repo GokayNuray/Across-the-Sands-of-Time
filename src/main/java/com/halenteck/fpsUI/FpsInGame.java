@@ -263,11 +263,11 @@ public class FpsInGame extends JFrame {
     public void updatePanels() {
         playerHealthBar.setValue(playerHealth);
         playerArmourBar.setValue(playerArmour);
-//        if (abilityCooldown > 0) {
-//            specialAbilityButton.setEnabled(false);
-//        } else {
-//            specialAbilityButton.setEnabled(true);
-//        }
+        if (player.isAbilityActive()) {
+            specialAbilityButton.setEnabled(false);
+        } else {
+            specialAbilityButton.setEnabled(true);
+        }
 
         while (player.getWeapon().isReloading()) {
             ammoLabel.setText("Reloading...");

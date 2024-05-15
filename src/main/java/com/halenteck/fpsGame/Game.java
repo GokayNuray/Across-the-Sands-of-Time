@@ -131,6 +131,8 @@ public class Game implements ServerListener {
             Player newPlayer = new Player(gameUI, playerId, isRedTeam, name, startPosition, yaw, pitch, weaponId, attackPower, kill, death, (byte) 0, world);
             players.put(playerId, newPlayer);
 
+            chat.append(name + " has joined the game.\n");
+
             renderer.addEntity(newPlayer.getEntity());
         }
     }
@@ -284,5 +286,9 @@ public class Game implements ServerListener {
                 gameUI.showPopUp(new FpsEndGame(true, gameUI.kills, gameUI.deaths));
             }
         }
+    }
+
+    public Map<Byte, Player> getPlayers() {
+        return players;
     }
 }

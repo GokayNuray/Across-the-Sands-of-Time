@@ -234,8 +234,29 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(xKeyStroke, "X");
         getRootPane().getActionMap().put("X", xAction);
 
+        ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
+        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
+        JLabel crosshairLabel = new JLabel(finalCrosshair);
+        crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
+        layeredPane.add(crosshairLabel);
+
+        if (id == -1) {
+            return;
+        }
+
+        renderer = new OpenGLComponent();
+        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
+        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
+
+        try {
+            game = new Game(id, this);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
         // Initialize the leaderboard panel in your FpsInGame constructor
-        InGameLeaderboard leaderboardPanel = new InGameLeaderboard(this);
+        InGameLeaderboard leaderboardPanel = new InGameLeaderboard(game.getPlayers());
         leaderboardPanel.setVisible(false);
         layeredPane.add(leaderboardPanel, JLayeredPane.PALETTE_LAYER);
         // Calculate the center point of the FpsInGame frame
@@ -265,28 +286,6 @@ public class FpsInGame extends JFrame {
         };
         getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(tKeyStroke, "T");
         getRootPane().getActionMap().put("T", tAction);
-
-        ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
-        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
-        JLabel crosshairLabel = new JLabel(finalCrosshair);
-        crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
-        layeredPane.add(crosshairLabel);
-
-        if (id == -1) {
-            return;
-        }
-
-        renderer = new OpenGLComponent();
-        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
-        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
-
-        try {
-            new Game(id, this);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-
 
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);

@@ -24,12 +24,12 @@ public class FpsEndGame extends JFrame {
         endGameLabel.setFont(new Font("Sans Serif", Font.BOLD, 25));
         endGamePanel.add(endGameLabel);
         if (isGameWon) {
-            JLabel rankChangeLabel = new JLabel("+ 20 WP / -15 LP", SwingConstants.CENTER);
+            JLabel rankChangeLabel = new JLabel("+ 20 WP", SwingConstants.CENTER);
             rankChangeLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
             endGamePanel.add(rankChangeLabel);
         }
         else {
-            endGamePanel.add(new JLabel(" "));
+            endGamePanel.add(new JLabel("-15 LP", SwingConstants.CENTER));
         }
 
         JPanel statsPanel = new JPanel(new GridLayout(2,3));

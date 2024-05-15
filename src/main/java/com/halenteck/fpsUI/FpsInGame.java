@@ -1,7 +1,6 @@
 package com.halenteck.fpsUI;
 
 import com.halenteck.CombatGame.Character;
-import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.fpsGame.Game;
 import com.halenteck.fpsGame.Player;
 import com.halenteck.render.OpenGLComponent;
@@ -29,6 +28,10 @@ public class FpsInGame extends JFrame {
     public int playerArmour;
     public boolean isAbilityActive;
     public boolean isAbilityUsed;
+    public int magazineSize = 0;
+    public int ammoInMagazine = 0;
+    public int kills = 0;
+    public int deaths = 0;
     JProgressBar playerHealthBar;
     JProgressBar playerArmourBar;
     Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();
@@ -66,7 +69,7 @@ public class FpsInGame extends JFrame {
         playerArmourBar.setForeground(Color.GREEN);
         layeredPane.add(playerArmourBar, JLayeredPane.PALETTE_LAYER);
 
-        kdaLabel = new JLabel("K/D/A");
+        kdaLabel = new JLabel(kills + "/" + deaths);
         kdaLabel.setFont(new Font("Arial", Font.BOLD, 20));
         kdaLabel.setBounds((int) bounds.getWidth() - 150, 10, 100, 20);
         layeredPane.add(kdaLabel, JLayeredPane.PALETTE_LAYER);
@@ -114,7 +117,7 @@ public class FpsInGame extends JFrame {
         specialAbilityButton.setEnabled(true);
         layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER);
 
-        ammoLabel = new JLabel("27/30");
+        ammoLabel = new JLabel(ammoInMagazine + "/" + magazineSize);
         ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
         ammoLabel.setBounds((int) bounds.getWidth() - 150, (int) bounds.getHeight() - 75, 100, 20);
         layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);
@@ -228,8 +231,8 @@ public class FpsInGame extends JFrame {
             ammoLabel.setText("Reloading...");
         }
 
-        ammoLabel.setText(player.getWeapon().getAmmoInMagazine() + "/" + player.getWeapon().getMagazineSize());
-        kdaLabel.setText(player.getKills() + "/" + player.getDeaths());
+        ammoLabel.setText(ammoInMagazine + "/" + magazineSize);
+        kdaLabel.setText(kills + "/" + deaths);
     }
 
     public JLabel getDebugLabel() {

@@ -1,17 +1,19 @@
 package com.halenteck.fpsUI;
 
+import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.server.Server;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class LobbyFrame extends JFrame {
 
-    private static final int FRAME_WIDTH = 800;
-    private static final int FRAME_HEIGHT = 500;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public static void main(String[] args) {
         try {
@@ -25,11 +27,17 @@ public class LobbyFrame extends JFrame {
 
     public LobbyFrame(boolean rankedGame) {
 
-//        do {// if the server does not have 2 people, keep in loading screen
-//            new LoadingScreen();
-//        } while (playerCount < 2);
-
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        // shortcut for returning to game selection menu
+        KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
+        Action escapeAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                new GameSelectionMenu();
+                dispose();
+            }
+        };
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
+        getRootPane().getActionMap().put("ESCAPE", escapeAction);
+        getContentPane().setBackground(new Color(198,152,116));
         setTitle("Lobby Selection");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -73,12 +81,12 @@ public class LobbyFrame extends JFrame {
             dispose();
         });
         titlePanel.add(createLobby);
-        titlePanel.setPreferredSize(new Dimension(FRAME_WIDTH, 50));
+        titlePanel.setPreferredSize(new Dimension((int) screenSize.getWidth(), 50));
         menuPanel.add(titlePanel, BorderLayout.NORTH);
 
         // server list panel
         JPanel serverListPanel = new JPanel(new GridLayout(10, 1));
-        serverListPanel.setPreferredSize(new Dimension(FRAME_WIDTH - 25, FRAME_HEIGHT * 2));
+        serverListPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() - 25), (int) (screenSize.getHeight() * 2)));
 
         for (String lobby : Server.getLobbyList()) {
 
@@ -119,6 +127,7 @@ public class LobbyFrame extends JFrame {
         menuPanel.add(scroller, BorderLayout.CENTER);
 
         add(menuPanel, BorderLayout.CENTER);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
     }

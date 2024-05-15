@@ -213,8 +213,6 @@ public class Game implements ServerListener {
         if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerDeath packet");
         }
-
-        player.die();
     }
 
     @Override

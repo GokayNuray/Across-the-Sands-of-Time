@@ -57,7 +57,7 @@ public class FpsInGame extends JFrame {
         playerHealthBar.setMaximum(100);
         playerHealthBar.setValue(100);
         playerHealthBar.setString("Health");
-        playerHealthBar.setForeground(Color.BLACK);
+        playerHealthBar.setForeground(Color.GREEN);
         layeredPane.add(playerHealthBar, JLayeredPane.PALETTE_LAYER);
 
         playerArmourBar = new JProgressBar();
@@ -66,7 +66,7 @@ public class FpsInGame extends JFrame {
         playerArmourBar.setMaximum(100);
         playerArmourBar.setValue(80);
         playerArmourBar.setString("Armour");
-        playerArmourBar.setForeground(Color.GREEN);
+        playerArmourBar.setForeground(Color.BLACK);
         layeredPane.add(playerArmourBar, JLayeredPane.PALETTE_LAYER);
 
         kdaLabel = new JLabel(kills + "/" + deaths);
@@ -78,7 +78,7 @@ public class FpsInGame extends JFrame {
         chatButton.setBounds(10, 50, 50, 50);
         chatButton.setEnabled(false);
         chat = new JTextArea();
-        chat.setBounds(65, 50, 200, 200);
+        chat.setBounds(65, 50, 200, 75);
         chat.setEditable(false);
         chat.setLineWrap(true);
         chat.setWrapStyleWord(true);
@@ -88,7 +88,7 @@ public class FpsInGame extends JFrame {
         chat.setText("Welcome to the game chat!\n");
 
         JTextField chatField = new JTextField();
-        chatField.setBounds(65, 255, 200, 40);
+        chatField.setBounds(65, 130, 200, 30);
         layeredPane.add(chat, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatButton, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatField, JLayeredPane.PALETTE_LAYER);
@@ -98,19 +98,19 @@ public class FpsInGame extends JFrame {
         Image scaledWeapon1Image = weapon1Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
         ImageIcon scaledWeapon1Icon = new ImageIcon(scaledWeapon1Image);
         JLabel weapon1Label = new JLabel(scaledWeapon1Icon);
-        weapon1Label.setBounds(50, 400, 75, 100);
+        weapon1Label.setBounds(100, 700, 75, 100);
         layeredPane.add(weapon1Label, JLayeredPane.PALETTE_LAYER);
 
         ImageIcon weapon2Image = new ImageIcon(getClass().getResource(character.resourcePath + "weapon2.png"));
         Image scaledWeapon2Image = weapon2Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
         ImageIcon scaledWeapon2Icon = new ImageIcon(scaledWeapon2Image);
         JLabel weapon2Label = new JLabel(scaledWeapon2Icon);
-        weapon2Label.setBounds(50, 475, 75, 100);
+        weapon2Label.setBounds(25, 700, 75, 100);
         layeredPane.add(weapon2Label, JLayeredPane.PALETTE_LAYER);
 
         // Special Ability Button
         specialAbilityButton = new JButton("\uD83C\uDF1F");
-        specialAbilityButton.setBounds((int) bounds.getWidth() - 175, 400, 75, 75);
+        specialAbilityButton.setBounds((int) bounds.getWidth() - 130, 700, 75, 75);
         if (!isAbilityActive) {
             specialAbilityButton.setEnabled(false);
         }
@@ -125,7 +125,7 @@ public class FpsInGame extends JFrame {
         JLabel returnLabel = new JLabel("Press ESC to return to the main menu");
         returnLabel.setFont(new Font("Arial", Font.BOLD, 15));
         returnLabel.setForeground(Color.PINK);
-        returnLabel.setBounds(10, (int) bounds.getHeight() - 170, 300, 20);
+        returnLabel.setBounds(10, (int) bounds.getHeight() - 55, 300, 20);
         layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
         Timer abilityTimer = new Timer(1000, e -> {

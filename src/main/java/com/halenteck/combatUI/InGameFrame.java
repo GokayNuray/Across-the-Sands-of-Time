@@ -69,6 +69,7 @@ public class InGameFrame extends JFrame {
 
         // game panel
         JLabel playerName = new JLabel(character.name, SwingConstants.LEFT);
+        playerName.setForeground(Color.WHITE);
         playerName.setFont(new Font("Arial", Font.BOLD, 30));
         playerName.setBounds(200, 100, 200, 50);
         layeredPane.add(playerName, JLayeredPane.PALETTE_LAYER); // Add to layer 1

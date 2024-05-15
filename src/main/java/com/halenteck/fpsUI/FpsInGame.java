@@ -334,8 +334,6 @@ public class FpsInGame extends JFrame {
 
         kdaLabel.setText(kills + "/" + deaths);
 
-        // Create a JLabel
-
     }
 
     public JLabel getDebugLabel() {

@@ -33,7 +33,7 @@ public class Game implements ServerListener {
         this.redTeam = new Team();
         this.blueTeam = new Team();
         this.isRunning = true;
-        this.world = new World(Models.WORLD_MAP1, "test/testworld2/BlockData.txt");
+        this.world = new World(Models.WORLD_MAP1, "test/testworld4/output.txt");
         this.renderer = fpsInGame.getRenderer();
         this.debugger = fpsInGame.getDebugLabel();
         this.chat = fpsInGame.getChat();

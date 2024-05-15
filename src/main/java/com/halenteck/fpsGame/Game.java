@@ -9,7 +9,6 @@ import com.halenteck.server.PacketData;
 import com.halenteck.server.Server;
 import com.halenteck.server.ServerListener;
 import org.joml.Vector3f;
-import org.lwjgl.awthacks.NonClearGraphics;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class Game implements ServerListener {
     private Player thisPlayer;
 
     private World world;
-    private OpenGLComponent renderer;
+    public static OpenGLComponent renderer;
     private JLabel debugger;
     private JTextArea chat;
 

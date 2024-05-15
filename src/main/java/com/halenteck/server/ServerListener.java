@@ -10,8 +10,6 @@ public interface ServerListener {
 
     void onPlayerRotate(PacketData packetData);
 
-    void onPlayerCrouchStateChange(PacketData packetData);
-
     void onPlayerWeaponChange(PacketData packetData);
 
     void onPlayerLeave(PacketData packetData);

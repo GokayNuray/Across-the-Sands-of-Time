@@ -253,8 +253,19 @@ public class FpsInGame extends JFrame {
         playerArmourBar.setValue(playerArmour);
         if (player.isAbilityActive()) {
             specialAbilityButton.setEnabled(false);
+            specialAbilityButton.setText("ability active!");
+            specialAbilityButton.setForeground(Color.GREEN);
         } else {
-            specialAbilityButton.setEnabled(true);
+            if (player.isAbleToUseAbility()) {
+                specialAbilityButton.setEnabled(true);
+                specialAbilityButton.setText("ability can be used!");
+                specialAbilityButton.setForeground(Color.YELLOW);
+            } else {
+                specialAbilityButton.setEnabled(false);
+                specialAbilityButton.setText("ability on cooldown");
+                specialAbilityButton.setForeground(Color.RED);
+            }
+
         }
 
         while (player.getWeapon().isReloading()) {

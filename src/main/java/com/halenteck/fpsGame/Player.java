@@ -180,6 +180,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     gameUI.magazineSize = currentWeapon.getMagazineSize();
                 }
 
+                gameUI.updatePanels();
+
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -621,6 +623,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public boolean isAbilityActive() {
         return abilityActive;
+    }
+
+    public boolean isAbleToUseAbility() {
+        return ableToUseAbility;
     }
 
     public Entity getEntity() {

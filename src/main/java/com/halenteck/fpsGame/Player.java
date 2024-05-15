@@ -1,5 +1,6 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.fpsUI.FpsInGame;
 import com.halenteck.render.Entity;
 import com.halenteck.render.Models;
 import com.halenteck.render.OpenGLComponent;
@@ -72,9 +73,12 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     private JLabel debugLabel;
 
-    public Player(Byte id, boolean isRedTeam, String name, Vector3f startPosition,
+    private FpsInGame gameUI;
+
+    public Player(FpsInGame gameUI, Byte id, boolean isRedTeam, String name, Vector3f startPosition,
                   float yaw, float pitch, int weaponId,
                   int attackPower, byte kill, byte death, byte characterId, World world) {
+        this.gameUI = gameUI;
         this.id = id;
         this.isRedTeam = isRedTeam;
         this.name = name;
@@ -86,7 +90,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.attackPower = attackPower;
         this.kills = kill;
         this.deaths = death;
-        this.characterId = 3; //TODO: Temp.
+        this.characterId = 0x02; //TODO: Temp.
         this.accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer = new Vector3f(0, 0, 0);
         this.velocity = new Vector3f(0, 0, 0);
         ableToUseAbility = true;
@@ -104,6 +108,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case 0x04 -> modelId = Models.CHARACTER5;
             default -> throw new IllegalArgumentException("invalid character id: " + characterId);
         }
+        modelId = Models.CHARACTER1;//TODO Temp.
         this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, yaw, pitch, 1);
         this.world = world;
     }
@@ -165,6 +170,13 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 if (Math.abs(velocity.z) < 0.005) velocity.z = 0;
 
                 accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.set(0, 0, 0);
+
+                if (renderer != null) {
+                    gameUI.playerHealth = health;
+                    gameUI.playerArmour = armor;
+                    gameUI.ammoInMagazine = currentWeapon.getAmmoInMagazine();
+                    gameUI.magazineSize = 30;
+                }
 
                 try {
                     Thread.sleep(10);
@@ -451,6 +463,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         } else {
             currentWeapon.reload();
         }
+        gameUI.updatePanels();
     }
 
     public Bullet spawnBullet() {
@@ -488,6 +501,22 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         byte killerId = killer.getId();
         Server.death(killerId);
         killer.incrementKills();
+        gameUI.deaths++;
+        gameUI.updatePanels();
+    }
+
+    public void killed(Player killer) {
+        renderer.removeEntity(entity);
+        this.incrementDeaths();
+        killer.incrementKills();
+
+    }
+
+    public void respawned(float[] details) {
+        position = new Vector3f(details[0], details[1], details[2]);
+        yaw = details[3];
+        pitch = details[4];
+        renderer.addEntity(entity);
     }
 
     public void attachRenderer(OpenGLComponent renderer) {

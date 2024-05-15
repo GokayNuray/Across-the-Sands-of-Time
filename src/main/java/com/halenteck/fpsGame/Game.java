@@ -27,6 +27,8 @@ public class Game implements ServerListener {
     private JLabel debugger;
     private JTextArea chat;
 
+    private FpsInGame gameUI;
+
     public Game(int lobbyId, FpsInGame fpsInGame) {
         Server.addServerListener(this);
         this.players = new HashMap<>();
@@ -37,12 +39,14 @@ public class Game implements ServerListener {
         this.renderer = fpsInGame.getRenderer();
         this.debugger = fpsInGame.getDebugLabel();
         this.chat = fpsInGame.getChat();
+        this.gameUI = fpsInGame;
 
         Server.addServerListener(this);
         if (!Server.joinLobby(Server.getUserData().getPlayerName(), lobbyId)) {
             throw new IllegalArgumentException("Lobby is Full.");
         }
 
+        gameUI.player = thisPlayer;
         thisPlayer.attachRenderer(renderer);
         thisPlayer.setDebugConsole(debugger);//TODO dont forget to remove this
         thisPlayer.createWeapons(thisPlayer.getWeaponId());
@@ -131,7 +135,7 @@ public class Game implements ServerListener {
             byte death = (Byte) playerData[8];
 
             //TODO: characterId is temporarily set to 0
-            Player newPlayer = new Player(playerId, isRedTeam, name, startPosition, yaw, pitch, weaponId, attackPower, kill, death, (byte) 0, world);
+            Player newPlayer = new Player(gameUI, playerId, isRedTeam, name, startPosition, yaw, pitch, weaponId, attackPower, kill, death, (byte) 0, world);
             players.put(playerId, newPlayer);
 
             renderer.addEntity(newPlayer.getEntity());
@@ -210,9 +214,29 @@ public class Game implements ServerListener {
         Byte playerId = (Byte) packetData.getOnPlayerDeathData()[0];
         Player player = players.get(playerId);
 
+        Byte killerId = (Byte) packetData.getOnPlayerDeathData()[1];
+        Player killer = players.get(killerId);
+
         if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerDeath packet");
         }
+        chat.append(player.getName() + " is killed by " + killer.getName() + "\n");
+        player.killed(killer);
+
+        if (killer.getTeam() == redTeam) {
+            redTeam.incrementScore();
+        } else {
+            blueTeam.incrementScore();
+        }
+
+        gameUI.redScore = redTeam.getScore();
+        gameUI.blueSCore = blueTeam.getScore();
+
+        if (killer == thisPlayer) {
+            gameUI.kills++;
+        }
+
+        gameUI.updatePanels();
     }
 
     @Override
@@ -226,7 +250,7 @@ public class Game implements ServerListener {
         }
 
         Vector3f respawnPosition = new Vector3f(details[0], details[1], details[2]);
-        player.setPosition(respawnPosition);
+        player.respawned(details);
     }
 
     //TODO: Ability is commented.

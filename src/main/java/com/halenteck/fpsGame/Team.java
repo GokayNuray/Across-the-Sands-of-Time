@@ -23,4 +23,8 @@ public class Team {
     public int getTeamSize() {
         return members.size();
     }
+
+    public int getScore() {
+        return totalKills;
+    }
 }

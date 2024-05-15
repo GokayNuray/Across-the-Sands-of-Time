@@ -99,7 +99,12 @@ public class Renderable implements Cloneable {
         FloatBuffer vertexBuffer2 = BufferUtils.createFloatBuffer(vertices.length);
         for (int i = 0; i < vertices.length; i += 3) {
             Vector3f vertex = new Vector3f(vertexBuffer.get(), vertexBuffer.get(), vertexBuffer.get());
-            Matrix4f transformation = new Matrix4f().scale(new Vector3f(scale).mul(modelScale)).rotate(yaw + modelYaw, 0, 1, 0).rotate(pitch + modelPitch, 1, 0, 0);
+            //TODO fix head rotation
+            Matrix4f headRotation = new Matrix4f().rotate(pitch, 1, 0, 0);
+            vertex.y -= 1.6f;
+            headRotation.transformPosition(vertex);
+            vertex.y += 1.6f;
+            Matrix4f transformation = new Matrix4f().scale(new Vector3f(scale).mul(modelScale)).rotate(yaw + modelYaw, 0, 1, 0);
             transformation.transformPosition(vertex);
             vertex.add(position).add(modelPosition);
             vertexBuffer2.put(vertex.x).put(vertex.y).put(vertex.z);
@@ -119,6 +124,11 @@ public class Renderable implements Cloneable {
 
     void increaseYaw(float yaw) {
         this.yaw += yaw;
+        updated = true;
+    }
+
+    void increasePitch(float pitch) {
+        this.pitch += pitch;
         updated = true;
     }
 

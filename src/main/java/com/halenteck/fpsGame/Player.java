@@ -69,6 +69,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean moveRight;
     private boolean jump;
 
+    private boolean isDead;
+
     World world;
 
     private JLabel debugLabel;
@@ -175,7 +177,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     gameUI.playerHealth = health;
                     gameUI.playerArmour = armor;
                     gameUI.ammoInMagazine = currentWeapon.getAmmoInMagazine();
-                    gameUI.magazineSize = 30;
+                    gameUI.magazineSize = currentWeapon.getMagazineSize();
                 }
 
                 try {
@@ -490,7 +492,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         health = health - damage;
 
         if (health <= 0) {
-            this.die();
+            if (!isDead) {
+                isDead = true;
+                this.die();
+            }
         }
     }
 
@@ -506,7 +511,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public void killed(Player killer) {
-        renderer.removeEntity(entity);
+        gameUI.getRenderer().removeEntity(entity);
         this.incrementDeaths();
         killer.incrementKills();
 

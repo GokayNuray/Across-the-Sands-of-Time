@@ -51,8 +51,8 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void initGL() {
         createCapabilities();
         glClearColor(0.3f, 0.4f, 0.5f, 1.0f);
-        width = getWidth();
-        height = getHeight();
+        width = (int) (getWidth() * 1.25f);
+        height = (int) (getHeight() * 1.25f);
         aspect = (float) width / height;
         glViewport(0, 0, width, height);
 

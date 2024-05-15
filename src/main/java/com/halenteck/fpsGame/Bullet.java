@@ -1,5 +1,7 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.render.ModelLoader;
+import com.halenteck.render.Renderable;
 import org.joml.Vector3f;
 
 public class Bullet {
@@ -23,8 +25,14 @@ public class Bullet {
     }
 
     public boolean doesBulletHitTarget(Player player) {
-        for (float i = 0; i < 100; i+= 0.1f) {
+        for (int i = 0; i < 1000; i += 1) {
             update(i);
+            if (i % 5 == 0) {
+                float[] pos1 = new float[]{position.x, position.y, position.z};
+                float[] pos2 = new float[]{position.x + 0.1f, position.y + 0.1f, position.z + 0.1f};
+                Renderable bulletPos = ModelLoader.createRectangularPrism(pos1, pos2);
+                Game.renderer.addRenderable(bulletPos);
+            }
             if (isBulletHittingTarget(this, player)) return true;
         }
         return false;
@@ -42,18 +50,16 @@ public class Bullet {
         float bulletZ = bullet.getPosition().z;
 
         if ((bulletX >= targetX - 0.2f && bulletX <= targetX + 0.2f) &&
-                (bulletY >= targetY && bulletY <= targetY + 1.7f ) &&
+                (bulletY >= targetY && bulletY <= targetY + 1.7f) &&
                 (bulletZ >= targetZ - 0.2f && bulletZ <= targetZ + 0.2f)) {
             if (this.player.isAbilityActive() && this.player.getCharacterId() == 0x03) {
                 damage = 100;
                 return true;
-            }
-            else {
+            } else {
                 damage = weapon.getDamage();
                 return true;
             }
-        }
-        else if (this.player.isAbilityActive() && this.player.getCharacterId() == 0x03) {
+        } else if (this.player.isAbilityActive() && this.player.getCharacterId() == 0x03) {
             if ((bulletX >= targetX - 0.2f - hitRadius && bulletX < targetX - 0.2f) ||
                     (bulletX <= targetX + 0.2f + hitRadius && bulletX > targetX + 0.2f) ||
                     (bulletY <= targetY + 1.7f + hitRadius && bulletY > targetY + 1.7f) ||
@@ -68,7 +74,6 @@ public class Bullet {
 
     public void update(float time) {
         position.add(new Vector3f(velocity).mul(0.1f));
-        System.out.println(position);
     }
 
     public Vector3f getPosition() {

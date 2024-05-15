@@ -9,7 +9,6 @@ import com.halenteck.server.PacketData;
 import com.halenteck.server.Server;
 import com.halenteck.server.ServerListener;
 import org.joml.Vector3f;
-import org.lwjgl.awthacks.NonClearGraphics;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class Game implements ServerListener {
     private Player thisPlayer;
 
     private World world;
-    private OpenGLComponent renderer;
+    public static OpenGLComponent renderer;
     private JLabel debugger;
     private JTextArea chat;
 
@@ -34,7 +33,7 @@ public class Game implements ServerListener {
         this.redTeam = new Team();
         this.blueTeam = new Team();
         this.isRunning = true;
-        this.world = new World(Models.WORLD_MAP1, "test/testworld2/BlockData.txt");
+        this.world = new World(Models.WORLD_MAP1, "test/testworld4/output.txt");
         this.renderer = fpsInGame.getRenderer();
         this.debugger = fpsInGame.getDebugLabel();
         this.chat = fpsInGame.getChat();
@@ -214,8 +213,6 @@ public class Game implements ServerListener {
         if (player == null) {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerDeath packet");
         }
-
-        player.die();
     }
 
     @Override
@@ -241,6 +238,7 @@ public class Game implements ServerListener {
 
     @Override
     public void onPlayerShoot(PacketData packetData) {
+        System.out.println("Player Shoot");
         Byte playerId = (Byte) packetData.getOnPlayerShootData()[0];
         Player player = players.get(playerId);
 
@@ -248,7 +246,6 @@ public class Game implements ServerListener {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerShoot packet");
         }
 
-        player.shoot();
         Bullet bullet = player.spawnBullet();
         thisPlayer.handleBullet(bullet);
     }

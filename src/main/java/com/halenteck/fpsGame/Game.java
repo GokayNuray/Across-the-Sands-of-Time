@@ -52,12 +52,6 @@ public class Game implements ServerListener {
         thisPlayer.startMovementThread();
     }
 
-    public void loop() {
-        while (isRunning) {
-            //TODO: Create a game loop.
-        }
-    }
-
     public void addPlayer(Player player) {
         if (players.size() < 10) {
 

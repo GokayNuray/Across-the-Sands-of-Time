@@ -1,6 +1,5 @@
 package com.halenteck.fpsGame;
 
-import com.halenteck.fpsUI.FpsEndGame;
 import com.halenteck.fpsUI.FpsInGame;
 import com.halenteck.render.Models;
 import com.halenteck.render.OpenGLComponent;
@@ -166,7 +165,7 @@ public class Game implements ServerListener {
         }
 
         float[] rotateData = (float[]) packetData.getOnPlayerRotateData()[1];
-        player.rotate(rotateData[0], rotateData[1]);
+        player.setRotation(rotateData[0], rotateData[1]);
     }
 
     @Override

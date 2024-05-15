@@ -449,8 +449,14 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         entity.setRotation(yaw, pitch);
         if (renderer != null) {
             renderer.setCameraRotation(yaw, pitch);
-            Server.rotatePlayer(dYaw, dPitch);
+            Server.rotatePlayer(yaw, pitch);
         }
+    }
+
+    public void setRotation(float yaw, float pitch) {
+        this.yaw = yaw;
+        this.pitch = pitch;
+        entity.setRotation(yaw, pitch);
     }
 
     public void createWeapons(int id) {
@@ -637,6 +643,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.debugLabel = chatArea;
     }
 
-    public boolean isRedTeam() { return isRedTeam;
+    public boolean isRedTeam() {
+        return isRedTeam;
     }
 }

@@ -1,7 +1,5 @@
 package com.halenteck.fpsGame;
 
-import com.halenteck.render.ModelLoader;
-import com.halenteck.render.Renderable;
 import org.joml.Vector3f;
 
 public class Bullet {
@@ -27,12 +25,6 @@ public class Bullet {
     public boolean doesBulletHitTarget(Player player) {
         for (int i = 0; i < 1000; i += 1) {
             update(i);
-            if (i % 5 == 0) {
-                float[] pos1 = new float[]{position.x, position.y, position.z};
-                float[] pos2 = new float[]{position.x + 0.1f, position.y + 0.1f, position.z + 0.1f};
-                Renderable bulletPos = ModelLoader.createRectangularPrism(pos1, pos2);
-                Game.renderer.addRenderable(bulletPos);
-            }
             if (isBulletHittingTarget(this, player)) return true;
         }
         return false;

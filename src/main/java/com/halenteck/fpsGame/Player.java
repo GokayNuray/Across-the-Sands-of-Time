@@ -133,7 +133,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     long temp = lastShot;
                     if (System.currentTimeMillis() - lastShot > (1000 / currentWeapon.getFireRate())) {
                         shoot();
-                        Server.shoot();
                         lastShot = System.currentTimeMillis();
                     }
                 }
@@ -467,7 +466,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         if (bullet.doesBulletHitTarget(this)) {
             System.out.println("yea");//TODO: TEST
             if (!(isAbilityActive() && characterId == 0x01)) {
-                takeDamage(bullet.getDamage());
+                takeDamage(10);
             }
         }
     }

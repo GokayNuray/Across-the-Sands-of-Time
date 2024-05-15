@@ -159,7 +159,7 @@ public class FpsInGame extends JFrame {
         KeyStroke enterKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
         Action enterAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                chatField.setEditable(false);
+                //chatField.setEditable(false);
                 chat.append("You: " + chatField.getText() + "\n");
                 chat.setCaretPosition(chat.getDocument().getLength());
                 Server.chat(chatField.getText());
@@ -227,7 +227,7 @@ public class FpsInGame extends JFrame {
 //            specialAbilityButton.setEnabled(true);
 //        }
 
-        while(player.getWeapon().isReloading()) {
+        while (player.getWeapon().isReloading()) {
             ammoLabel.setText("Reloading...");
         }
 
@@ -242,6 +242,7 @@ public class FpsInGame extends JFrame {
     public OpenGLComponent getRenderer() {
         return renderer;
     }
+
     public void showPopUp(JFrame frame) {
         frame.setLocationRelativeTo(this);
         frame.setVisible(true);

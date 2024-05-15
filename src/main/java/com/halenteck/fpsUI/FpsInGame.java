@@ -8,9 +8,7 @@ import com.halenteck.server.Server;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent;
+import java.awt.event.*;
 
 public class FpsInGame extends JFrame {
     public static void main(String[] args) {
@@ -100,6 +98,13 @@ public class FpsInGame extends JFrame {
         layeredPane.add(chatButton, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatField, JLayeredPane.PALETTE_LAYER);
 
+        //team score labels
+        JLabel redScoreLabel = new JLabel("Red: " + redScore);
+        redScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        redScoreLabel.setBounds(10, 700, 100, 20);
+        layeredPane.add(redScoreLabel, JLayeredPane.PALETTE_LAYER);
+
+
         // weapon showcases
         ImageIcon weapon1Image = new ImageIcon(getClass().getResource(character.resourcePath + "weapon1.png"));
         Image scaledWeapon1Image = weapon1Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
@@ -126,7 +131,7 @@ public class FpsInGame extends JFrame {
 
         ammoLabel = new JLabel(ammoInMagazine + "/" + magazineSize);
         ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        ammoLabel.setBounds((int) bounds.getWidth() - 150, (int) bounds.getHeight() - 75, 100, 20);
+        ammoLabel.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 75, 175, 20);
         layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);
 
         JLabel returnLabel = new JLabel("Press ESC to return to the main menu");
@@ -198,30 +203,37 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(xKeyStroke, "X");
         getRootPane().getActionMap().put("X", xAction);
 
+        // Initialize the leaderboard panel in your FpsInGame constructor
+        InGameLeaderboard leaderboardPanel = new InGameLeaderboard(this);
+        leaderboardPanel.setVisible(false);
+        layeredPane.add(leaderboardPanel, JLayeredPane.PALETTE_LAYER);
+        // Calculate the center point of the FpsInGame frame
+        int centerX = (int) (bounds.getWidth() / 2);
+        int centerY = (int) (bounds.getHeight() / 2);
 
-        // viewing in-game scoreboard with tab while tab is long pressed
+// Calculate the top-left point of the InGameLeaderboard panel
+        int panelX = centerX - (leaderboardPanel.getWidth() / 2);
+        int panelY = centerY - (leaderboardPanel.getHeight() / 2);
 
-        final boolean[] isLeaderboardOpen = {false};
-        final InGameLeaderboard[] leaderboard = {null};
+// Set the location and size of the InGameLeaderboard panel
+        leaderboardPanel.setBounds(panelX, panelY, leaderboardPanel.getWidth(), leaderboardPanel.getHeight());
 
-        KeyStroke shiftKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, false);
-        Action shiftAction = new AbstractAction() {
+// Modify your tAction to show/hide the leaderboard panel
+        KeyStroke tKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, 0, false);
+        Action tAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("SHIFT action triggered");
-                if (isLeaderboardOpen[0]) {
-                    // Close the leaderboard
-                    leaderboard[0].dispose();
-                    isLeaderboardOpen[0] = false;
+                System.out.println("T action triggered");
+                if (leaderboardPanel.isVisible()) {
+                    // Hide the leaderboard
+                    leaderboardPanel.setVisible(false);
                 } else {
-                    // Open the leaderboard
-                    leaderboard[0] = new InGameLeaderboard(FpsInGame.this);
-                    showPopUp(leaderboard[0]);
-                    isLeaderboardOpen[0] = true;
+                    // Show the leaderboard
+                    leaderboardPanel.setVisible(true);
                 }
             }
         };
-        getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(shiftKeyStroke, "SHIFT");
-        getRootPane().getActionMap().put("SHIFT", shiftAction);
+        getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(tKeyStroke, "T");
+        getRootPane().getActionMap().put("T", tAction);
 
         if (id == -1) {
             return;
@@ -270,9 +282,11 @@ public class FpsInGame extends JFrame {
 
         while (player.getWeapon().isReloading()) {
             ammoLabel.setText("Reloading...");
+            ammoLabel.setForeground(Color.RED);
         }
 
         ammoLabel.setText(ammoInMagazine + "/" + magazineSize);
+        ammoLabel.setForeground(Color.BLACK);
         kdaLabel.setText(kills + "/" + deaths);
     }
 

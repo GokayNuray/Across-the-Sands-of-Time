@@ -1,5 +1,6 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.fpsUI.FpsEndGame;
 import com.halenteck.fpsUI.FpsInGame;
 import com.halenteck.render.Models;
 import com.halenteck.render.OpenGLComponent;
@@ -229,7 +230,7 @@ public class Game implements ServerListener {
         }
 
         gameUI.redScore = redTeam.getScore();
-        gameUI.blueSCore = blueTeam.getScore();
+        gameUI.blueScore = blueTeam.getScore();
 
         if (killer == thisPlayer) {
             gameUI.kills++;
@@ -276,5 +277,23 @@ public class Game implements ServerListener {
     @Override
     public void onGameOver(PacketData packetData) {
         isRunning = false;
+        boolean isRed = thisPlayer.isRedTeam();
+        if (gameUI.blueScore > gameUI.redScore) {
+            if (isRed) {
+                new FpsEndGame(false, gameUI.kills, gameUI.deaths);
+                gameUI.dispose();
+            } else {
+                new FpsEndGame(true, gameUI.kills, gameUI.deaths);
+                gameUI.dispose();
+            }
+        } else {
+            if (!isRed) {
+                new FpsEndGame(false, gameUI.kills, gameUI.deaths);
+                gameUI.dispose();
+            } else {
+                new FpsEndGame(true, gameUI.kills, gameUI.deaths);
+                gameUI.dispose();
+            }
+        }
     }
 }

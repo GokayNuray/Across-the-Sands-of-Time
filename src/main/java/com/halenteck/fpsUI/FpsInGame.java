@@ -37,7 +37,7 @@ public class FpsInGame extends JFrame {
     public int deaths = 0;
 
     public int redScore;
-    public int blueSCore;
+    public int blueScore;
 
     JProgressBar playerHealthBar;
     JProgressBar playerArmourBar;
@@ -129,7 +129,7 @@ public class FpsInGame extends JFrame {
         redScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150), 20, 100, 20);
         layeredPane.add(redScoreLabel, JLayeredPane.PALETTE_LAYER);
 
-        blueScoreLabel = new JLabel("Blue: " + blueSCore, SwingConstants.CENTER);
+        blueScoreLabel = new JLabel("Blue: " + blueScore, SwingConstants.CENTER);
         blueScoreLabel.setForeground(Color.BLUE);
         blueScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         blueScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150) + 100, 20, 100, 20);
@@ -325,8 +325,8 @@ public class FpsInGame extends JFrame {
 
         }
 
-        redScoreLabel = new JLabel("Red: " + redScore, SwingConstants.CENTER);
-        blueScoreLabel = new JLabel("Blue: " + blueSCore, SwingConstants.CENTER);
+        redScoreLabel.setText("Red: " + redScore);
+        blueScoreLabel.setText("Blue: " + blueScore);
 
         if (player.getWeapon().isReloading()) {
             ammoLabel.setText("Reloading...");

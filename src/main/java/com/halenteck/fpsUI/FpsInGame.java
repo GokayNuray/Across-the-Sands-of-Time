@@ -117,7 +117,7 @@ public class FpsInGame extends JFrame {
         specialAbilityButton.setEnabled(true);
         layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER);
 
-        ammoLabel = new JLabel(ammoInMagazine + "/" + magazineSize);
+        ammoLabel = new JLabel(player.getWeapon().getAmmoInMagazine() + "/" + player.getWeapon().getMagazineSize());
         ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
         ammoLabel.setBounds((int) bounds.getWidth() - 150, (int) bounds.getHeight() - 75, 100, 20);
         layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);

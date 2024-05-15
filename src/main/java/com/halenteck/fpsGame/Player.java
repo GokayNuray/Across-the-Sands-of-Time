@@ -22,6 +22,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     private FPSWeapon currentWeapon;
     private FPSWeapon otherWeapon;
+    private Bullet lastBulletHitBy;
     private Entity entity;
     private OpenGLComponent renderer;
     private Team team;
@@ -85,7 +86,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.attackPower = attackPower;
         this.kills = kill;
         this.deaths = death;
-        this.characterId = 2; //TODO: Temp.
+        this.characterId = 3; //TODO: Temp.
         this.accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer = new Vector3f(0, 0, 0);
         this.velocity = new Vector3f(0, 0, 0);
         ableToUseAbility = true;
@@ -466,7 +467,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         if (bullet.doesBulletHitTarget(this)) {
             System.out.println("yea");//TODO: TEST
             if (!(isAbilityActive() && characterId == 0x01)) {
-                takeDamage(10);
+                takeDamage(bullet.getDamage());
+                lastBulletHitBy = bullet;
             }
         }
     }
@@ -482,6 +484,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void die() {
         this.incrementDeaths();
         health = 0;
+        Player killer = lastBulletHitBy.getPlayer();
+        byte killerId = killer.getId();
+        Server.death(killerId);
+        killer.incrementKills();
     }
 
     public void attachRenderer(OpenGLComponent renderer) {
@@ -533,6 +539,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public float getZ() {
         return this.position.z;
+    }
+
+    public byte getId() {
+        return id;
     }
 
     public byte getKills() {

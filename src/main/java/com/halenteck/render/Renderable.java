@@ -102,7 +102,7 @@ public class Renderable implements Cloneable {
             //TODO fix head rotation
             Matrix4f headRotation = new Matrix4f().rotate(pitch, 1, 0, 0);
             vertex.y -= 1.6f;
-            headRotation.transformPosition(vertex);
+            //headRotation.transformPosition(vertex);
             vertex.y += 1.6f;
             Matrix4f transformation = new Matrix4f().scale(new Vector3f(scale).mul(modelScale)).rotate(yaw + modelYaw, 0, 1, 0);
             transformation.transformPosition(vertex);

@@ -242,6 +242,13 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(tKeyStroke, "T");
         getRootPane().getActionMap().put("T", tAction);
 
+        ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
+        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH);
+        ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
+        JLabel crosshairLabel = new JLabel(finalCrosshair);
+        crosshairLabel.setBounds((int) (bounds.getWidth()/2) - 10, (int) (bounds.getHeight()/2) - 10,20,20);
+        layeredPane.add(crosshairLabel);
+
         if (id == -1) {
             return;
         }

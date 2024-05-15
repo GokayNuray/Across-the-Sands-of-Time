@@ -73,8 +73,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     World world;
 
-    private JLabel debugLabel;
-
     private FpsInGame gameUI;
 
     public Player(FpsInGame gameUI, Byte id, boolean isRedTeam, String name, Vector3f startPosition,
@@ -149,19 +147,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                 }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
-                StringBuilder debugText = new StringBuilder();
-                debugText.append("helf: ").append(health).append(" ");
-                debugText.append("armor: ").append(armor).append(" ");
-                debugText.append("Ammo: ").append(currentWeapon.getAmmoInMagazine() + "/" + currentWeapon.getMagazineSize()).append(" ");
-                debugText.append("reload: ").append(currentWeapon.isReloading()).append(" ");
-                debugText.append("dmg: ").append(currentWeapon.getDamage()).append(" ");
-                debugText.append("rng: ").append(currentWeapon.getRange()).append(" ");
-                debugText.append("Position: ").append(position).append(" ");
-                debugText.append("IPosition: ").append(Math.floor(position.x)).append(" ").append(Math.floor(position.y)).append(" ").append(Math.floor(position.z)).append(" ");
-                debugText.append("Velocity: ").append(velocity).append(" ");
-                debugText.append("Acceleration: ").append(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer).append("\n");
-                debugText.append("Ability : ").append(abilityActive).append("\n");
-                debugLabel.setText(debugText.toString());
                 move(velocity);
                 if (!isGrounded) {
                     velocity.add(0, -0.029f, 0);
@@ -494,7 +479,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public void handleBullet(Bullet bullet) {
         if (bullet.doesBulletHitTarget(this)) {
-            System.out.println("yea");//TODO: TEST
             if (!(isAbilityActive() && characterId == 0x01)) {
                 takeDamage(bullet.getDamage());
                 lastBulletHitBy = bullet;
@@ -645,9 +629,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         return entity;
     }
 
-    public void setDebugConsole(JLabel chatArea) {
-        this.debugLabel = chatArea;
-    }
 
     public boolean isRedTeam() {
         return isRedTeam;

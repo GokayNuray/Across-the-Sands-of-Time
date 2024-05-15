@@ -48,16 +48,9 @@ public class Game implements ServerListener {
 
         gameUI.player = thisPlayer;
         thisPlayer.attachRenderer(renderer);
-        thisPlayer.setDebugConsole(debugger);//TODO dont forget to remove this
         thisPlayer.createWeapons(thisPlayer.getWeaponId());
         renderer.addEntity(world.getModel());
         thisPlayer.startMovementThread();
-    }
-
-    public void loop() {
-        while (isRunning) {
-            //TODO: Create a game loop.
-        }
     }
 
     public void addPlayer(Player player) {

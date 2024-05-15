@@ -9,6 +9,7 @@ import com.halenteck.server.Server;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class FpsInGame extends JFrame {
@@ -49,6 +50,8 @@ public class FpsInGame extends JFrame {
     OpenGLComponent renderer;
     JTextArea chat;
 
+    JLabel joinLabel;
+
     public FpsInGame(int id) {
         Character character = Character.characters.get(Server.getUserData().getLastSelectedCharacter());
         setTitle("FPS Match");
@@ -56,6 +59,23 @@ public class FpsInGame extends JFrame {
         layeredPane = new JLayeredPane();
         JLabel background = new JLabel();
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER);
+
+        joinLabel = new JLabel("", SwingConstants.CENTER);
+        joinLabel.setFont(new Font("Arial", Font.BOLD, 80));
+        joinLabel.setBounds(300, 250, 900, 300);
+        joinLabel.setOpaque(false);
+        layeredPane.add(joinLabel, JLayeredPane.PALETTE_LAYER);
+
+        // Create a Timer
+        Timer joinTimer = new Timer(10000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                joinLabel.setVisible(false);
+            }
+        });
+
+        // Start the Timer when the user joins
+        joinTimer.start();
 
         playerHealthBar = new JProgressBar();
         playerHealthBar.setStringPainted(true);
@@ -276,6 +296,13 @@ public class FpsInGame extends JFrame {
     }
 
     public void updatePanels() {
+        if (player.isRedTeam()) {
+            joinLabel.setForeground(Color.RED);
+            joinLabel.setText("You are on RED team");
+        } else {
+            joinLabel.setForeground(Color.BLUE);
+            joinLabel.setText("You are on BLUE team");
+        }
         playerHealthBar.setValue(playerHealth);
         playerArmourBar.setValue(playerArmour);
         if (player.isAbilityActive()) {
@@ -305,29 +332,7 @@ public class FpsInGame extends JFrame {
         kdaLabel.setText(kills + "/" + deaths);
 
         // Create a JLabel
-        /*JLabel joinLabel = new JLabel("", SwingConstants.CENTER);
-        if (player.isRedTeam()) {
-            joinLabel.setForeground(Color.RED);
-            joinLabel.setText("You are on RED team");
-        } else {
-            joinLabel.setForeground(Color.BLUE);
-            joinLabel.setText("You are on BLUE team");
-        }
-        joinLabel.setFont(new Font("Arial", Font.BOLD, 80));
-        joinLabel.setBounds(300, 250, 900, 300);
-        joinLabel.setOpaque(false);
-        layeredPane.add(joinLabel, JLayeredPane.PALETTE_LAYER);
 
-        // Create a Timer
-        Timer joinTimer = new Timer(5000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                joinLabel.setVisible(false);
-            }
-        });
-
-        // Start the Timer when the user joins
-        joinTimer.start();*/
     }
 
     public JLabel getDebugLabel() {

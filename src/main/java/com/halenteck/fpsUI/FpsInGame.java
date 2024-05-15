@@ -277,10 +277,6 @@ public class FpsInGame extends JFrame {
             return;
         }
 
-        debugLabel = new JLabel();
-        debugLabel.setBounds(360, 100, 900, 30);
-        layeredPane.add(debugLabel, JLayeredPane.PALETTE_LAYER);
-
         renderer = new OpenGLComponent();
         renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
         layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);

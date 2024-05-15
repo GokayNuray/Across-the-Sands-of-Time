@@ -50,6 +50,9 @@ public class FpsInGame extends JFrame {
     OpenGLComponent renderer;
     JTextArea chat;
 
+    JLabel redScoreLabel;
+    JLabel blueScoreLabel;
+
     JLabel joinLabel;
 
     public FpsInGame(int id) {
@@ -120,13 +123,13 @@ public class FpsInGame extends JFrame {
         layeredPane.add(chatField, JLayeredPane.PALETTE_LAYER);
 
         //team score labels
-        JLabel redScoreLabel = new JLabel("Red: " + redScore, SwingConstants.CENTER);
+        redScoreLabel = new JLabel("Red: " + redScore, SwingConstants.CENTER);
         redScoreLabel.setForeground(Color.RED);
         redScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         redScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150), 20, 100, 20);
         layeredPane.add(redScoreLabel, JLayeredPane.PALETTE_LAYER);
 
-        JLabel blueScoreLabel = new JLabel("Blue: " + blueSCore, SwingConstants.CENTER);
+        blueScoreLabel = new JLabel("Blue: " + blueSCore, SwingConstants.CENTER);
         blueScoreLabel.setForeground(Color.BLUE);
         blueScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         blueScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150) + 100, 20, 100, 20);
@@ -322,13 +325,17 @@ public class FpsInGame extends JFrame {
 
         }
 
-        while (player.getWeapon().isReloading()) {
+        redScoreLabel = new JLabel("Red: " + redScore, SwingConstants.CENTER);
+        blueScoreLabel = new JLabel("Blue: " + blueSCore, SwingConstants.CENTER);
+
+        if (player.getWeapon().isReloading()) {
             ammoLabel.setText("Reloading...");
             ammoLabel.setForeground(Color.RED);
+        } else {
+            ammoLabel.setText(ammoInMagazine + "/" + magazineSize);
+            ammoLabel.setForeground(Color.BLACK);
         }
 
-        ammoLabel.setText(ammoInMagazine + "/" + magazineSize);
-        ammoLabel.setForeground(Color.BLACK);
         kdaLabel.setText(kills + "/" + deaths);
 
         // Create a JLabel

@@ -3,6 +3,7 @@ package com.halenteck.fpsUI;
 import com.halenteck.CombatGame.Character;
 import com.halenteck.commonUI.GameSelectionMenu;
 import com.halenteck.fpsGame.Game;
+import com.halenteck.fpsGame.Player;
 import com.halenteck.render.OpenGLComponent;
 import com.halenteck.server.Server;
 
@@ -23,6 +24,7 @@ public class FpsInGame extends JFrame {
     }
 
     public Game game;
+    public Player player;
     public int playerHealth;
     public int playerArmour;
     public boolean isAbilityActive;
@@ -31,8 +33,10 @@ public class FpsInGame extends JFrame {
     JProgressBar playerArmourBar;
     Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();
     JButton specialAbilityButton;
+    JLabel kdaLabel;
     JLayeredPane layeredPane;
     JLabel debugLabel;
+    JLabel ammoLabel;
     OpenGLComponent renderer;
     JTextArea chat;
 
@@ -62,7 +66,7 @@ public class FpsInGame extends JFrame {
         playerArmourBar.setForeground(Color.GREEN);
         layeredPane.add(playerArmourBar, JLayeredPane.PALETTE_LAYER);
 
-        JLabel kdaLabel = new JLabel("K/D/A");
+        kdaLabel = new JLabel("K/D/A");
         kdaLabel.setFont(new Font("Arial", Font.BOLD, 20));
         kdaLabel.setBounds((int) bounds.getWidth() - 150, 10, 100, 20);
         layeredPane.add(kdaLabel, JLayeredPane.PALETTE_LAYER);
@@ -110,7 +114,7 @@ public class FpsInGame extends JFrame {
         specialAbilityButton.setEnabled(true);
         layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER);
 
-        JLabel ammoLabel = new JLabel("27/30");
+        ammoLabel = new JLabel("27/30");
         ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
         ammoLabel.setBounds((int) bounds.getWidth() - 150, (int) bounds.getHeight() - 75, 100, 20);
         layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);
@@ -134,7 +138,7 @@ public class FpsInGame extends JFrame {
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
         Action escapeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                showPopUp(new FpsPauseFrame());
+                showPopUp(new FpsPauseFrame(FpsInGame.this));
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
@@ -219,6 +223,13 @@ public class FpsInGame extends JFrame {
 //        } else {
 //            specialAbilityButton.setEnabled(true);
 //        }
+
+        while(player.getWeapon().isReloading()) {
+            ammoLabel.setText("Reloading...");
+        }
+
+        ammoLabel.setText(player.getWeapon().getAmmoInMagazine() + "/" + player.getWeapon().getMagazineSize());
+        kdaLabel.setText(player.getKills() + "/" + player.getDeaths());
     }
 
     public JLabel getDebugLabel() {

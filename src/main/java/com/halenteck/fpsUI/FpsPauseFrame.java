@@ -8,7 +8,10 @@ import java.awt.*;
 
 public class FpsPauseFrame extends JFrame {
 
-        public FpsPauseFrame() {
+    public JFrame fpsInGame;
+
+        public FpsPauseFrame(JFrame fpsInGame) {
+            this.fpsInGame = fpsInGame;
             setTitle("Game Paused");
             setLayout(new BorderLayout());
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,6 +42,7 @@ public class FpsPauseFrame extends JFrame {
             exitButton.setFont(exitButton.getFont().deriveFont(20.0f));
             exitButton.addActionListener(e -> {
                 new GameSelectionMenu();
+                fpsInGame.dispose();
                 dispose();
             });
             buttonPanel.add(exitButton);

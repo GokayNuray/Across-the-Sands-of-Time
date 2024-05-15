@@ -7,7 +7,7 @@ public class Armour {
     protected int price;
     protected int defence;
 
-    public Armour(int aType) {//JTextField or a button
+    public Armour(int aType) {
         type = aType;
         setPrice();
     }

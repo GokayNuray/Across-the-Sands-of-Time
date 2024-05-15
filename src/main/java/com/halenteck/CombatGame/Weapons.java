@@ -1,12 +1,10 @@
 package com.halenteck.CombatGame;
 //import javax.swing.JButton;
 
-public class Weapons { //extend edilmeyecek
-    //her karakter için bir weapon objesi yaratılıyor ve onun üstünede oynama yapılıyor
+public class Weapons {
     protected int price;
     protected int performance;//the damage weapon will inflict originally
     protected int weaponID;
-    //protected JButton buy = new JButton("buy");
     protected boolean isActive;
 
     public Weapons(int weaponID) {

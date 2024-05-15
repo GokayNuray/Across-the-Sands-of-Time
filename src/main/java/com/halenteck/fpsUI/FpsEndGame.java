@@ -1,6 +1,8 @@
 package com.halenteck.fpsUI;
 
 import com.halenteck.commonUI.GameSelectionMenu;
+import com.halenteck.server.Server;
+import com.halenteck.server.UserData;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -8,10 +10,10 @@ import java.awt.*;
 
 public class FpsEndGame extends JFrame {
 
-    private static final int FRAME_WIDTH = 600;
-    private static final int FRAME_HEIGHT = 400;
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIGHT = 500;
 
-    public FpsEndGame(boolean isGameWon) {
+    public FpsEndGame(boolean isGameWon, int kills, int deaths) {
         setTitle("Game Over");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -33,18 +35,18 @@ public class FpsEndGame extends JFrame {
         }
 
         JPanel statsPanel = new JPanel(new GridLayout(2,3));
-        JLabel killsLabel = new JLabel("Kills: 10", SwingConstants.CENTER); // Add kills
+        JLabel killsLabel = new JLabel("Kills: " + kills, SwingConstants.CENTER); // Add kills
         killsLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         statsPanel.add(killsLabel);
-        JLabel deathsLabel = new JLabel("Deaths: 5", SwingConstants.CENTER); // Add deaths
+        JLabel deathsLabel = new JLabel("Deaths: " + deaths, SwingConstants.CENTER); // Add deaths
         deathsLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         statsPanel.add(deathsLabel);
         statsPanel.add(new JPanel());
         if (isGameWon) {
-            JLabel pointsLabel = new JLabel("Overall Points: 5", SwingConstants.CENTER); // Add rank
+            JLabel pointsLabel = new JLabel("Overall Points: " + Server.getUserData().getRankPoints(), SwingConstants.CENTER); // Add rank
             pointsLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
             statsPanel.add(pointsLabel);
-            JLabel positionLabel = new JLabel("Position at LB: 10", SwingConstants.CENTER); // Add position
+            JLabel positionLabel = new JLabel("Position at LB: " + Server.getUserData().getGlobalRank(), SwingConstants.CENTER); // Add position
             positionLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
             statsPanel.add(positionLabel);
         }

@@ -24,6 +24,8 @@ public class FpsInGame extends JFrame {
 
     public Game game;
     public Player player;
+    public boolean isGameOver = false;
+    public boolean isGameWon = false;
     public int playerHealth;
     public int playerArmour;
     public boolean isAbilityActive;
@@ -88,6 +90,7 @@ public class FpsInGame extends JFrame {
         chat.setText("Welcome to the game chat!\n");
 
         JTextField chatField = new JTextField();
+        chatField.setEditable(false);
         chatField.setBounds(65, 255, 200, 40);
         layeredPane.add(chat, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatButton, JLayeredPane.PALETTE_LAYER);
@@ -100,6 +103,9 @@ public class FpsInGame extends JFrame {
         JLabel weapon1Label = new JLabel(scaledWeapon1Icon);
         weapon1Label.setBounds(50, 400, 75, 100);
         layeredPane.add(weapon1Label, JLayeredPane.PALETTE_LAYER);
+        // check if the weapon is in hand from fpsgame
+
+
 
         ImageIcon weapon2Image = new ImageIcon(getClass().getResource(character.resourcePath + "weapon2.png"));
         Image scaledWeapon2Image = weapon2Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
@@ -151,6 +157,7 @@ public class FpsInGame extends JFrame {
         Action slashAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 chatField.setEditable(true);
+                chatField.requestFocus();
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(slashKeyStroke, "SLASH");
@@ -159,11 +166,14 @@ public class FpsInGame extends JFrame {
         KeyStroke enterKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
         Action enterAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                chatField.setEditable(false);
-                chat.append("You: " + chatField.getText() + "\n");
-                chat.setCaretPosition(chat.getDocument().getLength());
-                Server.chat(chatField.getText());
-                chatField.setText("");
+                if (chatField.isEditable()) {
+                    chat.append("You: " + chatField.getText() + "\n");
+                    chat.setCaretPosition(chat.getDocument().getLength());
+                    Server.chat(chatField.getText());
+                    chatField.setText("");
+                    chatField.setEditable(false);
+                    chatField.getParent().requestFocus();
+                }
             }
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(enterKeyStroke, "ENTER");
@@ -218,7 +228,11 @@ public class FpsInGame extends JFrame {
         renderer.startRender();
     }
 
+
     public void updatePanels() {
+        if (isGameOver) {
+            showPopUp(new FpsEndGame(isGameWon, kills, deaths));
+        }
         playerHealthBar.setValue(playerHealth);
         playerArmourBar.setValue(playerArmour);
 //        if (abilityCooldown > 0) {

@@ -35,6 +35,10 @@ public class FpsInGame extends JFrame {
     public int ammoInMagazine = 0;
     public int kills = 0;
     public int deaths = 0;
+
+    public int redScore;
+    public int blueSCore;
+
     JProgressBar playerHealthBar;
     JProgressBar playerArmourBar;
     Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();

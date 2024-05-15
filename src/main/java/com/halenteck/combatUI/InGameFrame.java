@@ -71,10 +71,11 @@ public class InGameFrame extends JFrame {
         JLabel playerName = new JLabel(character.name, SwingConstants.LEFT);
         playerName.setForeground(Color.WHITE);
         playerName.setFont(new Font("Arial", Font.BOLD, 30));
-        playerName.setBounds(200, 100, 200, 50);
+        playerName.setBounds(250, 100, 200, 50);
         layeredPane.add(playerName, JLayeredPane.PALETTE_LAYER); // Add to layer 1
         JLabel enemyName = new JLabel(game.getLocation().getEnemies().getName(), SwingConstants.LEFT);
         enemyName.setBounds((int) bounds.getWidth() - 350, 100, 200, 50);
+        enemyName.setForeground(Color.WHITE);
         enemyName.setFont(new Font("Arial", Font.BOLD, 30));
         layeredPane.add(enemyName, JLayeredPane.PALETTE_LAYER); // Add to layer 1
         JLabel playerHealthLabel = new JLabel("Player Health: ", SwingConstants.LEFT);

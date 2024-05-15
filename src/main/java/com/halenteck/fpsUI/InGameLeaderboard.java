@@ -3,7 +3,7 @@ package com.halenteck.fpsUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class InGameLeaderboard extends JFrame {
+public class InGameLeaderboard extends JPanel {
 
     public InGameLeaderboard(JFrame fpsInGame) {
         setSize(800, 600);
@@ -81,7 +81,6 @@ public class InGameLeaderboard extends JFrame {
         leaderboardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
         add(leaderboardPanel, BorderLayout.CENTER);
-        setLocationRelativeTo(fpsInGame);
         setVisible(true);
     }
 }

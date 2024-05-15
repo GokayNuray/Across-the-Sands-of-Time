@@ -26,6 +26,7 @@ public class Game implements ServerListener {
     private World world;
     private OpenGLComponent renderer;
     private JLabel debugger;
+    private JTextArea chat;
 
     public Game(int lobbyId, FpsInGame fpsInGame) {
         Server.addServerListener(this);
@@ -36,6 +37,7 @@ public class Game implements ServerListener {
         this.world = new World(Models.WORLD_MAP1, "test/testworld2/BlockData.txt");
         this.renderer = fpsInGame.getRenderer();
         this.debugger = fpsInGame.getDebugLabel();
+        this.chat = fpsInGame.getChat();
 
         Server.addServerListener(this);
         if (!Server.joinLobby(Server.getUserData().getPlayerName(), lobbyId)) {
@@ -202,7 +204,9 @@ public class Game implements ServerListener {
     public void onPlayerChat(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerChatData()[0];
         String message = (String) packetData.getOnPlayerChatData()[1];
-        System.out.println(playerId + ": " + message);
+        Player player = players.get(playerId);
+        chat.append(player.getName() + ": " + message + "\n");
+        chat.setCaretPosition(chat.getDocument().getLength());
     }
 
     @Override

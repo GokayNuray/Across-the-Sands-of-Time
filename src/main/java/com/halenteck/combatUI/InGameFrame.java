@@ -183,6 +183,11 @@ public class InGameFrame extends JFrame {
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+
+        if (game.getLocation().getLocationId() % 4 == 0) {
+            CharacterStory characterStory = new CharacterStory( Server.getUserData().getUnlockedCharacterCount() - 1);
+            characterStory.setVisible(true);        }
+
     }
 
     public void updatePanels() {

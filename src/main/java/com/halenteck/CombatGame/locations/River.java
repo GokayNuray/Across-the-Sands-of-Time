@@ -2,11 +2,11 @@ package com.halenteck.CombatGame.locations;
 
 import com.halenteck.CombatGame.Location;
 
-import com.halenteck.CombatGame.enemies.Fishman;
+import com.halenteck.CombatGame.enemies.Merman;
 
 public class River extends Location {
 
     public River() {
-        super(2, "River", new Fishman(), "Water");
+        super(2, "River", new Merman(), "Water");
     }
 }

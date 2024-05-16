@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 public class FpsInGame extends JFrame {
     public static void main(String[] args) {
@@ -60,8 +61,10 @@ public class FpsInGame extends JFrame {
         setTitle("FPS Match");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         layeredPane = new JLayeredPane();
+        layeredPane.setOpaque(false);
         JLabel background = new JLabel();
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.setBackground(new Color(0, 0, 0, 0)); // Set the background color to transparent
 
         joinLabel = new JLabel("", SwingConstants.CENTER);
         joinLabel.setFont(new Font("Arial", Font.BOLD, 80));
@@ -69,15 +72,14 @@ public class FpsInGame extends JFrame {
         joinLabel.setOpaque(false);
         layeredPane.add(joinLabel, JLayeredPane.PALETTE_LAYER);
 
-        // Create a Timer
-        Timer joinTimer = new Timer(10000, new ActionListener() {
+        Timer joinTimer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 joinLabel.setVisible(false);
             }
         });
 
-        // Start the Timer when the user joins
+        // starting when the user joins
         joinTimer.start();
 
         playerHealthBar = new JProgressBar();
@@ -181,15 +183,15 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
         getRootPane().getActionMap().put("ESCAPE", escapeAction);
 
-        KeyStroke slashKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_SLASH, 0, false);
-        Action slashAction = new AbstractAction() {
+        KeyStroke tStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, 0, false);
+        Action tAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 chatField.setEditable(true);
                 chatField.requestFocus();
             }
         };
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(slashKeyStroke, "SLASH");
-        getRootPane().getActionMap().put("SLASH", slashAction);
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(tStroke, "T");
+        getRootPane().getActionMap().put("T", tAction);
 
         KeyStroke enterKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
         Action enterAction = new AbstractAction() {
@@ -207,7 +209,6 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(enterKeyStroke, "ENTER");
         getRootPane().getActionMap().put("ENTER", enterAction);
 
-        // Start a timer that will disable the button after a delay
         Timer timer = new Timer(60000, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -218,10 +219,10 @@ public class FpsInGame extends JFrame {
         timer.setRepeats(false);
 
         // key listener for the x key
-        KeyStroke xKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_X, 0, false);
-        Action xAction = new AbstractAction() {
+        KeyStroke qKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false);
+        Action qAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("X key pressed. isAbilityActive: " + isAbilityActive + ", isAbilityUsed: " + isAbilityUsed);
+                System.out.println("Q key pressed. isAbilityActive: " + isAbilityActive + ", isAbilityUsed: " + isAbilityUsed);
 
                 if (isAbilityActive && !isAbilityUsed) {
                     specialAbilityButton.requestFocus();
@@ -231,13 +232,14 @@ public class FpsInGame extends JFrame {
                 }
             }
         };
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(xKeyStroke, "X");
-        getRootPane().getActionMap().put("X", xAction);
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(qKeyStroke, "Q");
+        getRootPane().getActionMap().put("Q", qAction);
 
         ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
         Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
         JLabel crosshairLabel = new JLabel(finalCrosshair);
+        crosshairLabel.setOpaque(false);
         crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
         layeredPane.add(crosshairLabel);
 
@@ -255,6 +257,15 @@ public class FpsInGame extends JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
 
+        // Create a transparent 16 x 16 pixel image.
+        Image cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+        // blank cursor
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                cursorImg, new Point(0, 0), "blank cursor");
+
+        getContentPane().setCursor(blankCursor);
+
         // Initialize the leaderboard panel in your FpsInGame constructor
         InGameLeaderboard leaderboardPanel = new InGameLeaderboard(game.getPlayers());
         leaderboardPanel.setVisible(false);
@@ -263,18 +274,15 @@ public class FpsInGame extends JFrame {
         int centerX = (int) (bounds.getWidth() / 2);
         int centerY = (int) (bounds.getHeight() / 2);
 
-// Calculate the top-left point of the InGameLeaderboard panel
         int panelX = centerX - (leaderboardPanel.getWidth() / 2);
         int panelY = centerY - (leaderboardPanel.getHeight() / 2);
 
-// Set the location and size of the InGameLeaderboard panel
         leaderboardPanel.setBounds(panelX, panelY, leaderboardPanel.getWidth(), leaderboardPanel.getHeight());
 
-// Modify your tAction to show/hide the leaderboard panel
-        KeyStroke tKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, 0, false);
-        Action tAction = new AbstractAction() {
+        KeyStroke lKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, 0, false);
+        Action lAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("T action triggered");
+                System.out.println("L action triggered");
                 if (leaderboardPanel.isVisible()) {
                     // Hide the leaderboard
                     leaderboardPanel.setVisible(false);
@@ -284,8 +292,11 @@ public class FpsInGame extends JFrame {
                 }
             }
         };
-        getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(tKeyStroke, "T");
-        getRootPane().getActionMap().put("T", tAction);
+        getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(lKeyStroke, "L");
+        getRootPane().getActionMap().put("L", lAction);
+
+        // on death menu
+        showPopUp(new FpsDeathFrame(FpsInGame.this, kills, deaths));
 
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -305,16 +316,13 @@ public class FpsInGame extends JFrame {
         playerArmourBar.setValue(playerArmour);
         if (player.isAbilityActive()) {
             specialAbilityButton.setEnabled(false);
-            specialAbilityButton.setText("ability active!");
             specialAbilityButton.setForeground(Color.GREEN);
         } else {
             if (player.isAbleToUseAbility()) {
                 specialAbilityButton.setEnabled(true);
-                specialAbilityButton.setText("ability can be used!");
                 specialAbilityButton.setForeground(Color.YELLOW);
             } else {
                 specialAbilityButton.setEnabled(false);
-                specialAbilityButton.setText("ability on cooldown");
                 specialAbilityButton.setForeground(Color.RED);
             }
 

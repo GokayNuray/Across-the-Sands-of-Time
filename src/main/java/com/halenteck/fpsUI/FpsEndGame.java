@@ -63,14 +63,14 @@ public class FpsEndGame extends JFrame {
         JButton joinMatchButton = new JButton("Join Another Match");
         joinMatchButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
         joinMatchButton.addActionListener(e -> {
-            new GameSelectionMenu();
+            new LobbyFrame(true);
         });
         buttonPanel.add(joinMatchButton);
 
-        JButton returnButton = new JButton("Return to Game Selection Menu");
+        JButton returnButton = new JButton("Return to Menu");
         returnButton.setFont(new Font("Sans Serif", Font.BOLD, 20));
         returnButton.addActionListener(e -> {
-            new LobbyFrame(isGameWon);
+            new GameSelectionMenu();
         });
         buttonPanel.add(returnButton);
 

@@ -43,7 +43,7 @@ public class InGameLeaderboard extends JPanel {
             JLabel number = new JLabel((i + 1) + ". ");
             number.setFont(new Font("Arial", Font.PLAIN, 12));
             namePanel.add(number, BorderLayout.WEST);
-            JLabel name = new JLabel(playerArray[i].getName());
+            JLabel name = new JLabel(playerArray[i].getName(), SwingConstants.CENTER);
             name.setFont(new Font("Arial", Font.PLAIN, 12));
             namePanel.add(name, BorderLayout.CENTER);
             firstRowPanel.add(namePanel);
@@ -52,7 +52,7 @@ public class InGameLeaderboard extends JPanel {
 
         JPanel killsPanel = new JPanel(new GridLayout(10, 1));
         for (int i = 0; i < playerArray.length; i++) { // add the kills of the users in the current lobby
-            JLabel kills = new JLabel("" + playerArray[i].getKills());
+            JLabel kills = new JLabel("" + playerArray[i].getKills(), SwingConstants.CENTER);
             kills.setFont(new Font("Arial", Font.PLAIN, 12));
             killsPanel.add(kills);
         }
@@ -60,7 +60,7 @@ public class InGameLeaderboard extends JPanel {
 
         JPanel deathsPanel = new JPanel(new GridLayout(10, 1));
         for (int i = 0; i < playerArray.length; i++) { // add the deaths of the users in the current lobby
-            JLabel deaths = new JLabel("" + playerArray[i].getDeaths());
+            JLabel deaths = new JLabel("" + playerArray[i].getDeaths(), SwingConstants.CENTER);
             deaths.setFont(new Font("Arial", Font.PLAIN, 12));
             deathsPanel.add(deaths);
         }

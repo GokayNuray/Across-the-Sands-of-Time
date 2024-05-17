@@ -8,7 +8,6 @@ import com.halenteck.render.World;
 import com.halenteck.server.Server;
 import org.joml.Vector3f;
 
-import javax.swing.*;
 import java.awt.event.*;
 
 public class Player implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
@@ -51,6 +50,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     private boolean isRedTeam;
     private boolean isGrounded;
+    private boolean isAlive;
     private boolean abilityActive;
     private boolean abilityThreadActive;
     private boolean ableToUseAbility;
@@ -68,8 +68,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean moveLeft;
     private boolean moveRight;
     private boolean jump;
-
-    private boolean isDead;
 
     World world;
 
@@ -94,6 +92,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer = new Vector3f(0, 0, 0);
         this.velocity = new Vector3f(0, 0, 0);
         ableToUseAbility = true;
+        isAlive = true;
 
         speed = SPEED;
 
@@ -123,32 +122,32 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void startMovementThread() {
         new Thread(() -> {
             while (true) {
-                if (moveForward) {
+                if (moveForward && isAlive) {
                     moveForward();
                 }
-                if (moveBackward) {
+                if (moveBackward && isAlive) {
                     moveBackward();
                 }
-                if (moveLeft) {
+                if (moveLeft && isAlive) {
                     moveLeft();
                 }
-                if (moveRight) {
+                if (moveRight && isAlive) {
                     moveRight();
                 }
-                if (shooting) {
+                if (shooting && isAlive) {
                     long temp = lastShot;
                     if (System.currentTimeMillis() - lastShot > (1000 / currentWeapon.getFireRate())) {
                         shoot();
                         lastShot = System.currentTimeMillis();
                     }
                 }
-                if (jump) {
+                if (jump && isAlive) {
                     jump();
                 }
 
                 velocity.add(accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer);
                 move(velocity);
-                if (!isGrounded) {
+                if (!isGrounded && isAlive) {
                     velocity.add(0, -0.029f, 0);
                 }
                 velocity.mul(0.8f, 0.8f, 0.8f);
@@ -490,8 +489,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         health = health - damage;
 
         if (health <= 0) {
-            if (!isDead) {
-                isDead = true;
+            if (isAlive) {
+                isAlive = false;
                 this.die();
             }
         }
@@ -520,6 +519,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         yaw = details[3];
         pitch = details[4];
         renderer.addEntity(entity);
+        isAlive = true;
     }
 
     public void attachRenderer(OpenGLComponent renderer) {

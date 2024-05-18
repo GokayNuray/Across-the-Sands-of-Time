@@ -26,7 +26,7 @@ public class FPSWeapon {
         } else {
             ammoInMagazine = 0;
             reloadTime = 0;
-            range = 10;
+            range = 3;
         }
     }
 
@@ -130,7 +130,7 @@ public class FPSWeapon {
     }
 
     public boolean canFire() {
-        return ammoInMagazine > 0 && !isReloading;
+        return (ammoInMagazine > 0 && !isReloading) || magazineSize == 0;
     }
 
     public String getName() {

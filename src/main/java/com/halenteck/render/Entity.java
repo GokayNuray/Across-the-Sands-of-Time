@@ -1,5 +1,7 @@
 package com.halenteck.render;
 
+import org.joml.Vector3f;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,7 @@ public class Entity {
 
     private List<Renderable> renderables;
     private List<Renderable> headRenderables;
+    private List<Entity> children = new ArrayList<>();
     private float x = 0;
     private float y = 0;
     private float z = 0;
@@ -77,8 +80,8 @@ public class Entity {
         renderables.forEach(r -> r.scale(x, y, z));
     }
 
-    public void getRenderables(List<Renderable> renderables) {
-        renderables.addAll(this.renderables);
+    public List<Renderable> getRenderables() {
+        return renderables;
     }
 
     public void startAnimation(String name) {
@@ -86,5 +89,16 @@ public class Entity {
         if (animation != null) {
             animation.start();
         }
+    }
+
+    public void addChild(int entityModel, float offsetX, float offsetY, float offsetZ) {
+        Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, 0, 0, 1);
+        entity.setPivotPoint(new Vector3f(offsetX, offsetY, offsetZ));
+        renderables.addAll(entity.renderables);
+        children.add(entity);
+    }
+
+    public void setPivotPoint(Vector3f pivot) {
+        renderables.forEach(r -> r.setPivotPoint(pivot));
     }
 }

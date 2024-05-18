@@ -259,12 +259,25 @@ public class RenderTester {
         openGLComponent.addEntity(animated);
 
         Entity animated2 = new Entity(Models.CHARACTER1, 0, 1, 10, 0, 0, 1f);
+        animated2.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
         openGLComponent.addEntity(animated2);
 
         new Thread(() -> {
             while (true) {
                 animated.rotate(0.5f, 0);
                 //animated.translate((float) 0, 0.1f, 0);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        new Thread(() -> {
+            while (true) {
+                animated2.translate((float) 0, 0.00f, 0);
+                animated2.rotate(0.5f, 0);
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

@@ -96,7 +96,7 @@ public class Entity {
 
     public int addChild(int entityModel, float offsetX, float offsetY, float offsetZ) {
         synchronized ("renderables") {
-            Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, 0, 0, 1);
+            Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, yaw, pitch, 1);
             entity.setPivotPoint(new Vector3f(offsetX, offsetY, offsetZ));
             renderables.addAll(entity.renderables);
             headRenderables.addAll(entity.renderables);

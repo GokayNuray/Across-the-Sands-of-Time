@@ -83,7 +83,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.attackPower = attackPower;
         this.kills = kill;
         this.deaths = death;
-        this.characterId = 0x02; //TODO: Temp.
+        this.characterId = characterId;
         this.accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer = new Vector3f(0, 0, 0);
         this.velocity = new Vector3f(0, 0, 0);
         ableToUseAbility = true;

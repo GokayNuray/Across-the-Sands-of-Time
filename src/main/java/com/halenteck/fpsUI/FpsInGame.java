@@ -59,6 +59,21 @@ public class FpsInGame extends JFrame {
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER);
         layeredPane.setBackground(new Color(0, 0, 0, 0)); // Set the background color to transparent
 
+        // adding the 3D game in the default layer
+        if (id == -1) {
+            return;
+        }
+
+        renderer = new OpenGLComponent();
+        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
+        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
+
+        try {
+            game = new Game(id, this);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
         joinLabel = new JLabel("", SwingConstants.CENTER);
         joinLabel.setFont(new Font("Arial", Font.BOLD, 80));
         joinLabel.setBounds(300, 250, 900, 300);
@@ -195,21 +210,6 @@ public class FpsInGame extends JFrame {
         crosshairLabel.setOpaque(false);
         crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
         layeredPane.add(crosshairLabel);
-
-        // adding the 3D game in the default layer
-        if (id == -1) {
-            return;
-        }
-
-        renderer = new OpenGLComponent();
-        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
-        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
-
-        try {
-            game = new Game(id, this);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
 
         // transparent cursor
         Image cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);

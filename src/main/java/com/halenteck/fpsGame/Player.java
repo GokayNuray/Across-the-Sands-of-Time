@@ -309,7 +309,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         int notches = e.getWheelRotation();
-        if (notches > 2) {
+        if (Math.abs(notches) > 2) {
             switchWeapon();
         }
     }

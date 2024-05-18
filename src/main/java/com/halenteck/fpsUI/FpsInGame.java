@@ -59,21 +59,6 @@ public class FpsInGame extends JFrame {
         layeredPane.add(background, JLayeredPane.DEFAULT_LAYER);
         layeredPane.setBackground(new Color(0, 0, 0, 0)); // Set the background color to transparent
 
-        // adding the 3D game in the default layer
-        if (id == -1) {
-            return;
-        }
-
-        renderer = new OpenGLComponent();
-        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
-        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
-
-        try {
-            game = new Game(id, this);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-
         joinLabel = new JLabel("", SwingConstants.CENTER);
         joinLabel.setFont(new Font("Arial", Font.BOLD, 80));
         joinLabel.setBounds(300, 250, 900, 300);
@@ -191,17 +176,6 @@ public class FpsInGame extends JFrame {
         returnLabel.setBounds(10, (int) bounds.getHeight() - 55, 300, 20);
         layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
-        // leaderboard panel
-        InGameLeaderboard leaderboardPanel = new InGameLeaderboard(game.getPlayers());
-        leaderboardPanel.setVisible(false);
-        layeredPane.add(leaderboardPanel, JLayeredPane.PALETTE_LAYER);
-        // calculating the center point of the FpsInGame frame
-        int centerX = (int) (bounds.getWidth() / 2);
-        int centerY = (int) (bounds.getHeight() / 2);
-        int panelX = centerX - (leaderboardPanel.getWidth() / 2);
-        int panelY = centerY - (leaderboardPanel.getHeight() / 2);
-        leaderboardPanel.setBounds(panelX, panelY, leaderboardPanel.getWidth(), leaderboardPanel.getHeight());
-
         // crosshair
         ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
         Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -273,6 +247,33 @@ public class FpsInGame extends JFrame {
         };
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(qKeyStroke, "Q");
         getRootPane().getActionMap().put("Q", qAction);
+
+        // adding the 3D game in the default layer
+        if (id == -1) {
+            return;
+        }
+
+        renderer = new OpenGLComponent();
+        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
+        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
+
+        try {
+            game = new Game(id, this);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+
+        }
+
+        // leaderboard panel
+        InGameLeaderboard leaderboardPanel = new InGameLeaderboard(game.getPlayers());
+        leaderboardPanel.setVisible(false);
+        layeredPane.add(leaderboardPanel, JLayeredPane.PALETTE_LAYER);
+        // calculating the center point of the FpsInGame frame
+        int centerX = (int) (bounds.getWidth() / 2);
+        int centerY = (int) (bounds.getHeight() / 2);
+        int panelX = centerX - (leaderboardPanel.getWidth() / 2);
+        int panelY = centerY - (leaderboardPanel.getHeight() / 2);
+        leaderboardPanel.setBounds(panelX, panelY, leaderboardPanel.getWidth(), leaderboardPanel.getHeight());
 
         // shortcut for showing the leaderboard
         KeyStroke lKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, 0, false);

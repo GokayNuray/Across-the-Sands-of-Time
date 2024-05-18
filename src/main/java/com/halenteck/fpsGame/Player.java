@@ -53,13 +53,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private boolean ableToUseAbility;
     private boolean shooting;
 
-    //Abilities for 0, 1(done), 2(done), 3(done), 4 respectively, used to keep track
-    private boolean isInvisible0;
-    private boolean isImmortal1;
-    private boolean isFlying2;
-    private boolean redBullets3;
-    private boolean infAmmo4;
-
     private boolean moveForward;
     private boolean moveBackward;
     private boolean moveLeft;
@@ -110,13 +103,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.world = world;
     }
 
-    public Player(Vector3f startPosition) {
-        this.position = startPosition;
-        this.velocity = new Vector3f(0, 0, 0);
-        isGrounded = true;
-        speed = SPEED;
-    }
-
+    // Updates the movements, the shooting, and UI.
     public void startMovementThread() {
         new Thread(() -> {
             while (true) {
@@ -174,6 +161,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }).start();
     }
 
+    // Upon ability use, sets a 10 sec timer for the ability duration.
     public void startAbilityThread() {
         if (!abilityThreadActive) {
             abilityThreadActive = true;
@@ -198,6 +186,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    // After the ability duration ends, enters a 15 sec cooldown stage.
     public void startCooldownThread() {
         new Thread(() -> {
             try {
@@ -213,6 +202,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void keyTyped(KeyEvent e) {
     }
 
+    // Key readers.
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -264,6 +254,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    // Mouse readers.
     @Override
     public void mouseClicked(MouseEvent e) {
     }
@@ -317,6 +308,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    // Movement methods.
     public void move(Vector3f velocity) {
         float dX = position.x;
         float dY = position.y;
@@ -336,6 +328,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    // moveX,Y,Z methods all check for collisions with the map.
     private void moveX(float x) {
         if (x == 0) return;
         float newX = position.x + x;
@@ -383,6 +376,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         position.z = newZ;
     }
 
+    // moveForward,Backward,Right,Left methods set the player velocity accordingly.
     public void moveForward() {
         Vector3f acceleration = new Vector3f(directionVector);
         acceleration.set(acceleration.x, 0, acceleration.z).normalize().mul(speed);
@@ -409,6 +403,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(right.mul(speed));
     }
 
+    // Jump method gives players an upwards velocity. The ability of the 2nd character (flight) is also within this method.
     public void jump() {
         if (isAbilityActive() && characterId == 0x02) {
             velocity.y = JUMP_FORCE;
@@ -419,6 +414,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    // Rotates the player head accordingly.
     public void rotate(float dYaw, float dPitch) {
         yaw -= dYaw;
         pitch -= dPitch;
@@ -448,6 +444,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         entity.setRotation(yaw, pitch);
     }
 
+    // Creates weapons for the player according to their weaponId.
     public void createWeapons(int id) {
         FPSWeapon primary = new FPSWeapon(weaponId);
         FPSWeapon secondary = new FPSWeapon(weaponId + 5);
@@ -455,6 +452,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         otherWeapon = secondary;
     }
 
+    // Shooting method that informs the server.
     public void shoot() {
         if (currentWeapon.canFire()) {
             currentWeapon.fire();
@@ -465,6 +463,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         gameUI.updatePanels();
     }
 
+    // Spawns a bullet according to the direction of the player.
     public Bullet spawnBullet() {
         return new Bullet(this.position, directionVector, currentWeapon.getDamage(), this, this.getWeapon(), world);
     }
@@ -475,6 +474,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         otherWeapon = temp;
     }
 
+    // Checks for player-bullet collisions using the doesBulletHitTarget() method from the Bullet class.
     public void handleBullet(Bullet bullet) {
         if (bullet.doesBulletHitTarget(this)) {
             if (!(isAbilityActive() && characterId == 0x01)) {
@@ -484,6 +484,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    // Sets the player health accordingly, uses the die() method if health goes lower than 0.
     public void takeDamage(int damage) {
         health = health - damage;
 
@@ -495,6 +496,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
     }
 
+    // Increments kills and deaths accordingly. Updates the server and the UI.
     public void die() {
         this.incrementDeaths();
         health = 0;
@@ -506,13 +508,14 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         gameUI.updatePanels();
     }
 
+    // Removes the model of the player that died.
     public void killed(Player killer) {
         gameUI.getRenderer().removeEntity(entity);
         this.incrementDeaths();
         killer.incrementKills();
-
     }
 
+    // Respawns the player.
     public void respawned(float[] details) {
         position = new Vector3f(details[0], details[1], details[2]);
         yaw = details[3];
@@ -538,6 +541,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.renderer = renderer;
     }
 
+    // Getter and setters.
     public void setTeam(Team team) {
         this.team = team;
     }

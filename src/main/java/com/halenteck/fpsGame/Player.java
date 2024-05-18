@@ -97,7 +97,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             case 0x04 -> modelId = Models.CHARACTER5;
             default -> throw new IllegalArgumentException("invalid character id: " + characterId);
         }
-        modelId = Models.CHARACTER1;//TODO Temp.
         this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, yaw, pitch, 1);
         entity.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
         this.world = world;
@@ -506,6 +505,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         killer.incrementKills();
         gameUI.deaths++;
         gameUI.updatePanels();
+        gameUI.deathPopup();
     }
 
     // Removes the model of the player that died.

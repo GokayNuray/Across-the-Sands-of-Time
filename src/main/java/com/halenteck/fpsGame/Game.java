@@ -24,7 +24,6 @@ public class Game implements ServerListener {
 
     private World world;
     public static OpenGLComponent renderer;
-    private JLabel debugger;
     private JTextArea chat;
 
     private FpsInGame gameUI;
@@ -37,7 +36,6 @@ public class Game implements ServerListener {
         this.isRunning = true;
         this.world = new World(Models.WORLD_MAP1, "test/testworld4/output.txt");
         this.renderer = fpsInGame.getRenderer();
-        this.debugger = fpsInGame.getDebugLabel();
         this.chat = fpsInGame.getChat();
         this.gameUI = fpsInGame;
 

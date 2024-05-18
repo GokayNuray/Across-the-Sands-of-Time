@@ -49,6 +49,7 @@ public class FpsInGame extends JFrame {
 
     /**
      * Constructor for the FpsInGame class
+     *
      * @param id the id of the game
      */
     public FpsInGame(int id) {
@@ -152,16 +153,6 @@ public class FpsInGame extends JFrame {
         specialAbilityLabel.setEnabled(true);
         layeredPane.add(specialAbilityLabel, JLayeredPane.PALETTE_LAYER);
 
-        // timer for the special ability button
-        Timer timer = new Timer(60000, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                specialAbilityLabel.setEnabled(true);
-                isAbilityUsed = false;
-            }
-        });
-        timer.setRepeats(false);
-
         // Weapon name label
         weaponNameLabel = new JLabel(weaponName);
         weaponNameLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -236,22 +227,6 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(enterKeyStroke, "ENTER");
         getRootPane().getActionMap().put("ENTER", enterAction);
 
-        // shortcut for using the special ability
-        KeyStroke qKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false);
-        Action qAction = new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Q key pressed. isAbilityActive: " + isAbilityActive + ", isAbilityUsed: " + isAbilityUsed);
-
-                if (isAbilityActive && !isAbilityUsed) {
-                    specialAbilityLabel.requestFocus();
-                    isAbilityUsed = true;
-                    timer.start();
-                }
-            }
-        };
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(qKeyStroke, "Q");
-        getRootPane().getActionMap().put("Q", qAction);
-
         // adding the 3D game in the default layer
         if (id == -1) {
             return;
@@ -296,8 +271,6 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(lKeyStroke, "L");
         getRootPane().getActionMap().put("L", lAction);
 
-        // on death menu
-        showPopUp(new FpsDeathFrame(FpsInGame.this, kills, deaths));
 
         add(layeredPane);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -323,7 +296,6 @@ public class FpsInGame extends JFrame {
             specialAbilityLabel.setText("    Ability Active");
         } else {
             if (player.isAbleToUseAbility()) {
-                specialAbilityLabel.setEnabled(true);
                 specialAbilityLabel.setForeground(Color.GREEN);
                 specialAbilityLabel.setText("  Ability Available");
             } else {
@@ -350,15 +322,8 @@ public class FpsInGame extends JFrame {
     }
 
     /**
-     * Returns the debug label
-     * @return the debug label
-     */
-    public JLabel getDebugLabel() {
-        return debugLabel;
-    }
-
-    /**
      * Returns the renderer
+     *
      * @return the renderer
      */
     public OpenGLComponent getRenderer() {
@@ -367,6 +332,7 @@ public class FpsInGame extends JFrame {
 
     /**
      * Shows a pop up frame
+     *
      * @param frame this frame
      */
     public void showPopUp(JFrame frame) {
@@ -376,9 +342,15 @@ public class FpsInGame extends JFrame {
 
     /**
      * Returns the chat
+     *
      * @return the chat
      */
     public JTextArea getChat() {
         return chat;
+    }
+
+    public void deathPopup() {
+        // on death menu
+        showPopUp(new FpsDeathFrame(FpsInGame.this, kills, deaths));
     }
 }

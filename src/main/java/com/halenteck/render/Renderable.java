@@ -100,17 +100,19 @@ public class Renderable implements Cloneable {
         FloatBuffer vertexBuffer2 = BufferUtils.createFloatBuffer(vertices.length);
         for (int i = 0; i < vertices.length; i += 3) {
             Vector3f vertex = new Vector3f(vertexBuffer.get(), vertexBuffer.get(), vertexBuffer.get());
+            vertex.mul(scale);
+            vertex.mul(modelScale);
             //TODO fix head rotation
             Matrix4f headRotation = new Matrix4f().rotate(pitch, 1, 0, 0);
-            vertex.y -= 1.6f;
-            //headRotation.transformPosition(vertex);
-            vertex.y += 1.6f;
             Matrix4f modelPitchTransformation = new Matrix4f().rotate(modelPitch, 1, 0, 0);
             modelPitchTransformation.transformPosition(vertex);
             Matrix4f modelYawTransformation = new Matrix4f().rotate(modelYaw, 0, 1, 0);
             modelYawTransformation.transformPosition(vertex);
             vertex.add(pivotPoint);
-            Matrix4f transformation = new Matrix4f().scale(new Vector3f(scale).mul(modelScale)).rotate(yaw, 0, 1, 0);
+            vertex.y -= 1.5f;
+            headRotation.transformPosition(vertex);
+            vertex.y += 1.5f;
+            Matrix4f transformation = new Matrix4f().rotate(yaw, 0, 1, 0);
             transformation.transformPosition(vertex);
             vertex.sub(pivotPoint);
             vertex.add(position).add(modelPosition);

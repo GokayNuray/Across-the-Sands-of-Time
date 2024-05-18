@@ -60,6 +60,10 @@ public class OpenGLComponent extends AWTGLCanvas {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+
         String vertexShaderCode = "#version 130\n" +
                 "uniform mat4 u_MVPMatrix;" +
                 "in vec4 a_Position;" +

@@ -326,13 +326,13 @@ public final class Server {
                 float z = in.readFloat();
                 float yaw = in.readFloat();
                 float pitch = in.readFloat();
-                boolean crouching = in.readBoolean();
+                byte characterId = in.readByte();
                 int weapon = in.readInt();
                 int attackPower = in.readInt();
                 byte kill = in.readByte();
                 byte death = in.readByte();
 
-                playerData[i] = new Object[]{id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, weapon, attackPower, kill, death};
+                playerData[i] = new Object[]{id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, characterId, weapon, attackPower, kill, death};
                 System.out.println("Player: " + name + " ID: " + id + " Position: (" + x + ", " + y + ", " + z + ") Rotation: (" + yaw + ", " + pitch + ")");
             }
             long creationTime = in.readLong();

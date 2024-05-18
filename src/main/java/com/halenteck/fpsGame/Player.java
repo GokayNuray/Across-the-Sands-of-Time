@@ -92,6 +92,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         speed = SPEED;
 
         createWeapons(weaponId);
+        if (weaponId == 1) switchWeapon();
 
         int modelId;
         switch (characterId) {
@@ -450,8 +451,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     // Creates weapons for the player according to their weaponId.
     public void createWeapons(int id) {
-        FPSWeapon primary = new FPSWeapon(weaponId);
-        FPSWeapon secondary = new FPSWeapon(weaponId + 5);
+        FPSWeapon primary = new FPSWeapon(characterId);
+        FPSWeapon secondary = new FPSWeapon(characterId + 5);
         currentWeapon = primary;
         otherWeapon = secondary;
     }
@@ -476,13 +477,15 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         FPSWeapon temp = currentWeapon;
         setWeapon(otherWeapon);
         otherWeapon = temp;
-        Server.weaponChange();
         if (currentWeapon.getId() >= 5) {
             entity.hideChild(firstWeaponModelIndex);
             entity.showChild(secondWeaponModelIndex);
         } else {
             entity.hideChild(secondWeaponModelIndex);
             entity.showChild(firstWeaponModelIndex);
+        }
+        if (renderer != null) {
+            Server.weaponChange();
         }
     }
 

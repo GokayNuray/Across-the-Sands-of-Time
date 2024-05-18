@@ -78,7 +78,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.isRedTeam = isRedTeam;
         this.name = name;
         this.position = startPosition;
-        spawnPos = new float[] {position.x, position.y, position.z, yaw, pitch};
+        spawnPos = new float[]{position.x, position.y, position.z, yaw, pitch};
         this.yaw = yaw;
         this.pitch = pitch;
         this.directionVector = new Vector3f(0, 0, -1);
@@ -523,6 +523,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         Server.death(killerId);
         killer.incrementKills();
         gameUI.deaths++;
+        if (isRedTeam) {
+            gameUI.blueScore++;
+        } else {
+            gameUI.redScore++;
+        }
         gameUI.updatePanels();
         gameUI.deathPopup();
     }
@@ -539,7 +544,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         position = new Vector3f(details[0], details[1], details[2]);
         yaw = details[3];
         pitch = details[4];
-        renderer.addEntity(entity);
+        gameUI.getRenderer().addEntity(entity);
         setPosition(position);
         if (renderer != null) {
             renderer.moveCamera(position);

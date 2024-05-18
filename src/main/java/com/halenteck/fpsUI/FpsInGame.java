@@ -149,20 +149,20 @@ public class FpsInGame extends JFrame {
 
         // Special Ability Button
         specialAbilityLabel = new JLabel("\uD83C\uDF1F");
-        specialAbilityLabel.setBounds((int) bounds.getWidth() - 130, 650, 100, 75);
+        specialAbilityLabel.setBounds((int) bounds.getWidth() - 130, 700, 105, 75);
         specialAbilityLabel.setEnabled(true);
         layeredPane.add(specialAbilityLabel, JLayeredPane.PALETTE_LAYER);
 
-        // Weapon name label
+        // TODO: Weapon name label
         weaponNameLabel = new JLabel(weaponName);
         weaponNameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        weapon1Label.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 45, 175, 20);
+        weaponNameLabel.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 75, 175, 20);
         layeredPane.add(weaponNameLabel, JLayeredPane.PALETTE_LAYER);
 
         // Ammo label
         ammoLabel = new JLabel(ammoInMagazine + "/" + magazineSize);
         ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        ammoLabel.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 75, 175, 20);
+        ammoLabel.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 50, 175, 20);
         layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);
 
         // return to menu info label
@@ -293,15 +293,15 @@ public class FpsInGame extends JFrame {
         playerArmourBar.setValue(playerArmour);
         if (player.isAbilityActive()) {
             specialAbilityLabel.setForeground(Color.ORANGE);
-            specialAbilityLabel.setText("    Ability Active");
+            specialAbilityLabel.setText("     Ability Active");
         } else {
             if (player.isAbleToUseAbility()) {
                 specialAbilityLabel.setForeground(Color.GREEN);
-                specialAbilityLabel.setText("  Ability Available");
+                specialAbilityLabel.setText("   Ability Available");
             } else {
 
                 specialAbilityLabel.setForeground(Color.RED);
-                specialAbilityLabel.setText(" On Cooldown...");
+                specialAbilityLabel.setText("   On Cooldown...");
             }
 
         }

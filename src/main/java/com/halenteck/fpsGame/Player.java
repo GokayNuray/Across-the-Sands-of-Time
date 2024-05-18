@@ -524,9 +524,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         killer.incrementKills();
         gameUI.deaths++;
         if (isRedTeam) {
-            gameUI.game.getBlueTeam().incrementScore();
+            gameUI.blueScore++;
         } else {
-            gameUI.game.getRedTeam().incrementScore();
+            gameUI.redScore++;
         }
         gameUI.updatePanels();
         gameUI.deathPopup();

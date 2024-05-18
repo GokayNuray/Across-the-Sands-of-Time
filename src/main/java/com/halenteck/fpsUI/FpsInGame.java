@@ -25,6 +25,7 @@ public class FpsInGame extends JFrame {
     public boolean isAbilityUsed = false;
     public int magazineSize = 0;
     public int ammoInMagazine = 0;
+    public String weaponName;
     public int kills = 0;
     public int deaths = 0;
 
@@ -36,7 +37,8 @@ public class FpsInGame extends JFrame {
     JProgressBar playerHealthBar;
     JProgressBar playerArmourBar;
     Dimension bounds = Toolkit.getDefaultToolkit().getScreenSize();
-    JButton specialAbilityButton;
+    JLabel specialAbilityLabel;
+    JLabel weaponNameLabel;
     JLabel kdaLabel;
     JLayeredPane layeredPane;
     JLabel debugLabel;
@@ -160,25 +162,28 @@ public class FpsInGame extends JFrame {
         layeredPane.add(weapon2Label, JLayeredPane.PALETTE_LAYER);
 
         // Special Ability Button
-        specialAbilityButton = new JButton("\uD83C\uDF1F");
-        specialAbilityButton.setBounds((int) bounds.getWidth() - 130, 700, 75, 75);
-        if (!isAbilityActive) {
-            specialAbilityButton.setEnabled(false);
-        }
-        specialAbilityButton.setEnabled(true);
-        layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER);
+        specialAbilityLabel = new JLabel("\uD83C\uDF1F");
+        specialAbilityLabel.setBounds((int) bounds.getWidth() - 130, 650, 100, 75);
+        specialAbilityLabel.setEnabled(true);
+        layeredPane.add(specialAbilityLabel, JLayeredPane.PALETTE_LAYER);
 
         // timer for the special ability button
         Timer timer = new Timer(60000, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                specialAbilityButton.setEnabled(true);
+                specialAbilityLabel.setEnabled(true);
                 isAbilityUsed = false;
             }
         });
         timer.setRepeats(false);
 
-        // ammo label
+        // Weapon name label
+        weaponNameLabel = new JLabel(weaponName);
+        weaponNameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        weapon1Label.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 45, 175, 20);
+        layeredPane.add(weaponNameLabel, JLayeredPane.PALETTE_LAYER);
+
+        // Ammo label
         ammoLabel = new JLabel(ammoInMagazine + "/" + magazineSize);
         ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
         ammoLabel.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 75, 175, 20);
@@ -264,8 +269,7 @@ public class FpsInGame extends JFrame {
                 System.out.println("Q key pressed. isAbilityActive: " + isAbilityActive + ", isAbilityUsed: " + isAbilityUsed);
 
                 if (isAbilityActive && !isAbilityUsed) {
-                    specialAbilityButton.requestFocus();
-                    specialAbilityButton.setEnabled(false);
+                    specialAbilityLabel.requestFocus();
                     isAbilityUsed = true;
                     timer.start();
                 }
@@ -314,15 +318,17 @@ public class FpsInGame extends JFrame {
         playerHealthBar.setValue(playerHealth);
         playerArmourBar.setValue(playerArmour);
         if (player.isAbilityActive()) {
-            specialAbilityButton.setEnabled(false);
-            specialAbilityButton.setForeground(Color.GREEN);
+            specialAbilityLabel.setForeground(Color.ORANGE);
+            specialAbilityLabel.setText("    Ability Active");
         } else {
             if (player.isAbleToUseAbility()) {
-                specialAbilityButton.setEnabled(true);
-                specialAbilityButton.setForeground(Color.YELLOW);
+                specialAbilityLabel.setEnabled(true);
+                specialAbilityLabel.setForeground(Color.GREEN);
+                specialAbilityLabel.setText("  Ability Available");
             } else {
-                specialAbilityButton.setEnabled(false);
-                specialAbilityButton.setForeground(Color.RED);
+
+                specialAbilityLabel.setForeground(Color.RED);
+                specialAbilityLabel.setText(" On Cooldown...");
             }
 
         }

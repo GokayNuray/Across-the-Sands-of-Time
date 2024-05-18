@@ -482,6 +482,7 @@ public class ShopFrame extends JFrame {
         selectButton.addActionListener(e -> {
             Server.getUserData().setLastSelectedCharacter((byte) characterIndex);
             instance.updatePanels(characterIndex, 0);
+            Server.updateUserData();
         });
         if (Server.getUserData().getLastSelectedCharacter() == characterIndex) {
             selectButton.setText("Selected");

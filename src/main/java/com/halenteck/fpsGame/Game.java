@@ -305,4 +305,12 @@ public class Game implements ServerListener {
     public long getStartTime() {
         return startTime;
     }
+
+    public Team getRedTeam() {
+        return redTeam;
+    }
+
+    public Team getBlueTeam() {
+        return blueTeam;
+    }
 }

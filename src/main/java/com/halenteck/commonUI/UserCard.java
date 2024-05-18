@@ -10,8 +10,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class UserCard extends JFrame {
-
-
+    /**
+     * Constructor for the UserCard class
+     * @param userData the user data to display
+     */
     UserCard(UserData userData) {
 
         setTitle("User Card");

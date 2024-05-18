@@ -21,7 +21,9 @@ public class UpgradeShopFrame extends JFrame {
     JLabel currencyLabel;
     private static UpgradeShopFrame instance;
 
-    // constructor
+    /**
+     * Constructor for the UpgradeShopFrame class
+     */
     public UpgradeShopFrame() {
         // set up frame
         setTitle("Upgrade Shop");
@@ -39,6 +41,7 @@ public class UpgradeShopFrame extends JFrame {
             }
         });
 
+        // character selection slider
         AtomicInteger characterSelection = new AtomicInteger(0);
 
         // character-based display panels
@@ -116,6 +119,11 @@ public class UpgradeShopFrame extends JFrame {
 
     }
 
+    /**
+     * Updates the panels based on the character ID
+     *
+     * @param characterId the character ID
+     */
     private void updatePanels(int characterId) {
 
         // update currency label
@@ -136,6 +144,10 @@ public class UpgradeShopFrame extends JFrame {
         revalidate();
     }
 
+    /** Creates the ability panel for the character
+     * @param characterId the character ID
+     * @return the ability panel
+     */
     private JPanel createAbilityPanel(int characterId) {
         Character character = Character.characters.get((byte) characterId);
         JPanel abilityPanel = new JPanel();
@@ -226,6 +238,11 @@ public class UpgradeShopFrame extends JFrame {
         return abilityPanel;
     }
 
+    /**
+     * Returns the instance of the UpgradeShopFrame
+     *
+     * @return the instance of the UpgradeShopFrame
+     */
     public static UpgradeShopFrame getInstance() {
         if (instance == null) {
             instance = new UpgradeShopFrame();

@@ -14,15 +14,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class FpsInGame extends JFrame {
-    public static void main(String[] args) {
-        try {
-            Server.connect();
-            Server.login("Babapiiro31", "Gokaynu2!");
-            new FpsInGame(-1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public Game game;
     public Player player;
@@ -39,6 +30,8 @@ public class FpsInGame extends JFrame {
 
     public int redScore;
     public int blueScore;
+    JLabel redScoreLabel;
+    JLabel blueScoreLabel;
 
     JProgressBar playerHealthBar;
     JProgressBar playerArmourBar;
@@ -50,12 +43,12 @@ public class FpsInGame extends JFrame {
     JLabel ammoLabel;
     OpenGLComponent renderer;
     JTextArea chat;
-
-    JLabel redScoreLabel;
-    JLabel blueScoreLabel;
-
     JLabel joinLabel;
 
+    /**
+     * Constructor for the FpsInGame class
+     * @param id the id of the game
+     */
     public FpsInGame(int id) {
         Character character = Character.characters.get(Server.getUserData().getLastSelectedCharacter());
         setTitle("FPS Match");
@@ -130,13 +123,11 @@ public class FpsInGame extends JFrame {
         redScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         redScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150), 20, 100, 20);
         layeredPane.add(redScoreLabel, JLayeredPane.PALETTE_LAYER);
-
         blueScoreLabel = new JLabel("Blue: " + blueScore, SwingConstants.CENTER);
         blueScoreLabel.setForeground(Color.BLUE);
         blueScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
         blueScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150) + 100, 20, 100, 20);
         layeredPane.add(blueScoreLabel, JLayeredPane.PALETTE_LAYER);
-
 
         // weapon showcases
         ImageIcon weapon1Image = new ImageIcon(getClass().getResource(character.resourcePath + "weapon1.png"));
@@ -162,18 +153,73 @@ public class FpsInGame extends JFrame {
         specialAbilityButton.setEnabled(true);
         layeredPane.add(specialAbilityButton, JLayeredPane.PALETTE_LAYER);
 
+        // timer for the special ability button
+        Timer timer = new Timer(60000, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                specialAbilityButton.setEnabled(true);
+                isAbilityUsed = false;
+            }
+        });
+        timer.setRepeats(false);
+
+        // ammo label
         ammoLabel = new JLabel(ammoInMagazine + "/" + magazineSize);
         ammoLabel.setFont(new Font("Arial", Font.BOLD, 20));
         ammoLabel.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 75, 175, 20);
         layeredPane.add(ammoLabel, JLayeredPane.PALETTE_LAYER);
 
+        // return to menu info label
         JLabel returnLabel = new JLabel("Press ESC to return to the main menu");
         returnLabel.setFont(new Font("Arial", Font.BOLD, 15));
         returnLabel.setForeground(Color.PINK);
         returnLabel.setBounds(10, (int) bounds.getHeight() - 55, 300, 20);
         layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
-        // shortcut for returning to game selection menu
+        // leaderboard panel
+        InGameLeaderboard leaderboardPanel = new InGameLeaderboard(game.getPlayers());
+        leaderboardPanel.setVisible(false);
+        layeredPane.add(leaderboardPanel, JLayeredPane.PALETTE_LAYER);
+        // calculating the center point of the FpsInGame frame
+        int centerX = (int) (bounds.getWidth() / 2);
+        int centerY = (int) (bounds.getHeight() / 2);
+        int panelX = centerX - (leaderboardPanel.getWidth() / 2);
+        int panelY = centerY - (leaderboardPanel.getHeight() / 2);
+        leaderboardPanel.setBounds(panelX, panelY, leaderboardPanel.getWidth(), leaderboardPanel.getHeight());
+
+        // crosshair
+        ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
+        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
+        JLabel crosshairLabel = new JLabel(finalCrosshair);
+        crosshairLabel.setOpaque(false);
+        crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
+        layeredPane.add(crosshairLabel);
+
+        // adding the 3D game in the default layer
+        if (id == -1) {
+            return;
+        }
+
+        renderer = new OpenGLComponent();
+        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
+        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
+
+        try {
+            game = new Game(id, this);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+        // transparent cursor
+        Image cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                cursorImg, new Point(0, 0), "blank cursor");
+        getContentPane().setCursor(blankCursor);
+
+
+        // shortcuts for the game
+        // shortcut for pausing the game, showing pause frame
         KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
         Action escapeAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -183,6 +229,7 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
         getRootPane().getActionMap().put("ESCAPE", escapeAction);
 
+        // shortcut for opening the chat
         KeyStroke tStroke = KeyStroke.getKeyStroke(KeyEvent.VK_T, 0, false);
         Action tAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -193,6 +240,7 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(tStroke, "T");
         getRootPane().getActionMap().put("T", tAction);
 
+        // shortcut for sending a message in the chat, disabling the editablity of the field
         KeyStroke enterKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
         Action enterAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -209,16 +257,7 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(enterKeyStroke, "ENTER");
         getRootPane().getActionMap().put("ENTER", enterAction);
 
-        Timer timer = new Timer(60000, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                specialAbilityButton.setEnabled(true);
-                isAbilityUsed = false;
-            }
-        });
-        timer.setRepeats(false);
-
-        // key listener for the x key
+        // shortcut for using the special ability
         KeyStroke qKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0, false);
         Action qAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -235,50 +274,7 @@ public class FpsInGame extends JFrame {
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(qKeyStroke, "Q");
         getRootPane().getActionMap().put("Q", qAction);
 
-        ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
-        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
-        JLabel crosshairLabel = new JLabel(finalCrosshair);
-        crosshairLabel.setOpaque(false);
-        crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
-        layeredPane.add(crosshairLabel);
-
-        if (id == -1) {
-            return;
-        }
-
-        renderer = new OpenGLComponent();
-        renderer.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
-        layeredPane.add(renderer, JLayeredPane.DEFAULT_LAYER);
-
-        try {
-            game = new Game(id, this);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-
-        // Create a transparent 16 x 16 pixel image.
-        Image cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-
-        // blank cursor
-        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-                cursorImg, new Point(0, 0), "blank cursor");
-
-        getContentPane().setCursor(blankCursor);
-
-        // Initialize the leaderboard panel in your FpsInGame constructor
-        InGameLeaderboard leaderboardPanel = new InGameLeaderboard(game.getPlayers());
-        leaderboardPanel.setVisible(false);
-        layeredPane.add(leaderboardPanel, JLayeredPane.PALETTE_LAYER);
-        // Calculate the center point of the FpsInGame frame
-        int centerX = (int) (bounds.getWidth() / 2);
-        int centerY = (int) (bounds.getHeight() / 2);
-
-        int panelX = centerX - (leaderboardPanel.getWidth() / 2);
-        int panelY = centerY - (leaderboardPanel.getHeight() / 2);
-
-        leaderboardPanel.setBounds(panelX, panelY, leaderboardPanel.getWidth(), leaderboardPanel.getHeight());
-
+        // shortcut for showing the leaderboard
         KeyStroke lKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_L, 0, false);
         Action lAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -304,6 +300,9 @@ public class FpsInGame extends JFrame {
         renderer.startRender();
     }
 
+    /**
+     * Updates the panels in the game
+     */
     public void updatePanels() {
         if (player.isRedTeam()) {
             joinLabel.setForeground(Color.RED);
@@ -343,19 +342,35 @@ public class FpsInGame extends JFrame {
 
     }
 
+    /**
+     * Returns the debug label
+     * @return the debug label
+     */
     public JLabel getDebugLabel() {
         return debugLabel;
     }
 
+    /**
+     * Returns the renderer
+     * @return the renderer
+     */
     public OpenGLComponent getRenderer() {
         return renderer;
     }
 
+    /**
+     * Shows a pop up frame
+     * @param frame this frame
+     */
     public void showPopUp(JFrame frame) {
         frame.setLocationRelativeTo(this);
         frame.setVisible(true);
     }
 
+    /**
+     * Returns the chat
+     * @return the chat
+     */
     public JTextArea getChat() {
         return chat;
     }

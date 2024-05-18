@@ -4,6 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
     public class CharacterStory extends JDialog {
+
+        /**
+         * This class is used to display the story of each character in their first fight.
+         * @param characterIndex The index of the character whose story is to be displayed.
+         */
     public CharacterStory(int characterIndex) {
         setSize(650, 600);
         setLayout(new BorderLayout());
@@ -12,7 +17,7 @@ import java.awt.*;
 
         JLabel characterName = new JLabel();
         JTextArea characterStory = new JTextArea();
-        switch (characterIndex) {
+        switch (characterIndex) { // Display the story of the character based on the index
             case 0:
                 characterName.setText("Grok");
                 characterStory.setText("Grok awoke to a harsh breeze, exhaustion gnawing at him after weeks on the road. The once-lush environment, ravaged by cold weather, offered no easy prey. Hunting had become a desperate struggle. The need for a safe haven outweighed the comfort of staying put. Despite the lack of a clear destination, Grok rose, forced to move on.\n" +
@@ -52,9 +57,9 @@ import java.awt.*;
         characterStory.setWrapStyleWord(true);
         add(characterName, BorderLayout.NORTH);
         add(characterStory, BorderLayout.CENTER);
-        toFront();
-        setLocationRelativeTo(null); // center the dialog
 
+        toFront(); // bring the dialog to the front
+        setLocationRelativeTo(null); // center the dialog
     }
 
 }

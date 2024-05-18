@@ -10,6 +10,9 @@ import java.awt.event.KeyEvent;
 
 public class LeaderboardFrame extends JFrame {
 
+    /**
+     * Constructor for the LeaderboardFrame class
+     */
     LeaderboardFrame() {
         setTitle("Global Leaderboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,8 +97,8 @@ public class LeaderboardFrame extends JFrame {
         scroller.revalidate();
         scroller.repaint();
         add(scroller, BorderLayout.CENTER);
-        pack();
 
+        pack();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 

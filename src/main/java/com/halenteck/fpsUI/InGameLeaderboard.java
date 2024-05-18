@@ -8,9 +8,11 @@ import java.util.Collection;
 import java.util.Map;
 
 public class InGameLeaderboard extends JPanel {
-
     public Map<Byte, Player> players;
-
+    /**
+     * Constructor for the InGameLeaderboard class
+     * @param players the players in the current game
+     */
     public InGameLeaderboard(Map<Byte, Player> players) {
         setSize(800, 600);
         setLayout(new BorderLayout());

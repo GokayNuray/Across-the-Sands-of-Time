@@ -12,6 +12,9 @@ import java.awt.event.KeyEvent;
 
 public class GameSelectionMenu extends JFrame {
 
+    /**
+     * Constructor for the Game Selection Menu
+     */
     public GameSelectionMenu() {
 
         setTitle("Game Selection Menu");

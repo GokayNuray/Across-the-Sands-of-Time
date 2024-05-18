@@ -14,6 +14,9 @@ public class CharacterCollection extends JFrame {
 
     private UserCharacterData[] characters;
 
+    /** Creates a new Character Collection window
+     * @param userData the user data to display the character collection for
+     */
     public CharacterCollection(UserData userData) {
         this.characters = userData.getCharacters();
 
@@ -75,6 +78,10 @@ public class CharacterCollection extends JFrame {
         setVisible(true);
     }
 
+    /** Creates a panel for a character
+     * @param characterID the ID of the character to create a panel for
+     * @return the panel for the character
+     */
     public JPanel createCharacterPanel(int characterID) {
 
         // character-based panel
@@ -105,14 +112,6 @@ public class CharacterCollection extends JFrame {
         abilityPanel.add(specialAbility, BorderLayout.CENTER);
         abilityPanel.add(abilityLabel, BorderLayout.SOUTH);
         mainInfoPanel.add(abilityPanel, BorderLayout.SOUTH);
-
-//        // tool tip for character description
-//        JTextArea characterInfo = new JTextArea(character.getDescription());
-//        characterInfo.setLineWrap(true); // Enable line wrapping
-//        characterInfo.setWrapStyleWord(true); // Wrap text at word boundaries (optional)
-//        characterInfo.setEditable(false);
-//        characterInfo.setFont(new Font("Sans Serif", Font.PLAIN, 15));
-//        imageLabel.setToolTipText(character.getDescription()); // info when mouse is hovered on character image
         characterPanel.add(mainInfoPanel);
 
         // character name and items

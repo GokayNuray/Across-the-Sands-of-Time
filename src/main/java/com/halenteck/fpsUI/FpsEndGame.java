@@ -13,6 +13,12 @@ public class FpsEndGame extends JFrame {
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 500;
 
+    /**
+     * Constructor for the FpsEndGame class
+     * @param isGameWon whether the game was won or lost
+     * @param kills the number of kills the player has
+     * @param deaths the number of deaths the player has
+     */
     public FpsEndGame(boolean isGameWon, int kills, int deaths) {
         setTitle("Game Over");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

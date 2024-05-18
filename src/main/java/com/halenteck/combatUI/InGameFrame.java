@@ -27,30 +27,27 @@ public class InGameFrame extends JFrame {
     JButton shortAttackButton;
     JButton specialAbilityButton;
     JLayeredPane layeredPane;
-
-    public static void main(String[] args) {
-        try {
-            Server.connect();
-            Server.login("Babapiiro31", "Gokaynu2!");
-            new InGameFrame();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Frame for the combat in-game
+     * @throws Exception
+     */
     public InGameFrame() throws Exception {
-        playerX = 250;
+        playerX = 250; // initial player position
         enemyX = (int) bounds.getWidth() - 450;
         game = new Game(this);
         Character character = game.getLocation().getPlayer();
         setTitle("Combat Fight");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // layered pane
+        layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(bounds);
+
+        // background image/map
         ImageIcon backgroundImage = new ImageIcon(getClass().getResource(character.resourcePath + "map" + (game.getLocation().getLocationId() + 1) + ".jpg"));
         Image scaledImage = backgroundImage.getImage().getScaledInstance((int) bounds.getWidth(), (int) bounds.getHeight(), Image.SCALE_SMOOTH);
         ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
         JLabel imageLabel = new JLabel(scaledImageIcon);
-
-        layeredPane = new JLayeredPane();
         imageLabel.setBounds(0, 0, (int) bounds.getWidth(), (int) bounds.getHeight());
         layeredPane.add(imageLabel, JLayeredPane.DEFAULT_LAYER); // Add to layer 0
 
@@ -71,7 +68,7 @@ public class InGameFrame extends JFrame {
         JLabel playerName = new JLabel(character.name, SwingConstants.LEFT);
         playerName.setForeground(Color.WHITE);
         playerName.setFont(new Font("Arial", Font.BOLD, 30));
-        playerName.setBounds(250, 100, 200, 50);
+        playerName.setBounds(playerX, 100, 200, 50);
         layeredPane.add(playerName, JLayeredPane.PALETTE_LAYER); // Add to layer 1
         JLabel enemyName = new JLabel(game.getLocation().getEnemies().getName(), SwingConstants.LEFT);
         enemyName.setBounds((int) bounds.getWidth() - 350, 100, 200, 50);
@@ -113,7 +110,7 @@ public class InGameFrame extends JFrame {
         Image scaledPlayerImage = playerImage.getImage().getScaledInstance(300, 550, Image.SCALE_SMOOTH);
         ImageIcon scaledPlayerImageIcon = new ImageIcon(scaledPlayerImage);
         playerImageLabel = new JLabel(scaledPlayerImageIcon);
-        playerImageLabel.setBounds(250, 130, 300, 600);
+        playerImageLabel.setBounds(playerX, 130, 300, 600);
         layeredPane.add(playerImageLabel, JLayeredPane.PALETTE_LAYER); // Add to layer 1
         Dimension playerImageBounds = playerImageLabel.getSize();
         // player move buttons
@@ -184,50 +181,53 @@ public class InGameFrame extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
+        // show character story on the first fights
         if (game.getLocation().getLocationId() % 4 == 0) {
             CharacterStory characterStory = new CharacterStory( Server.getUserData().getUnlockedCharacterCount() - 1);
             characterStory.setVisible(true);        }
+        }
 
-    }
-
+    /**
+     * Updates the panels after each move in the Game class
+     */
     public void updatePanels() {
         if (game.isGameOver()) {
             showPopUp(new EndGameFrame(this));
             int layerToRemove = JLayeredPane.PALETTE_LAYER;
 
-            // Get all components in the JLayeredPane
+            // getting all components in the layeredPane
             Component[] components = layeredPane.getComponentsInLayer(layerToRemove);
 
-            // Iterate over the components
+            // iterate over the components
             for (Component component : components) {
-                // Remove the component from the JLayeredPane
+                // removing the component from the layeredPane
                 layeredPane.remove(component);
             }
 
-            // Refresh the JLayeredPane
+            // refreshing the pane
             layeredPane.revalidate();
             layeredPane.repaint();
             return;
         }
 
-        // Update player and enemy health
+        // updating player and enemy health
         playerHealthBar.setValue(playerHealth);
         playerHealthBar.setString(playerHealth + "/" + playerHealthBar.getMaximum());
         enemyHealthBar.setValue(enemyHealth);
         enemyHealthBar.setString(enemyHealth + "/" + enemyHealthBar.getMaximum() + "x" + enemyCount);
 
-        // update player and enemy images
+        // updating player and enemy images
         playerImageLabel.setBounds(playerX, 130, 300, 600);
         enemyImageLabel.setBounds(enemyX, 130, 300, 600);
 
-        // update buttons accordingly
+        // updating buttons accordingly
         shortAttackButton.setBounds(playerX + playerImageLabel.getWidth() + 10, 200, 100, 100);
         longAttackButton.setBounds(playerX + playerImageLabel.getWidth() + 10, 350, 100, 100);
         specialAbilityButton.setBounds(playerX + playerImageLabel.getWidth() + 10, 500, 100, 100);
         moveBackwardButton.setBounds(playerX + playerImageLabel.getWidth() - 425, 450, 100, 100);
         moveForwardButton.setBounds(playerX + playerImageLabel.getWidth() - 425, 300, 100, 100);
 
-        // refresh the ability button
+        // refreshing the ability button
         if (!Server.getUserData().getCharacters()[Server.getUserData().getUnlockedCharacterCount() - 1].isSpecialAbilityUnlocked()
                 || game.getLocation().getPlayer().ability.usageLeft <= 0 || game.getLocation().isAbilityActive()) {
             specialAbilityButton.setEnabled(false);
@@ -236,10 +236,13 @@ public class InGameFrame extends JFrame {
 
     }
 
+    /**
+     * Shows the pop-up frame
+     * @param frame this frame
+     */
     public void showPopUp(JFrame frame) {
         frame.setLocationRelativeTo(this);
         frame.setVisible(true);
     }
-
 
 }

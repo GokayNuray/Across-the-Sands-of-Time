@@ -10,23 +10,15 @@ import java.awt.event.KeyEvent;
 
 public class EndGameFrame extends JFrame {
 
+    /**
+     * Frame to be shown at the end of combat games
+     * @param gameFrame the InGameFrame that is being closed
+     */
     public EndGameFrame(InGameFrame gameFrame) {
         setSize(700, 500);
         setTitle("Game Over");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
-        // shortcut for returning to game selection menu
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    new GameSelectionMenu();
-                    gameFrame.dispose();
-                    dispose();
-                }
-            }
-        });
 
         JPanel endGamePanel = new JPanel(new GridLayout(3, 1));
         JLabel endGameLabel = new JLabel();
@@ -55,7 +47,7 @@ public class EndGameFrame extends JFrame {
         levelBar.setValue(Server.getUserData().getXp());
         levelBar.setStringPainted(true);
         int xpEarned;
-        switch (gameFrame.game.getLocation().getLocationId()) {
+        switch (gameFrame.game.getLocation().getLocationId()) { // xp earned based on location
             case 0 -> xpEarned = 15;
             case 1 -> xpEarned = 20;
             case 2 -> xpEarned = 25;
@@ -107,6 +99,6 @@ public class EndGameFrame extends JFrame {
 
         add(endGamePanel, BorderLayout.CENTER);
 
-        setVisible(true);
+        setVisible(true); // show the frame
     }
 }

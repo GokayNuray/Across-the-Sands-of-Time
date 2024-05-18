@@ -19,13 +19,14 @@ public class ShopFrame extends JFrame {
     private static ShopFrame instance;
     private CardLayout cardLayout = new CardLayout();
     private JPanel cards = new JPanel(cardLayout);
-
     private JSlider characterSlider;
 
-
+    /**
+     * Constructor for the ShopFrame class.
+     */
     public ShopFrame() {
 
-        instance = this;
+        instance = this; // set the instance to this object for static methods to be used in other classes
         setTitle("Tool Store");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -130,7 +131,6 @@ public class ShopFrame extends JFrame {
         });
         characterSlider.setMinorTickSpacing(1);
 
-
         // bottom buttons
         JPanel bottomButtonPanel = new JPanel(new GridLayout(2, 5));
         for (int i = 0; i < 5; i++) {
@@ -162,10 +162,16 @@ public class ShopFrame extends JFrame {
         shopPanel.add(bottomButtonPanel, BorderLayout.SOUTH);
 
         add(shopPanel, BorderLayout.CENTER);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // setting the window to full screen
         setVisible(true);
     }
 
+    /**
+     * Updates the panels based on the character and shop menu selection.
+     *
+     * @param characterId the character id
+     * @param shopId      the shop id
+     */
     private void updatePanels(int characterId, int shopId) {
         characterSlider.setMaximum(Server.getUserData().getUnlockedCharacterCount() - 1);
 
@@ -186,6 +192,11 @@ public class ShopFrame extends JFrame {
         revalidate();
     }
 
+    /** Creates the item panels for the shop.
+     *
+     * @param characterIndex the character index
+     * @return the item panels
+     */
     protected static JPanel[] createItemPanels(int characterIndex) {
         JPanel[] panels = new JPanel[3];
         Character character = Character.characters.get((byte) characterIndex);
@@ -391,6 +402,12 @@ public class ShopFrame extends JFrame {
         return panels;
     }
 
+    /**
+     * Creates the character display panel.
+     *
+     * @param characterIndex the character index
+     * @return the character display panel
+     */
     protected static JPanel createCharacterDisplayPanel(int characterIndex) {
         Character character = Character.characters.get((byte) characterIndex);
         String characterName = character.name;
@@ -471,6 +488,11 @@ public class ShopFrame extends JFrame {
         return characterDisplayPanel;
     }
 
+    /**
+     * Gets the instance of the ShopFrame class.
+     *
+     * @return the instance of the ShopFrame class
+     */
     public static ShopFrame getInstance() {
         if (instance == null) {
             instance = new ShopFrame();

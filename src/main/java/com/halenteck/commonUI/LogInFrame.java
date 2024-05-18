@@ -8,10 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LogInFrame extends JFrame {
-
-
+    /**
+     * Constructor for the LogInFrame class
+     */
     public LogInFrame() {
-
         setTitle("Across the Sands of Time");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -134,6 +134,9 @@ public class LogInFrame extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
+        /**
+         * ActionListener for the login and register buttons
+         */
         class fieldChecker implements ActionListener {
 
             public void actionPerformed(ActionEvent e) {

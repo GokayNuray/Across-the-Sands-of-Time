@@ -7,6 +7,12 @@ import java.awt.*;
 
 public class FpsDeathFrame extends JFrame {
 
+    /**
+     * Constructor for the FpsDeathFrame class
+     * @param fpsInGame the game frame to close
+     * @param kills the number of kills the player has
+     * @param deaths the number of deaths the player has
+     */
     FpsDeathFrame(JFrame fpsInGame, int kills, int deaths) {
         setTitle("You died.");
         setLayout(new BorderLayout());

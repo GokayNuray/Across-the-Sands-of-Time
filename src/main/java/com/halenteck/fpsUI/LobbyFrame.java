@@ -12,19 +12,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class LobbyFrame extends JFrame {
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); // Get screen size
 
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-    public static void main(String[] args) {
-        try {
-            Server.connect();
-            Server.login("Babapiiro31", "Gokaynu2!");
-            new LobbyFrame(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    /** Constructor for the LobbyFrame class
+     * @param rankedGame
+     */
     public LobbyFrame(boolean rankedGame) {
 
         // shortcut for returning to game selection menu
@@ -88,7 +80,7 @@ public class LobbyFrame extends JFrame {
         JPanel serverListPanel = new JPanel(new GridLayout(10, 1));
         serverListPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() - 25), (int) (screenSize.getHeight() * 2)));
 
-        for (String lobby : Server.getLobbyList()) {
+        for (String lobby : Server.getLobbyList()) { // lobby id, name, player count, creation time
 
             String[] lobbyData = lobby.split(","); // lobby id, name, player count, creation time
 

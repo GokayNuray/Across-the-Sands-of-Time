@@ -15,6 +15,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     private static final float SPEED = 0.02f;
     private static final float JUMP_FORCE = 0.5f;
 
+    private float[] spawnPos;
+
     private Vector3f position;
     private Vector3f velocity;
     private Vector3f accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer;
@@ -76,6 +78,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.isRedTeam = isRedTeam;
         this.name = name;
         this.position = startPosition;
+        spawnPos = new float[] {position.x, position.y, position.z, yaw, pitch};
         this.yaw = yaw;
         this.pitch = pitch;
         this.directionVector = new Vector3f(0, 0, -1);
@@ -537,7 +540,12 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         yaw = details[3];
         pitch = details[4];
         renderer.addEntity(entity);
-        move(position);
+        setPosition(position);
+        if (renderer != null) {
+            renderer.moveCamera(position);
+            Server.respawn(position.x, position.y, position.z, yaw, pitch);
+        }
+        entity.moveTo(position.x, position.y, position.x);
         isAlive = true;
     }
 
@@ -652,5 +660,9 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public boolean isRedTeam() {
         return isRedTeam;
+    }
+
+    public void respawn() {
+        respawned(spawnPos);
     }
 }

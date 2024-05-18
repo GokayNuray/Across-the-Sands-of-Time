@@ -13,7 +13,7 @@ public class FpsDeathFrame extends JFrame {
      * @param kills the number of kills the player has
      * @param deaths the number of deaths the player has
      */
-    FpsDeathFrame(JFrame fpsInGame, int kills, int deaths) {
+    FpsDeathFrame(FpsInGame fpsInGame, int kills, int deaths) {
         setTitle("You died.");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,6 +36,7 @@ public class FpsDeathFrame extends JFrame {
         JButton respawnButton = new JButton("Respawn");
         respawnButton.setFont(respawnButton.getFont().deriveFont(20.0f));
         respawnButton.addActionListener(e -> {
+            fpsInGame.player.respawn();
             dispose();
         });
         buttonPanel.add(respawnButton);

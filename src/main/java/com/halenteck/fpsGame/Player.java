@@ -454,8 +454,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     // Creates weapons for the player according to their weaponId.
     public void createWeapons(int id) {
-        FPSWeapon primary = new FPSWeapon(characterId);
-        FPSWeapon secondary = new FPSWeapon(characterId + 5);
+        FPSWeapon primary = new FPSWeapon(0);
+        FPSWeapon secondary = new FPSWeapon(1);
         currentWeapon = primary;
         otherWeapon = secondary;
     }

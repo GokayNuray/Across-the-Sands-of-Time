@@ -106,7 +106,7 @@ public class FpsInGame extends JFrame {
         chatButton.setBounds(10, 50, 50, 50);
         chatButton.setEnabled(false);
         chat = new JTextArea();
-        chat.setBounds(65, 50, 200, 75);
+        chat.setBounds(65, 50, 220, 200);
         chat.setEditable(false);
         chat.setLineWrap(true);
         chat.setWrapStyleWord(true);
@@ -116,7 +116,7 @@ public class FpsInGame extends JFrame {
         chat.setText("Welcome to the game chat!\n");
 
         JTextField chatField = new JTextField();
-        chatField.setBounds(65, 130, 200, 30);
+        chatField.setBounds(65, 255, 220, 30);
         layeredPane.add(chat, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatButton, JLayeredPane.PALETTE_LAYER);
         layeredPane.add(chatField, JLayeredPane.PALETTE_LAYER);
@@ -135,14 +135,14 @@ public class FpsInGame extends JFrame {
 
 
         // weapon showcases
-        ImageIcon weapon1Image = new ImageIcon(getClass().getResource(character.resourcePath + "weapon1.png"));
+        ImageIcon weapon1Image = new ImageIcon(getClass().getResource("weapon1.jpg"));
         Image scaledWeapon1Image = weapon1Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
         ImageIcon scaledWeapon1Icon = new ImageIcon(scaledWeapon1Image);
         JLabel weapon1Label = new JLabel(scaledWeapon1Icon);
         weapon1Label.setBounds(100, 700, 75, 100);
         layeredPane.add(weapon1Label, JLayeredPane.PALETTE_LAYER);
 
-        ImageIcon weapon2Image = new ImageIcon(getClass().getResource(character.resourcePath + "weapon2.png"));
+        ImageIcon weapon2Image = new ImageIcon(getClass().getResource("weapon2.jpg"));
         Image scaledWeapon2Image = weapon2Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
         ImageIcon scaledWeapon2Icon = new ImageIcon(scaledWeapon2Image);
         JLabel weapon2Label = new JLabel(scaledWeapon2Icon);
@@ -151,11 +151,10 @@ public class FpsInGame extends JFrame {
 
         // Special Ability Button
         specialAbilityLabel = new JLabel("\uD83C\uDF1F");
-        specialAbilityLabel.setBounds((int) bounds.getWidth() - 130, 700, 105, 75);
+        specialAbilityLabel.setBounds((int) bounds.getWidth() - 180, 700, 105, 75);
         specialAbilityLabel.setEnabled(true);
         layeredPane.add(specialAbilityLabel, JLayeredPane.PALETTE_LAYER);
 
-        // TODO: Weapon name label
         weaponNameLabel = new JLabel(weaponName);
         weaponNameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         weaponNameLabel.setBounds((int) bounds.getWidth() - 200, (int) bounds.getHeight() - 75, 175, 20);

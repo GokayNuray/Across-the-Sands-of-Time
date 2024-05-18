@@ -28,6 +28,7 @@ public class Renderable implements Cloneable {
     private IntBuffer indicesBuffer;
     private int textureHandle;
 
+    private Vector3f pivotPoint = new Vector3f();
     private Vector3f position = new Vector3f();
     private float yaw = 0;
     private float pitch = 0;
@@ -104,8 +105,14 @@ public class Renderable implements Cloneable {
             vertex.y -= 1.6f;
             //headRotation.transformPosition(vertex);
             vertex.y += 1.6f;
-            Matrix4f transformation = new Matrix4f().scale(new Vector3f(scale).mul(modelScale)).rotate(yaw + modelYaw, 0, 1, 0);
+            Matrix4f modelPitchTransformation = new Matrix4f().rotate(modelPitch, 1, 0, 0);
+            modelPitchTransformation.transformPosition(vertex);
+            Matrix4f modelYawTransformation = new Matrix4f().rotate(modelYaw, 0, 1, 0);
+            modelYawTransformation.transformPosition(vertex);
+            vertex.add(pivotPoint);
+            Matrix4f transformation = new Matrix4f().scale(new Vector3f(scale).mul(modelScale)).rotate(yaw, 0, 1, 0);
             transformation.transformPosition(vertex);
+            vertex.sub(pivotPoint);
             vertex.add(position).add(modelPosition);
             vertexBuffer2.put(vertex.x).put(vertex.y).put(vertex.z);
         }
@@ -136,6 +143,10 @@ public class Renderable implements Cloneable {
         scale.mul(x, y, z);
 
         updated = true;
+    }
+
+    void setPivotPoint(Vector3f pivotPoint) {
+        this.pivotPoint = pivotPoint;
     }
 
     void setModelPosition(Vector3f modelPosition) {

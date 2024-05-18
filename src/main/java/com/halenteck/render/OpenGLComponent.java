@@ -41,6 +41,7 @@ public class OpenGLComponent extends AWTGLCanvas {
 
     private final Matrix4f projectionMatrix = new Matrix4f();
 
+    private final List<Entity> entities = new ArrayList<>();
     private final List<Renderable> renderables = new ArrayList<>();
 
     public OpenGLComponent() {
@@ -115,6 +116,13 @@ public class OpenGLComponent extends AWTGLCanvas {
                 if (renderable.isUpdated()) renderable.update();
                 renderRenderable(renderable);
             }
+            for (Entity entity : entities) {
+                for (Renderable renderable : entity.getRenderables()) {
+                    if (!renderable.isBuilt()) renderable.build();
+                    if (renderable.isUpdated()) renderable.update();
+                    renderRenderable(renderable);
+                }
+            }
         }
 
         swapBuffers();
@@ -155,15 +163,13 @@ public class OpenGLComponent extends AWTGLCanvas {
 
     public void addEntity(Entity entity) {
         synchronized ("renderables") {
-            entity.getRenderables(renderables);
+            entities.add(entity);
         }
     }
 
     public void removeEntity(Entity entity) {
         synchronized ("renderables") {
-            List<Renderable> toRemove = new ArrayList<>();
-            entity.getRenderables(toRemove);
-            renderables.removeAll(toRemove);
+            entities.remove(entity);
         }
     }
 

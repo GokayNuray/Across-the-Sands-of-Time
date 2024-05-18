@@ -22,6 +22,7 @@ public final class Models {
     public static final int CHARACTER4 = -4;
     public static final int CHARACTER5 = -5;
     public static final int ANIM_TEST = 11;
+    public static final int WEAPON1 = 21;
 
     private Models() {
     }
@@ -36,10 +37,13 @@ public final class Models {
         models.put(TEST2, ModelLoader.loadModel("src/main/resources/test/test2/test2.obj"));
         models.put(WORLD_MAP1, ModelLoader.loadModel("src/main/resources/test/testworld4/testworld4.obj"));
         models.put(CHARACTER1, ModelLoader.loadModel("src/main/resources/test/animTest/model.fbx"));
+        models.put(WEAPON1, ModelLoader.loadModel("src/main/resources/weapons/m16a1/scene.gltf"));
         animations.put(CHARACTER1, ModelLoader.loadAnimations("src/main/resources/test/animTest/model.fbx"));
 
         models.get(CHARACTER1).forEach(r -> r.setModelScale(new Vector3f(0.01f, 0.01f, 0.01f)));
         models.get(CHARACTER1).forEach(r -> r.setModelYaw((float) Math.toRadians(180)));
+        models.get(WEAPON1).forEach(r -> r.setModelYaw((float) Math.toRadians(270)));
+        models.get(WEAPON1).forEach(r -> r.setModelPitch((float) Math.toRadians(90)));
     }
 
     public static List<Renderable> getModel(int modelId) {

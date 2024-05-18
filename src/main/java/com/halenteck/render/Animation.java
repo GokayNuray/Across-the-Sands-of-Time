@@ -3,7 +3,6 @@ package com.halenteck.render;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +62,7 @@ public class Animation {
         this.animationNodes = animation.animationNodes;
         this.nodeMap = animation.nodeMap;
 
-        List<Renderable> renderables = new ArrayList<>();
-        entity.getRenderables(renderables);
+        List<Renderable> renderables = entity.getRenderables();
         this.renderables = new HashMap<>();
         for (Renderable renderable : renderables) {
             this.renderables.put(renderable.getName(), renderable);

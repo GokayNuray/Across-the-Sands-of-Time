@@ -118,12 +118,14 @@ public class OpenGLComponent extends AWTGLCanvas {
             for (Renderable renderable : renderables) {
                 if (!renderable.isBuilt()) renderable.build();
                 if (renderable.isUpdated()) renderable.update();
+                if (!renderable.isShown()) continue;
                 renderRenderable(renderable);
             }
             for (Entity entity : entities) {
                 for (Renderable renderable : entity.getRenderables()) {
                     if (!renderable.isBuilt()) renderable.build();
                     if (renderable.isUpdated()) renderable.update();
+                    if (!renderable.isShown()) continue;
                     renderRenderable(renderable);
                 }
             }

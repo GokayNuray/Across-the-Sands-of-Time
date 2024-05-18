@@ -1,7 +1,10 @@
 package com.halenteck.fpsGame;
 
 import com.halenteck.fpsUI.FpsInGame;
-import com.halenteck.render.*;
+import com.halenteck.render.Entity;
+import com.halenteck.render.Models;
+import com.halenteck.render.OpenGLComponent;
+import com.halenteck.render.World;
 import com.halenteck.server.Server;
 import org.joml.Vector3f;
 
@@ -19,6 +22,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     private FPSWeapon currentWeapon;
     private FPSWeapon otherWeapon;
+    private int firstWeaponModelIndex;
+    private int secondWeaponModelIndex;
     private Bullet lastBulletHitBy;
     private Entity entity;
     private OpenGLComponent renderer;
@@ -98,7 +103,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             default -> throw new IllegalArgumentException("invalid character id: " + characterId);
         }
         this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, yaw, pitch, 1);
-        entity.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
+        firstWeaponModelIndex = entity.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
+        secondWeaponModelIndex = entity.addChild(Models.WEAPON2, -0.35f, 1.6f, 0.9f);
         this.world = world;
     }
 
@@ -302,7 +308,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         int notches = e.getWheelRotation();
-        if (notches != 0) {
+        if (notches > 2) {
             switchWeapon();
         }
     }
@@ -434,13 +440,11 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     public void setRotation(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
-        if (pitch > 89.99f) pitch = 89.99f;
-        if (pitch < -89.99f) pitch = -89.99f;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         directionVector = new Vector3f(directionX, directionY, directionZ);
-        entity.setRotation(yaw, pitch);
+        entity.setRotation(this.yaw, this.pitch);
     }
 
     // Creates weapons for the player according to their weaponId.
@@ -471,6 +475,13 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         FPSWeapon temp = currentWeapon;
         setWeapon(otherWeapon);
         otherWeapon = temp;
+        if (currentWeapon.getId() >= 5) {
+            entity.hideChild(firstWeaponModelIndex);
+            entity.showChild(secondWeaponModelIndex);
+        } else {
+            entity.hideChild(secondWeaponModelIndex);
+            entity.showChild(firstWeaponModelIndex);
+        }
     }
 
     // Checks for player-bullet collisions using the doesBulletHitTarget() method from the Bullet class.
@@ -531,13 +542,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         renderer.addMouseWheelListener(this);
         renderer.moveCamera(new Vector3f(position.x, position.y + 1.7f, position.z));
         renderer.setCameraRotation(yaw, pitch);
-        renderer.removeEntity(entity);
-        for (Renderable head : entity.getHeadRenderables()) {
-            renderer.addRenderable(head);
-        }
-        for (Entity child : entity.getChildren()) {
-            renderer.addEntity(child);
-        }
+        entity.removeBody();
         this.renderer = renderer;
     }
 

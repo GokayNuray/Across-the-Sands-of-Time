@@ -12,7 +12,8 @@ public class Entity {
     private Map<String, Animation> animations = new HashMap<>();
 
     private List<Renderable> renderables;
-    private List<Renderable> headRenderables;
+    private List<Renderable> headRenderables = new ArrayList<>();
+    private List<Renderable> bodyRenderables = new ArrayList<>();
     private List<Entity> children = new ArrayList<>();
     private float x = 0;
     private float y = 0;
@@ -22,7 +23,6 @@ public class Entity {
 
     public Entity(int modelId, float x, float y, float z, float yaw, float pitch, float scale) {
         this.renderables = Models.getModel(modelId);
-        headRenderables = new ArrayList<>();
         rotate(yaw, pitch);
         scale(scale, scale, scale);
         translate(x, y, z);
@@ -39,6 +39,8 @@ public class Entity {
             if (renderable.getName().equals("Head_1") || renderable.getName().equals("Right Arm") || renderable.getName().equals("Left Arm") ||
                     renderable.getName().equals("Hat Layer") || renderable.getName().equals("Right Arm Layer") || renderable.getName().equals("Left Arm Layer")) {
                 headRenderables.add(renderable);
+            } else {
+                bodyRenderables.add(renderable);
             }
         }
 
@@ -92,12 +94,15 @@ public class Entity {
         }
     }
 
-    public void addChild(int entityModel, float offsetX, float offsetY, float offsetZ) {
-        Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, 0, 0, 1);
-        entity.setPivotPoint(new Vector3f(offsetX, offsetY, offsetZ));
-        renderables.addAll(entity.renderables);
-        headRenderables.addAll(entity.renderables);
-        children.add(entity);
+    public int addChild(int entityModel, float offsetX, float offsetY, float offsetZ) {
+        synchronized ("renderables") {
+            Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, 0, 0, 1);
+            entity.setPivotPoint(new Vector3f(offsetX, offsetY, offsetZ));
+            renderables.addAll(entity.renderables);
+            headRenderables.addAll(entity.renderables);
+            children.add(entity);
+            return children.indexOf(entity);
+        }
     }
 
     public void setPivotPoint(Vector3f pivot) {
@@ -110,5 +115,25 @@ public class Entity {
 
     public List<Entity> getChildren() {
         return children;
+    }
+
+    public void hideChild(int i) {
+        synchronized ("renderables") {
+            Entity child = children.get(i);
+            child.renderables.forEach(Renderable::hide);
+        }
+    }
+
+    public void showChild(int i) {
+        synchronized ("renderables") {
+            Entity child = children.get(i);
+            child.renderables.forEach(Renderable::show);
+        }
+    }
+
+    public void removeBody() {
+        synchronized ("renderables") {
+            renderables.removeAll(bodyRenderables);
+        }
     }
 }

@@ -11,6 +11,8 @@ public class Renderable implements Cloneable {
 
     private String name;
 
+    private boolean shown = true;
+
     private boolean built = false;
     private boolean updated = false;
 
@@ -216,5 +218,17 @@ public class Renderable implements Cloneable {
     public void setAnimationTransformation(Matrix4f animationTransformation) {
         this.animationTransformation = animationTransformation;
         updated = true;
+    }
+
+    public void show() {
+        shown = true;
+    }
+
+    public void hide() {
+        shown = false;
+    }
+
+    public boolean isShown() {
+        return shown;
     }
 }

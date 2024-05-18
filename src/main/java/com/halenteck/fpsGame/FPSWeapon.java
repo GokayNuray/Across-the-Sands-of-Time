@@ -36,7 +36,7 @@ public class FPSWeapon {
 
     public void reload() {
         if(id < 5) {
-            if (!isReloading)
+            if (!isReloading && magazineSize != ammoInMagazine)
             {
                 startReloadThread();
             }

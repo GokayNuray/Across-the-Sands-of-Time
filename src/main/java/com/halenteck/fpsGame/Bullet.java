@@ -1,5 +1,6 @@
 package com.halenteck.fpsGame;
 
+import com.halenteck.render.World;
 import org.joml.Vector3f;
 
 public class Bullet {
@@ -12,6 +13,8 @@ public class Bullet {
 
     private Player player;
     private FPSWeapon weapon;
+
+    World world;
 
     public Bullet(Vector3f startPosition, Vector3f direction, int damage, Player player, FPSWeapon weapon) {
         this.position = new Vector3f(startPosition.x, startPosition.y + 1.7f, startPosition.z);
@@ -66,6 +69,10 @@ public class Bullet {
 
     public void update(float time) {
         position.add(new Vector3f(velocity).mul(0.1f));
+
+        if (world.isFull(position.x, position.y, position.z)) {
+            damage = 0;
+        }
     }
 
     public Vector3f getPosition() {

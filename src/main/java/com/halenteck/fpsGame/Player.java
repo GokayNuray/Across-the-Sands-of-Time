@@ -465,7 +465,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     }
 
     public Bullet spawnBullet() {
-        return new Bullet(this.position, directionVector, currentWeapon.getDamage(), this, this.getWeapon());
+        return new Bullet(this.position, directionVector, currentWeapon.getDamage(), this, this.getWeapon(), world);
     }
 
     public void switchWeapon() {

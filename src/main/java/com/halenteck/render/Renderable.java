@@ -228,7 +228,7 @@ public class Renderable implements Cloneable {
         shown = false;
     }
 
-    public boolean isShown() {
-        return shown;
+    public boolean isHidden() {
+        return !shown;
     }
 }

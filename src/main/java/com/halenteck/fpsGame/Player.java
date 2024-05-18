@@ -105,6 +105,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, yaw, pitch, 1);
         firstWeaponModelIndex = entity.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
         secondWeaponModelIndex = entity.addChild(Models.WEAPON2, -0.35f, 1.6f, 0.9f);
+        entity.hideChild(secondWeaponModelIndex);
         this.world = world;
     }
 

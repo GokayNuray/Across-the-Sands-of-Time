@@ -537,6 +537,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         yaw = details[3];
         pitch = details[4];
         renderer.addEntity(entity);
+        move(position);
         isAlive = true;
     }
 

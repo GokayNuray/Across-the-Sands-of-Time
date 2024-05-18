@@ -95,10 +95,19 @@ public class Entity {
         Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, 0, 0, 1);
         entity.setPivotPoint(new Vector3f(offsetX, offsetY, offsetZ));
         renderables.addAll(entity.renderables);
+        headRenderables.addAll(entity.renderables);
         children.add(entity);
     }
 
     public void setPivotPoint(Vector3f pivot) {
         renderables.forEach(r -> r.setPivotPoint(pivot));
+    }
+
+    public List<Renderable> getHeadRenderables() {
+        return headRenderables;
+    }
+
+    public List<Entity> getChildren() {
+        return children;
     }
 }

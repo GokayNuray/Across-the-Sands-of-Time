@@ -1,10 +1,7 @@
 package com.halenteck.fpsGame;
 
 import com.halenteck.fpsUI.FpsInGame;
-import com.halenteck.render.Entity;
-import com.halenteck.render.Models;
-import com.halenteck.render.OpenGLComponent;
-import com.halenteck.render.World;
+import com.halenteck.render.*;
 import com.halenteck.server.Server;
 import org.joml.Vector3f;
 
@@ -109,6 +106,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
         modelId = Models.CHARACTER1;//TODO Temp.
         this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, yaw, pitch, 1);
+        entity.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
         this.world = world;
     }
 
@@ -530,6 +528,12 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         renderer.moveCamera(new Vector3f(position.x, position.y + 1.7f, position.z));
         renderer.setCameraRotation(yaw, pitch);
         renderer.removeEntity(entity);
+        for (Renderable head : entity.getHeadRenderables()) {
+            renderer.addRenderable(head);
+        }
+        for (Entity child : entity.getChildren()) {
+            renderer.addEntity(child);
+        }
         this.renderer = renderer;
     }
 

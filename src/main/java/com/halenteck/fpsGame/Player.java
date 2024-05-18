@@ -547,6 +547,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         }
         entity.moveTo(position.x, position.y, position.x);
         isAlive = true;
+        health = 100;
     }
 
     public void attachRenderer(OpenGLComponent renderer) {

@@ -35,9 +35,8 @@ public class FPSWeapon {
     }
 
     public void reload() {
-        if(id < 5) {
-            if (!isReloading && magazineSize != ammoInMagazine)
-            {
+        if (id < 5) {
+            if (!isReloading && magazineSize != ammoInMagazine) {
                 startReloadThread();
             }
         }
@@ -47,7 +46,7 @@ public class FPSWeapon {
         isReloading = true;
         new Thread(() -> {
             try {
-                Thread.sleep((long)getReloadTime() * 1000);
+                Thread.sleep((long) getReloadTime() * 1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -60,23 +59,23 @@ public class FPSWeapon {
         switch (id) {
             case 0:
                 name = "AK-47";
-                damage = 33;
+                damage = 30;
                 magazineSize = 30;
-                fireRate = 14;
+                fireRate = 5;
                 reloadTime = 3;
                 break;
             case 1:
                 name = "M4";
                 damage = 20;
                 magazineSize = 31;
-                fireRate = 18;
+                fireRate = 7.5f;
                 reloadTime = 2;
                 break;
             case 2:
                 name = "MP5";
                 damage = 15;
                 magazineSize = 31;
-                fireRate = 31;
+                fireRate = 10;
                 reloadTime = 2;
                 break;
             case 3:
@@ -90,7 +89,7 @@ public class FPSWeapon {
                 name = "MK1";
                 damage = 60;
                 magazineSize = 10;
-                fireRate = 3;
+                fireRate = 2.5f;
                 reloadTime = 3;
                 break;
             case 5:
@@ -101,21 +100,21 @@ public class FPSWeapon {
             case 6:
                 name = "Battle Axe";
                 damage = 75;
-                fireRate = 0.5f;
+                fireRate = 0.75f;
                 break;
             case 7:
                 name = "Skewer";
-                damage = 10;
+                damage = 20;
                 fireRate = 5;
                 break;
             case 8:
                 name = "Cleave";
-                damage = 1;
+                damage = 5;
                 fireRate = 20;
                 break;
             case 9:
                 name = "Dismantle";
-                damage = 100;
+                damage = 101;
                 fireRate = 0.5f;
                 break;
         }

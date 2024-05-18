@@ -432,7 +432,7 @@ public class ShopFrame extends JFrame {
         characterDisplayPanel.add(characterPanel, BorderLayout.CENTER);
 
         // character stats panel
-        JPanel characterStatsPanel = new JPanel(new GridLayout(6, 1));
+        JPanel characterStatsPanel = new JPanel(new GridLayout(8, 1));
         JLabel attackLabel = new JLabel("Attack Power");
         JProgressBar attackBar = new JProgressBar(0, 4);
         attackBar.setValue(Server.getUserData().getCharacters()[characterIndex].getAbilityLevels()[0]);
@@ -456,6 +456,16 @@ public class ShopFrame extends JFrame {
         mobilityBar.setBackground(Color.BLUE);
         characterStatsPanel.add(mobilityLabel);
         characterStatsPanel.add(mobilityBar);
+        characterStatsPanel.add(new JLabel(""));
+
+        JButton selectButton = new JButton("Select Character");
+        selectButton.setToolTipText("Select this character to play with in the FPS mode.");
+        selectButton.setFont(new Font("Sans Serif", Font.BOLD, 16));
+        selectButton.addActionListener(e -> {
+            selectButton.setEnabled(false);
+            instance.updatePanels(characterIndex, 0);
+        });
+        characterStatsPanel.add(selectButton);
 
         characterDisplayPanel.add(characterStatsPanel, BorderLayout.SOUTH);
         return characterDisplayPanel;

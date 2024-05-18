@@ -15,7 +15,6 @@ public class Location {
     protected String name;
     protected Enemy enemies;
     protected String award;
-
     Character player;
     byte characterID;
     int playerHealth;

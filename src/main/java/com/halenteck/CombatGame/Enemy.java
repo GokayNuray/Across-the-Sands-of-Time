@@ -19,7 +19,6 @@ public class Enemy {
         this.damage = damage;
         this.maxNumber = maxNumber;
         this.reward = reward;
-
     }
 
     public int enemyCount() {

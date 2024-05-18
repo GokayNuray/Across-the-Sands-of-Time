@@ -36,7 +36,7 @@ public class LeaderboardFrame extends JFrame {
         add(leaderboardLabel, BorderLayout.NORTH);
 
         JPanel leaderboardPanel = new JPanel(new BorderLayout());
-        JPanel titlePanel = new JPanel(new GridLayout(1, 3));
+        JPanel titlePanel = new JPanel(new GridLayout(1, 4));
         titlePanel.setBackground(new Color(198,152,116));
         JLabel emptyLabel = new JLabel("");
         emptyLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
@@ -48,6 +48,7 @@ public class LeaderboardFrame extends JFrame {
         JLabel pointsLabel = new JLabel("Points", SwingConstants.CENTER);
         pointsLabel.setFont(new Font("Sans Serif", Font.BOLD, 20));
         titlePanel.add(pointsLabel);
+        titlePanel.add(new JLabel("", SwingConstants.CENTER));
         leaderboardPanel.add(titlePanel, BorderLayout.NORTH);
 
         JPanel infoPanel = new JPanel();

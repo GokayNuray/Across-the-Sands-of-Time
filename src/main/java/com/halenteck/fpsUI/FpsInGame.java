@@ -135,14 +135,14 @@ public class FpsInGame extends JFrame {
 
 
         // weapon showcases
-        ImageIcon weapon1Image = new ImageIcon(getClass().getResource("weapon1.jpg"));
+        ImageIcon weapon1Image = new ImageIcon(getClass().getResource("/weapon1.jpg"));
         Image scaledWeapon1Image = weapon1Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
         ImageIcon scaledWeapon1Icon = new ImageIcon(scaledWeapon1Image);
         JLabel weapon1Label = new JLabel(scaledWeapon1Icon);
         weapon1Label.setBounds(100, 700, 75, 100);
         layeredPane.add(weapon1Label, JLayeredPane.PALETTE_LAYER);
 
-        ImageIcon weapon2Image = new ImageIcon(getClass().getResource("weapon2.jpg"));
+        ImageIcon weapon2Image = new ImageIcon(getClass().getResource("/weapon2.jpg"));
         Image scaledWeapon2Image = weapon2Image.getImage().getScaledInstance(75, 50, Image.SCALE_SMOOTH);
         ImageIcon scaledWeapon2Icon = new ImageIcon(scaledWeapon2Image);
         JLabel weapon2Label = new JLabel(scaledWeapon2Icon);

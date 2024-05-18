@@ -27,7 +27,7 @@ public class Entity {
         scale(scale, scale, scale);
         translate(x, y, z);
 
-        Map<String, Animation> animations = Models.getAnimations(modelId);
+        Map<String, Animation> animations = Models.getAnimations(Models.ANIM_TEST);
         if (animations != null) {
             for (Map.Entry<String, Animation> entry : animations.entrySet()) {
                 Animation animation = new Animation(entry.getValue(), this);

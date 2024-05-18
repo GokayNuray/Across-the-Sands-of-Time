@@ -36,7 +36,8 @@ public class Entity {
         }
 
         for (Renderable renderable : renderables) {
-            if (renderable.getName().equals("Head_1") || renderable.getName().equals("Right Arm") || renderable.getName().equals("Left Arm")) {
+            if (renderable.getName().equals("Head_1") || renderable.getName().equals("Right Arm") || renderable.getName().equals("Left Arm") ||
+                    renderable.getName().equals("Hat Layer") || renderable.getName().equals("Right Arm Layer") || renderable.getName().equals("Left Arm Layer")) {
                 headRenderables.add(renderable);
             }
         }

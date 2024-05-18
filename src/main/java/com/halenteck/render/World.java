@@ -30,7 +30,6 @@ public class World {
                 int y = data.readInt();
                 int z = data.readInt();
                 BlockCoordinates block = new BlockCoordinates(x, y, z);
-                System.out.println(block);
                 blocks.add(block);
             }
             return blocks;

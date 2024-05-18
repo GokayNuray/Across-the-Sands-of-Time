@@ -255,7 +255,6 @@ public class Game implements ServerListener {
             throw new IllegalArgumentException("Incorrect player ID in onPlayerRespawn packet");
         }
 
-        Vector3f respawnPosition = new Vector3f(details[0], details[1], details[2]);
         player.respawned(details);
     }
 

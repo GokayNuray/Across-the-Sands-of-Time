@@ -79,7 +79,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         this.yaw = yaw;
         this.pitch = pitch;
         this.directionVector = new Vector3f(0, 0, -1);
-        this.weaponId = 0; //TODO: Temp.
+        this.weaponId = weaponId;
         this.attackPower = attackPower;
         this.kills = kill;
         this.deaths = death;
@@ -476,6 +476,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         FPSWeapon temp = currentWeapon;
         setWeapon(otherWeapon);
         otherWeapon = temp;
+        Server.weaponChange();
         if (currentWeapon.getId() >= 5) {
             entity.hideChild(firstWeaponModelIndex);
             entity.showChild(secondWeaponModelIndex);

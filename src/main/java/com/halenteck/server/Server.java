@@ -407,11 +407,10 @@ public final class Server {
         }
     }
 
-    public static void weaponChange(int weapon) {
+    public static void weaponChange() {
         try {
             synchronized ("Server commands") {
                 out.writeByte(WEAPON_CHANGE);
-                out.writeInt(weapon);
             }
         } catch (Exception e) {
             e.printStackTrace();

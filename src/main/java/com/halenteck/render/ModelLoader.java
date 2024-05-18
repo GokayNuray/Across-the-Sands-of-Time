@@ -93,7 +93,12 @@ public final class ModelLoader {
                 colors[j + 2] = 1.0f;
                 colors[j + 3] = 1.0f;
             }
-            String texturePath = (filePath.substring(0, filePath.lastIndexOf("/") + 1) + texturePaths.get(aiMesh.mMaterialIndex())).substring("src/main/resources/".length() - 1);
+            String textureName = texturePaths.get(aiMesh.mMaterialIndex());
+            String texturePath = (filePath.substring(0, filePath.lastIndexOf("/") + 1) + textureName).substring("src/main/resources/".length() - 1);
+            if (textureName.isEmpty()) {
+                System.out.println("No texture found for mesh: " + aiMesh.mName().dataString());
+                texturePath = "/whiteSquare.png";
+            }
             renderables.add(new Renderable(aiMesh.mName().dataString(), vertices, colors, texCoords, indices, texturePath));
         }
 

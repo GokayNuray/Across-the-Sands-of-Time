@@ -160,6 +160,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
                     gameUI.playerArmour = armor;
                     gameUI.ammoInMagazine = currentWeapon.getAmmoInMagazine();
                     gameUI.magazineSize = currentWeapon.getMagazineSize();
+                    gameUI.weaponName = currentWeapon.getName();
                 }
 
                 gameUI.updatePanels();

@@ -1,0 +1,8 @@
+Model Information:
+* title:	Combat Knife
+* source:	https://sketchfab.com/3d-models/combat-knife-06988a4cabc04fa58cec83ed0a9dee70
+* author:	hamzagost32 (https://sketchfab.com/b.hamzag32)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

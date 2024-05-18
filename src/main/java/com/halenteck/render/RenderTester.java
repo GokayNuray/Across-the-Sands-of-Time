@@ -259,7 +259,7 @@ public class RenderTester {
         openGLComponent.addEntity(animated);
 
         Entity animated2 = new Entity(Models.CHARACTER1, 0, 1, 10, 0, 0, 1f);
-        animated2.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
+        animated2.addChild(Models.WEAPON2, -0.35f, 1.6f, 0.9f);
         openGLComponent.addEntity(animated2);
 
         new Thread(() -> {

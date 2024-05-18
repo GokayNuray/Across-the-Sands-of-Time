@@ -28,6 +28,8 @@ public class Game implements ServerListener {
 
     private FpsInGame gameUI;
 
+    long startTime;
+
     public Game(int lobbyId, FpsInGame fpsInGame) {
         Server.addServerListener(this);
         this.players = new HashMap<>();
@@ -96,7 +98,7 @@ public class Game implements ServerListener {
         Object[][] players = (Object[][]) data[1];
         byte thisPlayerId = (byte) data[2];
         int[] currentScore = (int[]) data[3];
-        long gameStartTime = (Long) data[4];
+        startTime = (Long) data[4];
 
         joinPlayer(players);
 
@@ -288,5 +290,9 @@ public class Game implements ServerListener {
 
     public Map<Byte, Player> getPlayers() {
         return players;
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 }

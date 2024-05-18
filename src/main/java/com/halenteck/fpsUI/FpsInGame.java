@@ -33,6 +33,7 @@ public class FpsInGame extends JFrame {
     public int blueScore;
     JLabel redScoreLabel;
     JLabel blueScoreLabel;
+    JLabel timeLabel;
 
     JProgressBar playerHealthBar;
     JProgressBar playerArmourBar;
@@ -124,13 +125,14 @@ public class FpsInGame extends JFrame {
         redScoreLabel = new JLabel("Red: " + redScore, SwingConstants.CENTER);
         redScoreLabel.setForeground(Color.RED);
         redScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        redScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150), 20, 100, 20);
+        redScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 200), 20, 100, 20);
         layeredPane.add(redScoreLabel, JLayeredPane.PALETTE_LAYER);
         blueScoreLabel = new JLabel("Blue: " + blueScore, SwingConstants.CENTER);
         blueScoreLabel.setForeground(Color.BLUE);
         blueScoreLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        blueScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 150) + 100, 20, 100, 20);
+        blueScoreLabel.setBounds((int) (bounds.getWidth() / 2 - 200) + 200, 20, 100, 20);
         layeredPane.add(blueScoreLabel, JLayeredPane.PALETTE_LAYER);
+
 
         // weapon showcases
         ImageIcon weapon1Image = new ImageIcon(getClass().getResource(character.resourcePath + "weapon1.png"));
@@ -242,6 +244,26 @@ public class FpsInGame extends JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage());
 
         }
+
+        timeLabel = new JLabel("0:00", SwingConstants.CENTER);
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        timeLabel.setBounds((int) (bounds.getWidth() / 2 - 200) + 100, 20, 100, 20);
+        layeredPane.add(timeLabel, JLayeredPane.PALETTE_LAYER);
+
+        new Thread(() -> {
+            long startTime = game.getStartTime();
+            long endTime = startTime + 5 * 60 * 1000;
+            while (true) {
+                long currentTime = System.currentTimeMillis();
+                long timeLeft = endTime - currentTime;
+                if (timeLeft <= 0) {
+                    break;
+                }
+                long minutes = timeLeft / 60000;
+                long seconds = (timeLeft % 60000) / 1000;
+                timeLabel.setText(minutes + ":" + seconds);
+            }
+        }).start();
 
         // leaderboard panel
         InGameLeaderboard leaderboardPanel = new InGameLeaderboard(game.getPlayers());

@@ -2,6 +2,7 @@ package com.halenteck.fpsGame;
 
 import com.halenteck.fpsUI.FpsEndGame;
 import com.halenteck.fpsUI.FpsInGame;
+import com.halenteck.render.Entity;
 import com.halenteck.render.Models;
 import com.halenteck.render.OpenGLComponent;
 import com.halenteck.render.World;
@@ -98,6 +99,12 @@ public class Game implements ServerListener {
         Object[][] players = (Object[][]) data[1];
         byte thisPlayerId = (byte) data[2];
         int[] currentScore = (int[]) data[3];
+        for (int i = 0; i < currentScore[0]; i++) {
+            redTeam.incrementScore();
+        }
+        for (int i = 0; i < currentScore[1]; i++) {
+            blueTeam.incrementScore();
+        }
         startTime = (Long) data[4];
 
         joinPlayer(players);
@@ -179,6 +186,10 @@ public class Game implements ServerListener {
     @Override
     public void onPlayerLeave(PacketData packetData) {
         Byte playerId = (Byte) packetData.getOnPlayerLeaveData()[0];
+        Player player = players.get(playerId);
+        Entity entity = player.getEntity();
+        renderer.removeEntity(entity);
+        chat.append(player.getName() + " has left the game.\n");
         players.remove(playerId);
     }
 

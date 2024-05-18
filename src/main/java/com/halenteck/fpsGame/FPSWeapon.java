@@ -26,7 +26,7 @@ public class FPSWeapon {
         } else {
             ammoInMagazine = 0;
             reloadTime = 0;
-            range = 2;
+            range = 10;
         }
     }
 

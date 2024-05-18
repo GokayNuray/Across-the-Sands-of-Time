@@ -26,7 +26,7 @@ public class Bullet {
         this.weapon = weapon;
         this.world = world;
 
-        startPoint = startPosition;
+        startPoint = new Vector3f(position);
     }
 
     public boolean doesBulletHitTarget(Player player) {
@@ -55,7 +55,6 @@ public class Bullet {
                 damage = 100;
                 return true;
             } else {
-                damage = weapon.getDamage();
                 return true;
             }
         } else if (this.player.isAbilityActive() && this.player.getCharacterId() == 0x03) {
@@ -74,7 +73,7 @@ public class Bullet {
     public void update(float time) {
         position.add(new Vector3f(velocity).mul(0.1f));
 
-        if (startPoint.distance(position) > weapon.getRange()) {
+        if (startPoint.distance(position) > player.getWeapon().getRange()) {
             damage = 0;
         }
         if (world.isFull(position.x, position.y, position.z)) {

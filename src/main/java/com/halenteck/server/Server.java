@@ -22,7 +22,6 @@ public final class Server {
     private static final byte LEAVE_LOBBY = 0x14;
     private static final byte MOVE = 0x20;
     private static final byte ROTATE = 0x21;
-    private static final byte CROUCH_STATE_CHANGE = 0x22;
     private static final byte WEAPON_CHANGE = 0x30;
     private static final byte SHOOT = 0x31;
     private static final byte ABILITY = 0x32;
@@ -36,7 +35,6 @@ public final class Server {
     private static final byte PLAYER_LEAVE = 0x01;
     private static final byte PLAYER_MOVE = 0x10;
     private static final byte PLAYER_ROTATE = 0x11;
-    private static final byte PLAYER_CROUCH_STATE_CHANGE = 0x12;
     private static final byte PLAYER_WEAPON_CHANGE = 0x20;
     private static final byte PLAYER_SHOOT = 0x21;
     private static final byte PLAYER_ABILITY = 0x22;
@@ -95,13 +93,13 @@ public final class Server {
                             float z = in.readFloat();
                             float yaw = in.readFloat();
                             float pitch = in.readFloat();
-                            boolean crouching = in.readBoolean();
+                            byte characterId = in.readByte();
                             int weapon = in.readInt();
                             int attackPower = in.readInt();
                             byte kill = in.readByte();
                             byte death = in.readByte();
 
-                            PacketData data = new PacketData(id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, crouching, attackPower, weapon, kill, death);
+                            PacketData data = new PacketData(id, isRedTeam, name, new float[]{x, y, z, yaw, pitch}, characterId, attackPower, weapon, kill, death);
                             listener.onPlayerJoin(data);
                             break;
                         }
@@ -311,6 +309,7 @@ public final class Server {
             out.writeByte(JOIN_LOBBY);
             out.writeInt(lobbyId);
             out.writeUTF(playerName);
+            out.writeByte(userData.getLastSelectedCharacter());
             if (!in.readBoolean()) {
                 return false;
             }
@@ -402,16 +401,6 @@ public final class Server {
                 out.writeByte(ROTATE);
                 out.writeFloat(yaw);
                 out.writeFloat(pitch);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void crouchStateChange() {
-        try {
-            synchronized ("Server commands") {
-                out.writeByte(CROUCH_STATE_CHANGE);
             }
         } catch (Exception e) {
             e.printStackTrace();

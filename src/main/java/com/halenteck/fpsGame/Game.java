@@ -119,14 +119,14 @@ public class Game implements ServerListener {
             Vector3f startPosition = new Vector3f(posAndRot[0], posAndRot[1], posAndRot[2]);
             float yaw = posAndRot[3];
             float pitch = posAndRot[4];
-            boolean crouching = (Boolean) playerData[4];
+            byte characterId = (byte) playerData[4];
             int weaponId = (Integer) playerData[5];
             int attackPower = (Integer) playerData[6];
             byte kill = (Byte) playerData[7];
             byte death = (Byte) playerData[8];
 
             //TODO: characterId is temporarily set to 0
-            Player newPlayer = new Player(gameUI, playerId, isRedTeam, name, startPosition, yaw, pitch, weaponId, attackPower, kill, death, (byte) 0, world);
+            Player newPlayer = new Player(gameUI, playerId, isRedTeam, name, startPosition, yaw, pitch, weaponId, attackPower, kill, death, (byte) characterId, world);
             players.put(playerId, newPlayer);
 
             chat.append(name + " has joined the game.\n");

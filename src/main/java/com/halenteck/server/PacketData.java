@@ -10,7 +10,7 @@ public class PacketData {
 
     /**
      * @apiNote [0] is lobby name(String), [1] is an array of players in the lobby(Object[]), [2] is thisPlayerId(byte), [3] is the current score(int[]) {red, blue}, [4] is the game start time in milliseconds(long).
-     * Player data is in the form of {byte id, boolean isRedTeam, String name, float[5] x, y, z, yaw, pitch, boolean crouching, int weapon, int attackPower, byte kill, byte death}.
+     * Player data is in the form of {byte id, boolean isRedTeam, String name, float[5] x, y, z, yaw, pitch, byte characterId, int weapon, int attackPower, byte kill, byte death}.
      */
     public Object[] getOnLobbyJoinDataData() {
         return data;

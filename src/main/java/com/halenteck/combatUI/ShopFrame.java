@@ -192,7 +192,8 @@ public class ShopFrame extends JFrame {
         revalidate();
     }
 
-    /** Creates the item panels for the shop.
+    /**
+     * Creates the item panels for the shop.
      *
      * @param characterIndex the character index
      * @return the item panels
@@ -479,9 +480,16 @@ public class ShopFrame extends JFrame {
         selectButton.setToolTipText("Select this character to play with in the FPS mode.");
         selectButton.setFont(new Font("Sans Serif", Font.BOLD, 16));
         selectButton.addActionListener(e -> {
-            selectButton.setEnabled(false);
+            Server.getUserData().setLastSelectedCharacter((byte) characterIndex);
             instance.updatePanels(characterIndex, 0);
         });
+        if (Server.getUserData().getLastSelectedCharacter() == characterIndex) {
+            selectButton.setText("Selected");
+            selectButton.setEnabled(false);
+        } else {
+            selectButton.setText("Select Character");
+            selectButton.setEnabled(true);
+        }
         characterStatsPanel.add(selectButton);
 
         characterDisplayPanel.add(characterStatsPanel, BorderLayout.SOUTH);

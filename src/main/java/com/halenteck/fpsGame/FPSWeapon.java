@@ -31,6 +31,7 @@ public class FPSWeapon {
     }
 
     public void fire() {
+        if (magazineSize == 0) return;
         ammoInMagazine--;
     }
 

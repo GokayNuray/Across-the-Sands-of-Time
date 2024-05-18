@@ -124,10 +124,8 @@ public final class Server {
                         }
                         case PLAYER_WEAPON_CHANGE: {
                             byte id = in.readByte();
-                            int weapon = in.readInt();
-                            int attackPower = in.readInt();
 
-                            PacketData data = new PacketData(id, weapon, attackPower);
+                            PacketData data = new PacketData(id);
                             listener.onPlayerWeaponChange(data);
                             break;
                         }

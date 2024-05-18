@@ -39,7 +39,7 @@ public class PacketData {
     }
 
     /**
-     * @apiNote [0] is player id(byte), [1] is weapon id(int), [2] is attack power(int).
+     * @apiNote [0] is player id(byte).
      */
     public Object[] getOnPlayerWeaponOnChangeData() {
         return data;

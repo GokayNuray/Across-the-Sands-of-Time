@@ -14,6 +14,16 @@ import java.awt.event.WindowEvent;
 public class LobbyFrame extends JFrame {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); // Get screen size
 
+    public static void main(String[] args) {
+        try {
+            Server.connect();
+            Server.login("Babapiiro31", "Gokaynu2!");
+            new LobbyFrame(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /** Constructor for the LobbyFrame class
      * @param rankedGame
      */

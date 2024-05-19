@@ -4,11 +4,14 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import static org.lwjgl.assimp.Assimp.*;
 
@@ -28,14 +31,12 @@ public final class ModelLoader {
 
         List<Renderable> renderables = new ArrayList<>();
 
-        File file = new File(filePath);
-        if (!file.exists()) {
-            throw new RuntimeException("File not found: " + filePath);
-        }
 
-        AIScene aiScene = aiImportFile(filePath, flags);
+        String parentFolder = exportParentFolderToDiskAndReturnPath(filePath);
+        String target = parentFolder + filePath;
+        AIScene aiScene = aiImportFile(target, flags);
         if (aiScene == null) {
-            throw new RuntimeException("Error loading model: " + filePath + " " + aiGetErrorString());
+            throw new RuntimeException("Error loading model: " + target + " " + aiGetErrorString());
         }
 
         List<String> texturePaths = new ArrayList<>();
@@ -94,11 +95,12 @@ public final class ModelLoader {
                 colors[j + 3] = 1.0f;
             }
             String textureName = texturePaths.get(aiMesh.mMaterialIndex());
-            String texturePath = (filePath.substring(0, filePath.lastIndexOf("/") + 1) + textureName).substring("src/main/resources/".length() - 1);
             if (textureName.isEmpty()) {
                 System.out.println("No texture found for mesh: " + aiMesh.mName().dataString());
-                texturePath = "/whiteSquare.png";
+                textureName = "/whiteSquare.png";
             }
+            String texturePath = parentFolder + filePath.substring(0, filePath.lastIndexOf("/") + 1) + textureName;
+
             renderables.add(new Renderable(aiMesh.mName().dataString(), vertices, colors, texCoords, indices, texturePath));
         }
 
@@ -106,7 +108,8 @@ public final class ModelLoader {
     }
 
     public static Map<String, Animation> loadAnimations(String filePath) {
-        AIScene aiScene = aiImportFile(filePath, 0);
+        String target = exportParentFolderToDiskAndReturnPath(filePath) + filePath;
+        AIScene aiScene = aiImportFile(target, 0);
 
         AINode aiRootNode = aiScene.mRootNode();
         Map<String, Node> nodeMap = new HashMap<>();
@@ -203,5 +206,89 @@ public final class ModelLoader {
         };
 
         return new Renderable(vertices, colors, indices);
+    }
+
+    public static String exportParentFolderToDiskAndReturnPath(String filePath) {
+        //copy everything inside the folder of the model to a temporary directory
+        String me = ModelLoader.class.getName().replace(".", "/") + ".class";
+        URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
+        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!"));
+        JarFile jar = null;
+        try {
+            jar = new JarFile(jarPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String jarParent = jarPath.substring(0, jarPath.lastIndexOf("/") + 1);
+        String resourcePath = jarParent + "resources/";
+        Enumeration<JarEntry> entries = jar.entries();
+        String filePath2 = filePath.substring(0, filePath.lastIndexOf("/") + 1);
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String name = entry.getName();
+            if (name.startsWith(filePath2)) {
+                InputStream is = ModelLoader.class.getClassLoader().getResourceAsStream(name);
+                if (is == null) {
+                    System.out.println(name + " is null");
+                    continue;
+                }
+                File file = new File(resourcePath + name);
+                if (entry.isDirectory()) {
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                } else {
+                    if (!file.exists()) {
+                        try {
+                            file.getParentFile().mkdirs();
+                            file.createNewFile();
+                            FileOutputStream fos = new FileOutputStream(file);
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+                            while ((bytesRead = is.read(buffer)) != -1) {
+                                fos.write(buffer, 0, bytesRead);
+                            }
+                            fos.close();
+                            is.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        }
+        return resourcePath.substring(1);
+    }
+
+    public static String exportFileToDiskAndReturnPath(String filePath) {
+        //copy everything inside the folder of the model to a temporary directory
+        String me = ModelLoader.class.getName().replace(".", "/") + ".class";
+        URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
+        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!"));
+        String jarParent = jarPath.substring(0, jarPath.lastIndexOf("/") + 1);
+        String resourcePath = jarParent + "resources/";
+        InputStream is = ModelLoader.class.getClassLoader().getResourceAsStream(filePath);
+        if (is == null) {
+            System.out.println(filePath + " is null");
+        }
+        File file = new File(resourcePath + filePath);
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+                FileOutputStream fos = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+                fos.close();
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return resourcePath.substring(1) + filePath;
     }
 }

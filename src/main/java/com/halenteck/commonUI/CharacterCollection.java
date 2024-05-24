@@ -42,15 +42,15 @@ public class CharacterCollection extends JFrame {
             if (i < characters.length) {
                 collectionPanel.add(createCharacterPanel(i));
             } else {
-                ImageIcon blurryIcon = new ImageIcon(getClass().getResource("/characters/antidote/blurry.png"));
+                ImageIcon blurryIcon = new ImageIcon(getClass().getResource("/characters/antidote/blurry.PNG"));
 
                 new JLabel();
                 JLabel blurryLabel;
                 blurryIcon = switch (i) {
-                    case 1 -> new ImageIcon(getClass().getResource("/characters/antidote/blurry.png"));
-                    case 2 -> new ImageIcon(getClass().getResource("/characters/nazi/blurry.png"));
-                    case 3 -> new ImageIcon(getClass().getResource("/characters/globalwarming/blurry.png"));
-                    case 4 -> new ImageIcon(getClass().getResource("/characters/boss/blurry.png"));
+                    case 1 -> new ImageIcon(getClass().getResource("/characters/antidote/blurry.PNG"));
+                    case 2 -> new ImageIcon(getClass().getResource("/characters/nazi/blurry.PNG"));
+                    case 3 -> new ImageIcon(getClass().getResource("/characters/globalwarming/blurry.PNG"));
+                    case 4 -> new ImageIcon(getClass().getResource("/characters/boss/blurry.PNG"));
                     default -> blurryIcon;
                 };
                 Image scaledBlurryImage = blurryIcon.getImage().getScaledInstance(700, 250, Image.SCALE_SMOOTH);

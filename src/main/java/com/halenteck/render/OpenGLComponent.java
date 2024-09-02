@@ -186,6 +186,11 @@ public class OpenGLComponent extends AWTGLCanvas {
                     setCapabilities(null);
                     return;
                 }
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 render();
             }
         }).start();

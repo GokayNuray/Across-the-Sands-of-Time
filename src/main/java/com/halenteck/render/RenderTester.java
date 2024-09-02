@@ -1,23 +1,25 @@
 package com.halenteck.render;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
 
 public class RenderTester {
 
     public static void main(String[] args) {
-        Models.loadModels();
         JFrame frame = new JFrame("OpenGLComponent");
+        Dimension dimensions = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(640, 480);
+        frame.setSize(dimensions);
 
         JLayeredPane layeredPane = new JLayeredPane();
 
         OpenGLComponent openGLComponent = new OpenGLComponent();
-        openGLComponent.setBounds(0, 0, 640, 480);
+        openGLComponent.setBounds(0, 0, frame.getWidth(), frame.getHeight());
         openGLComponent.addMouseMotionListener(new MouseMotionListener() {
             private int lastX = -1;
             private int lastY = -1;
@@ -198,13 +200,50 @@ public class RenderTester {
                 0, 2, 3
         };
 
-        Entity entity = new Entity(Models.TEST2, 0, 0, 2, 180, 0, 0.05f);
+        Renderable renderable2 = new Renderable(squareCoords, squareColor, textureCoords, indices, ModelLoader.getResourcePathOnDisk("/test/clan.jpeg"));
+        openGLComponent.addRenderable(renderable2);
+
+        float[] squareCoords2 = {
+                -1, -1, 1,
+                1, -1, 1,
+                1, 1, 1,
+                -1, 1, 1
+        };
+
+        float[] squareColor2 = {
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1
+        };
+
+        float[] textureCoords2 = {
+                0, 0,
+                0, 1,
+                1, 1,
+                1, 0
+        };
+
+        int[] indices2 = {
+                0, 1, 2,
+                0, 2, 3
+        };
+        Renderable renderable3 = new Renderable(squareCoords2, squareColor2, textureCoords2, indices2, ModelLoader.getResourcePathOnDisk("/test/adsiz.png"));
+        openGLComponent.addRenderable(renderable3);
+
+        ModelLoader.loadModel("test/elgato/12221_Cat_v1_l3.obj").forEach(openGLComponent::addRenderable);
+        List<Renderable> test2 = ModelLoader.loadModel("test/test2/test2.obj");
+        for (Renderable renderable1 : test2) {
+            //openGLComponent.addRenderable(renderable1);
+        }
+
+        Entity entity = new Entity(Models.TEST2, 0, 0, 2, 180, 0, 0.5f);
         openGLComponent.addEntity(entity);
         new Thread(() -> {
             while (true) {
-                entity.rotate(0.5f, 0);
+                entity.rotate(0.25f, 0);
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

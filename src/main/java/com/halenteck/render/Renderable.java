@@ -39,7 +39,7 @@ public class Renderable implements Cloneable {
     private Matrix4f animationTransformation;
 
     public Renderable(float[] vertices, float[] colors, int[] indices) {
-        this(vertices, colors, new float[colors.length / 2], indices, ModelLoader.exportFileToDiskAndReturnPath("whiteSquare.png"));
+        this(vertices, colors, new float[colors.length / 2], indices, ModelLoader.getResourcePathOnDisk("whiteSquare.png"));
     }
 
     public Renderable(float[] vertices, float[] colors, float[] texCoords, int[] indices, String texturePath) {

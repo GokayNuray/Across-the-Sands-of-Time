@@ -20,6 +20,14 @@ public final class ModelLoader {
     private static final int FLAGS = aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices |
             aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights;
 
+    private static final boolean isJar;
+
+    static {
+        String me = ModelLoader.class.getName().replace(".", "/") + ".class";
+        URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
+        isJar = dirURL.getPath().endsWith(".jar!/com/halenteck/render/ModelLoader.class");
+    }
+
     private ModelLoader() {
     }
 
@@ -32,7 +40,7 @@ public final class ModelLoader {
         List<Renderable> renderables = new ArrayList<>();
 
 
-        String parentFolder = exportParentFolderToDiskAndReturnPath(filePath);
+        String parentFolder = isJar ? exportParentFolderToDiskAndReturnResourcesPath(filePath) : "src/main/resources/";
         String target = parentFolder + filePath;
         AIScene aiScene = aiImportFile(target, flags);
         if (aiScene == null) {
@@ -108,7 +116,7 @@ public final class ModelLoader {
     }
 
     public static Map<String, Animation> loadAnimations(String filePath) {
-        String target = exportParentFolderToDiskAndReturnPath(filePath) + filePath;
+        String target = (isJar ? exportParentFolderToDiskAndReturnResourcesPath(filePath) : "src/main/resources/") + filePath;
         AIScene aiScene = aiImportFile(target, 0);
 
         AINode aiRootNode = aiScene.mRootNode();
@@ -208,11 +216,11 @@ public final class ModelLoader {
         return new Renderable(vertices, colors, indices);
     }
 
-    public static String exportParentFolderToDiskAndReturnPath(String filePath) {
+    public static String exportParentFolderToDiskAndReturnResourcesPath(String filePath) {
         //copy everything inside the folder of the model to a temporary directory
         String me = ModelLoader.class.getName().replace(".", "/") + ".class";
         URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
-        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!"));
+        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().lastIndexOf("!"));
         JarFile jar = null;
         try {
             jar = new JarFile(jarPath);
@@ -258,14 +266,19 @@ public final class ModelLoader {
 
             }
         }
-        return resourcePath.substring(1);
+        return resourcePath;//TODO test this on windows
     }
 
-    public static String exportFileToDiskAndReturnPath(String filePath) {
+    public static String getResourcePathOnDisk(String filePath) {
+        if (!isJar) return "src/main/resources/" + filePath;
+        return exportFileToDiskAndReturnPath(filePath);
+    }
+
+    private static String exportFileToDiskAndReturnPath(String filePath) {
         //copy everything inside the folder of the model to a temporary directory
         String me = ModelLoader.class.getName().replace(".", "/") + ".class";
         URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
-        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!"));
+        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().lastIndexOf("!"));
         String jarParent = jarPath.substring(0, jarPath.lastIndexOf("/") + 1);
         String resourcePath = jarParent + "resources/";
         InputStream is = ModelLoader.class.getClassLoader().getResourceAsStream(filePath);

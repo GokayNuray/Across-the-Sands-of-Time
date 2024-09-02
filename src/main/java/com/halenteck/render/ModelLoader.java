@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -25,7 +27,7 @@ public final class ModelLoader {
     static {
         String me = ModelLoader.class.getName().replace(".", "/") + ".class";
         URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
-        isJar = dirURL.getPath().endsWith(".jar!/com/halenteck/render/ModelLoader.class");
+        isJar = dirURL.getPath().endsWith(".jar!/" + me);
     }
 
     private ModelLoader() {
@@ -38,7 +40,6 @@ public final class ModelLoader {
     public static List<Renderable> loadModel(String filePath, int flags) {
 
         List<Renderable> renderables = new ArrayList<>();
-
 
         String parentFolder = isJar ? exportParentFolderToDiskAndReturnResourcesPath(filePath) : "src/main/resources/";
         String target = parentFolder + filePath;
@@ -220,7 +221,8 @@ public final class ModelLoader {
         //copy everything inside the folder of the model to a temporary directory
         String me = ModelLoader.class.getName().replace(".", "/") + ".class";
         URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
-        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().lastIndexOf("!"));
+        String dirPath = URLDecoder.decode(dirURL.getPath(), StandardCharsets.UTF_8);
+        String jarPath = dirPath.substring(5, dirPath.lastIndexOf("!"));
         JarFile jar = null;
         try {
             jar = new JarFile(jarPath);
@@ -278,7 +280,8 @@ public final class ModelLoader {
         //copy everything inside the folder of the model to a temporary directory
         String me = ModelLoader.class.getName().replace(".", "/") + ".class";
         URL dirURL = ModelLoader.class.getClassLoader().getResource(me);
-        String jarPath = dirURL.getPath().substring(5, dirURL.getPath().lastIndexOf("!"));
+        String dirPath = URLDecoder.decode(dirURL.getPath(), StandardCharsets.UTF_8);
+        String jarPath = dirPath.substring(5, dirPath.lastIndexOf("!"));
         String jarParent = jarPath.substring(0, jarPath.lastIndexOf("/") + 1);
         String resourcePath = jarParent + "resources/";
         InputStream is = ModelLoader.class.getClassLoader().getResourceAsStream(filePath);

@@ -13,4 +13,5 @@ Zeynep İdil Uzman<br/>
 Yağmur Yılmazer<br/>
 
 ### Easy Setup!
-You can play our game by clicking the .exe file!
+You can play our game by clicking the .exe file in the releases section!
+https://github.com/GokayNuray/Across-the-Sands-of-Time/releases

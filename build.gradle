@@ -3,7 +3,10 @@ import org.gradle.internal.os.OperatingSystem
 plugins {
     id 'java'
     id "com.github.johnrengelman.shadow" version "8.1.1"
+    id 'application'
 }
+
+mainClassName = "com.halenteck.Main"
 
 project.ext.lwjglVersion = "3.3.3"
 project.ext.lwjgl3AwtVersion = "0.1.8"

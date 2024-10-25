@@ -9,14 +9,15 @@ import org.lwjgl.assimp.AIScene;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Node {
 
-    private String name;
-    private Node parent;
-    private Node[] children;
-    private Matrix4f transformation;
-    private List<String> meshes = new ArrayList<>();
+    private final String name;
+    private final Node parent;
+    private final Node[] children;
+    private final Matrix4f transformation;
+    private final List<String> meshes = new ArrayList<>();
 
     public Node(AINode aiNode, Node parent, Map<String, Node> nodeMap, AIScene aiScene) {
         this.name = aiNode.mName().dataString();
@@ -26,7 +27,7 @@ public class Node {
         this.transformation = assimpToJoml(aiNode.mTransformation());
 
         for (int i = 0; i < children.length; i++) {
-            children[i] = new Node(AINode.create(aiNode.mChildren().get(i)), this, nodeMap, aiScene);
+            children[i] = new Node(AINode.create(Objects.requireNonNull(aiNode.mChildren()).get(i)), this, nodeMap, aiScene);
         }
 
 
@@ -37,6 +38,15 @@ public class Node {
         }
 
         nodeMap.put(name, this);
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "transformation=\n" + transformation +
+                ", parent=" + (parent == null ? "null" : parent.name) +
+                ", meshes=" + meshes +
+                "}\n";
     }
 
     public Matrix4f assimpToJoml(AIMatrix4x4 aiMatrix4x4) {

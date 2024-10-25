@@ -257,8 +257,31 @@ public class RenderTester {
         worldMap.translate(0, 0, 0);
         openGLComponent.addEntity(worldMap);
 
-        Entity animated = new Entity(Models.CHARACTER1, 0, 1, -10, 0, 0, 1f);
+        Entity animated = new Entity(Models.CHARACTER5, 0, 1, -10, 0, 0, 1f);
         openGLComponent.addEntity(animated);
+
+        openGLComponent.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_R) {
+                    animated.startAnimation("walkWithGun");
+                }
+                if (e.getKeyCode() == KeyEvent.VK_T) {
+                    animated.stopAnimation("walkWithGun");
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_E) {
+                    animated.doAnimation("wave");
+                }
+            }
+        });
 
         Entity animated2 = new Entity(Models.CHARACTER1, 0, 1, 10, 0, 0, 1f);
         animated2.addChild(Models.WEAPON2, -0.35f, 1.6f, 0.9f);
@@ -266,7 +289,8 @@ public class RenderTester {
 
         new Thread(() -> {
             while (true) {
-                animated.rotate(0.5f, 0);
+                //animated.rotate(0.5f, 0);
+                //animated.startAnimation("wave");
                 //animated.translate((float) 0, 0.1f, 0);
                 try {
                     Thread.sleep(10);

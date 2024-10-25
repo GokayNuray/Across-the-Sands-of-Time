@@ -87,10 +87,24 @@ public class Entity {
         return renderables;
     }
 
+    public void doAnimation(String name) {
+        Animation animation = animations.get(name);
+        if (animation != null) {
+            animation.startOnce();
+        }
+    }
+
     public void startAnimation(String name) {
         Animation animation = animations.get(name);
         if (animation != null) {
             animation.start();
+        }
+    }
+
+    public void stopAnimation(String name) {
+        Animation animation = animations.get(name);
+        if (animation != null) {
+            animation.stop();
         }
     }
 

@@ -1,5 +1,7 @@
 package com.halenteck.render;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
@@ -119,8 +121,14 @@ public final class ModelLoader {
     public static Map<String, Animation> loadAnimations(String filePath) {
         String target = (isJar ? exportParentFolderToDiskAndReturnResourcesPath(filePath) : "src/main/resources/") + filePath;
         AIScene aiScene = aiImportFile(target, 0);
+        if (aiScene == null) {
+            throw new RuntimeException("Error loading model: " + target + " " + aiGetErrorString());
+        }
 
         AINode aiRootNode = aiScene.mRootNode();
+        if (aiRootNode == null) {
+            throw new RuntimeException("Error loading root node: " + target + " " + aiGetErrorString());
+        }
         Map<String, Node> nodeMap = new HashMap<>();
         Node rootNode = new Node(aiRootNode, null, nodeMap, aiScene);
 
@@ -150,25 +158,29 @@ public final class ModelLoader {
                 int numRotationKeys = aiNodeAnim.mNumRotationKeys();
                 int numScalingKeys = aiNodeAnim.mNumScalingKeys();
 
-                float[][] positions = new float[numPositionKeys][];
+                Vector3f[] positions = new Vector3f[numPositionKeys];
+                double[] times = new double[numPositionKeys];
                 for (int k = 0; k < numPositionKeys; k++) {
                     AIVectorKey aiVectorKey = aiNodeAnim.mPositionKeys().get(k);
-                    positions[k] = new float[]{aiVectorKey.mValue().x(), aiVectorKey.mValue().y(), aiVectorKey.mValue().z()};
+                    positions[k] = new Vector3f(aiVectorKey.mValue().x(), aiVectorKey.mValue().y(), aiVectorKey.mValue().z());
+                    times[k] = aiVectorKey.mTime() * 1000;
                 }
 
-                float[][] rotations = new float[numRotationKeys][];
+                Quaternionf rotations[] = new Quaternionf[numRotationKeys];
                 for (int k = 0; k < numRotationKeys; k++) {
                     AIQuatKey aiQuatKey = aiNodeAnim.mRotationKeys().get(k);
-                    rotations[k] = new float[]{aiQuatKey.mValue().x(), aiQuatKey.mValue().y(), aiQuatKey.mValue().z(), aiQuatKey.mValue().w()};
+                    rotations[k] = new Quaternionf(aiQuatKey.mValue().x(), aiQuatKey.mValue().y(), aiQuatKey.mValue().z(), aiQuatKey.mValue().w());
                 }
 
-                float[][] scalings = new float[numScalingKeys][];
+                Vector3f[] scalings = new Vector3f[numScalingKeys];
                 for (int k = 0; k < numScalingKeys; k++) {
                     AIVectorKey aiVectorKey = aiNodeAnim.mScalingKeys().get(k);
-                    scalings[k] = new float[]{aiVectorKey.mValue().x(), aiVectorKey.mValue().y(), aiVectorKey.mValue().z()};
+                    scalings[k] = new Vector3f(aiVectorKey.mValue().x(), aiVectorKey.mValue().y(), aiVectorKey.mValue().z());
                 }
 
-                animationNodes[j] = new Animation.AnimationNode(nodeName, j, positions, rotations, scalings);
+                assert numPositionKeys == numRotationKeys && numRotationKeys == numScalingKeys : "Number of keys must be the same else idk what to do";
+
+                animationNodes[j] = new Animation.AnimationNode(nodeName, j, positions, rotations, scalings, times);
             }
 
             animationMap.put(name, new Animation(aiAnimation.mName().dataString(), aiAnimation.mDuration() * 1000, aiAnimation.mTicksPerSecond(), animationNodes, nodeMap));

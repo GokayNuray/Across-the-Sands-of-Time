@@ -24,11 +24,11 @@ public class OpenGLComponent extends AWTGLCanvas {
     private int fps = 0;
 
     public Vector3f getCameraPosition() {
-        return cameraPosition;
+        return cameraPosition.get();
     }
 
-    private Vector3f cameraPosition = new Vector3f(0, 0, 0);
-    private Vector3f directionVector = new Vector3f(0, 0, -1);
+    private CameraVector cameraPosition = new CameraVector(0, 0, 0);
+    private CameraVector directionVector = new CameraVector(0, 0, -1);
 
     private float yaw = -180;
     private float pitch = 0;
@@ -107,8 +107,8 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void paintGL() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Matrix4f viewMatrix = new Matrix4f().setLookAt(cameraPosition,
-                new Vector3f(directionVector).add(cameraPosition), new Vector3f(0, 1, 0));
+        Matrix4f viewMatrix = new Matrix4f().setLookAt(cameraPosition.get(),
+                new Vector3f(directionVector.get()).add(cameraPosition.get()), new Vector3f(0, 1, 0));
         Matrix4f viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
         FloatBuffer vp = BufferUtils.createFloatBuffer(16);
         viewProjectionMatrix.get(vp);
@@ -197,20 +197,20 @@ public class OpenGLComponent extends AWTGLCanvas {
     }
 
     public void moveCameraForward(float distance) {
-        cameraPosition.add(new Vector3f(directionVector).mul(distance));
+        cameraPosition.add(new Vector3f(directionVector.get()).mul(distance));
     }
 
     public void moveCameraBackward(float distance) {
-        cameraPosition.sub(new Vector3f(directionVector).mul(distance));
+        cameraPosition.sub(new Vector3f(directionVector.get()).mul(distance));
     }
 
     public void moveCameraRight(float distance) {
-        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
+        Vector3f right = new Vector3f(directionVector.get()).cross(new Vector3f(0, 1, 0));
         cameraPosition.add(right.mul(distance));
     }
 
     public void moveCameraLeft(float distance) {
-        Vector3f right = new Vector3f(directionVector).cross(new Vector3f(0, 1, 0));
+        Vector3f right = new Vector3f(directionVector.get()).cross(new Vector3f(0, 1, 0));
         cameraPosition.sub(right.mul(distance));
     }
 
@@ -223,18 +223,18 @@ public class OpenGLComponent extends AWTGLCanvas {
     }
 
     public void moveCamera(Vector3f direction) {
-        cameraPosition = new Vector3f(direction);
+        cameraPosition.set(new Vector3f(direction), 100);
     }
 
     public void rotateCamera(float dYaw, float dPitch) {
-        yaw += dYaw;
-        pitch += dPitch;
+        yaw += dYaw / 2;
+        pitch += dPitch / 2;
         if (pitch > 90) pitch = 90;
         if (pitch < -90) pitch = -90;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-        directionVector = new Vector3f(directionX, directionY, directionZ);
+        directionVector.set(new Vector3f(directionX, directionY, directionZ), 30);
     }
 
     public void setCameraRotation(float yaw, float pitch) {
@@ -243,7 +243,7 @@ public class OpenGLComponent extends AWTGLCanvas {
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-        directionVector = new Vector3f(directionX, directionY, directionZ);
+        directionVector.set(new Vector3f(directionX, directionY, directionZ), 400);
     }
 
     public void setFpsCounter(JLabel fpsText) {

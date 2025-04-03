@@ -128,7 +128,7 @@ public class Animation {
                 time = System.currentTimeMillis();
                 continuing = false;
                 long deltaTime = 0;
-                while (deltaTime < duration) {
+                while (deltaTime <= duration) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -138,7 +138,7 @@ public class Animation {
                     deltaTime = System.currentTimeMillis() - time;
                 }
             } while (continuing);
-            applyTransformations(animationNode -> null);
+            //applyTransformations(animationNode -> null);
             started = false;
         }).start();
     }
@@ -173,6 +173,7 @@ public class Animation {
                 transformation.getScale(scaling);
 
                 Matrix4f endTransformation = nodeMap.get(animationNode.name).getTransformation();
+                endTransformation = animationNode.getTransformation(100000);
                 Vector3f endPosition = new Vector3f();
                 Quaternionf endRotation = new Quaternionf();
                 Vector3f endScaling = new Vector3f();
@@ -202,7 +203,7 @@ public class Animation {
                 long finalDeltaTime = deltaTime;
                 applyTransformations(animationNode -> transformationResults.get(animationNode).apply((float) finalDeltaTime / STOP_DURATION));
             }
-            applyTransformations(animationNode -> null);
+            //applyTransformations(animationNode -> null);
 
             started = false;
         }).start();
@@ -230,6 +231,13 @@ public class Animation {
                 }
             }
         }
+    }
+
+    public void connect(String part, Entity entity) {
+        entity.getRenderables().forEach(renderable -> {
+            renderables.put(renderable.getName(), renderable);
+        });
+        nodeMap.get(part).addEntity(entity);
     }
 
 }

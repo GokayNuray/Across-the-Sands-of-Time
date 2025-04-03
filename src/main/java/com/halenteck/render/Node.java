@@ -6,10 +6,7 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Node {
 
@@ -17,17 +14,17 @@ public class Node {
     private final Node parent;
     private final Node[] children;
     private final Matrix4f transformation;
-    private final List<String> meshes = new ArrayList<>();
+    private final Set<String> meshes = new HashSet<>();
 
-    public Node(AINode aiNode, Node parent, Map<String, Node> nodeMap, AIScene aiScene) {
+    public Node(AINode aiNode, Node parent, Map<String, Node> nodeMap, AIScene aiScene, float scale) {
         this.name = aiNode.mName().dataString();
         this.parent = parent;
         this.children = new Node[aiNode.mNumChildren()];
 
-        this.transformation = assimpToJoml(aiNode.mTransformation());
+        this.transformation = assimpToJoml(aiNode.mTransformation(), scale);
 
         for (int i = 0; i < children.length; i++) {
-            children[i] = new Node(AINode.create(Objects.requireNonNull(aiNode.mChildren()).get(i)), this, nodeMap, aiScene);
+            children[i] = new Node(AINode.create(Objects.requireNonNull(aiNode.mChildren()).get(i)), this, nodeMap, aiScene, scale);
         }
 
 
@@ -49,12 +46,12 @@ public class Node {
                 "}\n";
     }
 
-    public Matrix4f assimpToJoml(AIMatrix4x4 aiMatrix4x4) {
+    public Matrix4f assimpToJoml(AIMatrix4x4 aiMatrix4x4, float scale) {
         return new Matrix4f(
                 aiMatrix4x4.a1(), aiMatrix4x4.b1(), aiMatrix4x4.c1(), aiMatrix4x4.d1(),
                 aiMatrix4x4.a2(), aiMatrix4x4.b2(), aiMatrix4x4.c2(), aiMatrix4x4.d2(),
                 aiMatrix4x4.a3(), aiMatrix4x4.b3(), aiMatrix4x4.c3(), aiMatrix4x4.d3(),
-                aiMatrix4x4.a4(), aiMatrix4x4.b4(), aiMatrix4x4.c4(), aiMatrix4x4.d4()
+                aiMatrix4x4.a4() * scale, aiMatrix4x4.b4() * scale, aiMatrix4x4.c4() * scale, aiMatrix4x4.d4()
         );
     }
 
@@ -74,5 +71,11 @@ public class Node {
             meshAndNodes.addAll(child.getMeshes());
         }
         return meshAndNodes;
+    }
+
+    public void addEntity(Entity entity) {
+        entity.getRenderables().forEach(renderable -> {
+            meshes.add(renderable.getName());
+        });
     }
 }

@@ -36,10 +36,14 @@ public final class ModelLoader {
     }
 
     public static List<Renderable> loadModel(String filePath) {
-        return loadModel(filePath, FLAGS);
+        return loadModel(filePath, FLAGS, 1);
     }
 
-    public static List<Renderable> loadModel(String filePath, int flags) {
+    public static List<Renderable> loadModel(String filePath, float scale) {
+        return loadModel(filePath, FLAGS, scale);
+    }
+
+    public static List<Renderable> loadModel(String filePath, int flags, float scale) {
 
         List<Renderable> renderables = new ArrayList<>();
 
@@ -71,9 +75,9 @@ public final class ModelLoader {
             float[] vertices = new float[numVertices * 3];
             for (int j = 0; j < numVertices; j++) {
                 AIVector3D aiVertex = aiVertices.get();
-                vertices[j * 3] = aiVertex.x();
-                vertices[j * 3 + 1] = aiVertex.y();
-                vertices[j * 3 + 2] = aiVertex.z();
+                vertices[j * 3] = aiVertex.x() * scale;
+                vertices[j * 3 + 1] = aiVertex.y() * scale;
+                vertices[j * 3 + 2] = aiVertex.z() * scale;
             }
 
             AIVector3D.Buffer aiTexCoords = aiMesh.mTextureCoords(0);
@@ -118,7 +122,7 @@ public final class ModelLoader {
         return renderables;
     }
 
-    public static Map<String, Animation> loadAnimations(String filePath) {
+    public static Map<String, Animation> loadAnimations(String filePath, float scale) {
         String target = (isJar ? exportParentFolderToDiskAndReturnResourcesPath(filePath) : "src/main/resources/") + filePath;
         AIScene aiScene = aiImportFile(target, 0);
         if (aiScene == null) {
@@ -130,7 +134,7 @@ public final class ModelLoader {
             throw new RuntimeException("Error loading root node: " + target + " " + aiGetErrorString());
         }
         Map<String, Node> nodeMap = new HashMap<>();
-        Node rootNode = new Node(aiRootNode, null, nodeMap, aiScene);
+        Node rootNode = new Node(aiRootNode, null, nodeMap, aiScene, scale);
 
         for (int i = 0; i < aiRootNode.mNumChildren(); i++) {
             AINode aiNode = AINode.create(aiRootNode.mChildren().get(i));
@@ -163,6 +167,7 @@ public final class ModelLoader {
                 for (int k = 0; k < numPositionKeys; k++) {
                     AIVectorKey aiVectorKey = aiNodeAnim.mPositionKeys().get(k);
                     positions[k] = new Vector3f(aiVectorKey.mValue().x(), aiVectorKey.mValue().y(), aiVectorKey.mValue().z());
+                    positions[k].mul(scale);
                     times[k] = aiVectorKey.mTime() * 1000;
                 }
 

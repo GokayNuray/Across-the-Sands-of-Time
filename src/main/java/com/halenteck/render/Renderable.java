@@ -19,7 +19,6 @@ public class Renderable implements Cloneable {
     private Vector3f modelPosition = new Vector3f();
     private float modelYaw = 0;
     private float modelPitch = 0;
-    private Vector3f modelScale = new Vector3f(1, 1, 1);
 
     private float[] vertices;
     private float[] colors;
@@ -103,7 +102,6 @@ public class Renderable implements Cloneable {
         for (int i = 0; i < vertices.length; i += 3) {
             Vector3f vertex = new Vector3f(vertexBuffer.get(), vertexBuffer.get(), vertexBuffer.get());
             vertex.mul(scale);
-            vertex.mul(modelScale);
             //TODO fix head rotation
             Matrix4f headRotation = new Matrix4f().rotate(-pitch, 1, 0, 0);
             Matrix4f modelPitchTransformation = new Matrix4f().rotate(modelPitch, 1, 0, 0);
@@ -161,12 +159,31 @@ public class Renderable implements Cloneable {
         this.modelYaw = modelYaw;
     }
 
-    void setModelPitch(float modelPitch) {
-        this.modelPitch = modelPitch;
+    void rotateModel(float yaw, float pitch, float roll) {
+        for (int i = 0; i < vertices.length; i += 3) {
+            Vector3f vertex = new Vector3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+            Matrix4f modelPitchTransformation = new Matrix4f().rotate(pitch, 1, 0, 0);
+            modelPitchTransformation.transformPosition(vertex);
+            Matrix4f modelYawTransformation = new Matrix4f().rotate(yaw, 0, 1, 0);
+            modelYawTransformation.transformPosition(vertex);
+            Matrix4f modelRollTransformation = new Matrix4f().rotate(roll, 0, 0, 1);
+            modelRollTransformation.transformPosition(vertex);
+            vertices[i] = vertex.x;
+            vertices[i + 1] = vertex.y;
+            vertices[i + 2] = vertex.z;
+        }
     }
 
-    void setModelScale(Vector3f modelScale) {
-        this.modelScale = modelScale;
+    void translateModel(float x, float y, float z) {
+        for (int i = 0; i < vertices.length; i += 3) {
+            vertices[i] += x;
+            vertices[i + 1] += y;
+            vertices[i + 2] += z;
+        }
+    }
+
+    void setModelPitch(float modelPitch) {
+        this.modelPitch = modelPitch;
     }
 
     public String getName() {

@@ -110,13 +110,23 @@ public class Entity {
 
     public int addChild(int entityModel, float offsetX, float offsetY, float offsetZ) {
         synchronized ("renderables") {
-            Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, yaw, pitch, 1);
-            entity.setPivotPoint(new Vector3f(offsetX, offsetY, offsetZ));
+//            Entity entity = new Entity(entityModel, this.x + offsetX, this.y + offsetY, this.z + offsetZ, yaw, pitch, 1);
+            Entity entity = new Entity(entityModel, this.x, this.y, this.z, yaw, pitch, 1);
+            entity.renderables.forEach(r -> r.translateModel(offsetX, offsetY, offsetZ));
+//            entity.setPivotPoint(new Vector3f(offsetX, offsetY, offsetZ));
             renderables.addAll(entity.renderables);
             headRenderables.addAll(entity.renderables);
             children.add(entity);
             return children.indexOf(entity);
         }
+    }
+
+    public int addChild(String part, int entityModel, float offsetX, float offsetY, float offsetZ) {
+        int i = addChild(entityModel, offsetX, offsetY, offsetZ);
+        animations.forEach(((k, animation) -> {
+            animation.connect(part, children.get(children.size() - 1));
+        }));
+        return i;
     }
 
     public void setPivotPoint(Vector3f pivot) {

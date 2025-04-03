@@ -24,10 +24,20 @@ public class RenderTester {
             private int lastX = -1;
             private int lastY = -1;
 
+            private int counter = 0;
+            private long time = System.currentTimeMillis();
+
             @Override
             public void mouseDragged(MouseEvent e) {
                 int currentX = e.getX();
                 int currentY = e.getY();
+
+                counter++;
+                if (System.currentTimeMillis() - time > 1000) {
+                    System.out.println("MOUSE: " + counter);
+                    counter = 0;
+                    time = System.currentTimeMillis();
+                }
 
                 if (lastX != -1 && lastY != -1) {
                     int dx = currentX - lastX;
@@ -257,8 +267,9 @@ public class RenderTester {
         worldMap.translate(0, 0, 0);
         openGLComponent.addEntity(worldMap);
 
-        Entity animated = new Entity(Models.CHARACTER5, 0, 1, -10, 0, 0, 1f);
+        Entity animated = new Entity(Models.CHARACTER5, 0, 1, -10, 180, 0, 1f);
         openGLComponent.addEntity(animated);
+        animated.addChild("Right Arm", Models.WEAPON1, 0.35f, 0.6f, -0.2f);
 
         openGLComponent.addKeyListener(new KeyListener() {
             @Override
@@ -269,6 +280,10 @@ public class RenderTester {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_R) {
                     animated.startAnimation("walkWithGun");
+                    animated.doAnimation("holdGun2");
+                }
+                if (e.getKeyCode() == KeyEvent.VK_Q) {
+                    animated.doAnimation("shoot");
                 }
                 if (e.getKeyCode() == KeyEvent.VK_T) {
                     animated.stopAnimation("walkWithGun");
@@ -279,6 +294,9 @@ public class RenderTester {
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_E) {
                     animated.doAnimation("wave");
+                }
+                if (e.getKeyCode() == KeyEvent.VK_V) {
+                    openGLComponent.rotateCamera(-40, 0);
                 }
             }
         });
@@ -302,7 +320,7 @@ public class RenderTester {
 
         new Thread(() -> {
             while (true) {
-                animated2.translate((float) 0, 0.00f, 0);
+//                animated2.translate((float) 0, 0.00f, 0);
                 animated2.rotate(0.5f, 0);
                 try {
                     Thread.sleep(10);

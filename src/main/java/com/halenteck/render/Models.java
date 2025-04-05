@@ -42,7 +42,7 @@ public final class Models {
         models.put(CHARACTER5, ModelLoader.loadModel("characters/boss/model/model.fbx", 0.01f));
         models.put(WEAPON1, ModelLoader.loadModel("weapons/m16a1/scene.gltf"));
         models.put(WEAPON2, ModelLoader.loadModel("weapons/combat_knife/scene.gltf", 0.2f));
-        animations.put(ANIM_TEST, ModelLoader.loadAnimations("test/animTest/model11.fbx", 0.01f));
+        animations.put(ANIM_TEST, ModelLoader.loadAnimations("test/animTest/model12.fbx", 0.01f));
 
 //        models.get(CHARACTER1).forEach(r -> r.setModelScale(new Vector3f(0.01f, 0.01f, 0.01f)));
 //        models.get(CHARACTER1).forEach(r -> r.setModelYaw((float) Math.toRadians(180)));
@@ -61,7 +61,8 @@ public final class Models {
         models.get(WEAPON1).forEach(r -> r.rotateModel((float) Math.toRadians(0), (float) Math.toRadians(0),
                 (float) Math.toRadians(270)));
 //        models.get(WEAPON2).forEach(r -> r.setModelScale(new Vector3f(0.2f, 0.2f, 0.2f)));
-        models.get(WEAPON2).forEach(r -> r.setModelYaw((float) Math.toRadians(90)));
+        models.get(WEAPON2).forEach(r -> r.rotateModel(0, (float) Math.toRadians(90),
+                (float) Math.toRadians(90)));
     }
 
     public static List<Renderable> getModel(int modelId) {

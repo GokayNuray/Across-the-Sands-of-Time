@@ -94,6 +94,13 @@ public class Entity {
         }
     }
 
+    public void undoAnimation(String name) {
+        Animation animation = animations.get(name);
+        if (animation != null) {
+            animation.startOnceReverse();
+        }
+    }
+
     public void startAnimation(String name) {
         Animation animation = animations.get(name);
         if (animation != null) {

@@ -143,6 +143,33 @@ public class Animation {
         }).start();
     }
 
+    public void startOnceReverse() {
+        if (started) {
+            continuing = true;
+            return;
+        }
+        started = true;
+
+        new Thread(() -> {
+            do {
+                time = System.currentTimeMillis();
+                continuing = false;
+                long deltaTime = 0;
+                while (deltaTime <= duration) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    update((long) (duration - deltaTime));
+                    deltaTime = System.currentTimeMillis() - time;
+                }
+            } while (continuing);
+            //applyTransformations(animationNode -> null);
+            started = false;
+        }).start();
+    }
+
     public void start() {
         if (started) {
             return;

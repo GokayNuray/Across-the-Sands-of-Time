@@ -307,8 +307,14 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     @Override
     public void mouseMoved(MouseEvent e) {
+//        lastMouseX = e.getX();
+//        lastMouseY = e.getY();
+
+        int dx = e.getX() - lastMouseX;
+        int dy = e.getY() - lastMouseY;
         lastMouseX = e.getX();
         lastMouseY = e.getY();
+        rotate(dx, dy);
     }
 
     @Override

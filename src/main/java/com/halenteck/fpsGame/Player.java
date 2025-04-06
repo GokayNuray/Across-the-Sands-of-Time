@@ -396,21 +396,18 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     // moveForward,Backward,Right,Left methods set the player velocity accordingly.
     public void moveForward() {
         Vector3f acceleration = new Vector3f(directionVector);
-        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize().mul(speed);
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(acceleration);
     }
 
     public void moveBackward() {
         Vector3f acceleration = new Vector3f(directionVector);
-        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize().mul(speed);
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(acceleration);
     }
 
     public void moveRight() {
         Vector3f acceleration = new Vector3f(directionVector);
-        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize();
         Vector3f right = acceleration.cross(new Vector3f(0, 1, 0));
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(right.mul(speed));
@@ -418,7 +415,6 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public void moveLeft() {
         Vector3f acceleration = new Vector3f(directionVector);
-        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize();
         Vector3f right = acceleration.cross(new Vector3f(0, 1, 0));
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(right.mul(speed));
@@ -446,7 +442,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         directionVector = new Vector3f(directionX, directionY, directionZ);
 
-        entity.setRotation(yaw, pitch);
+        entity.setRotation(yaw + 180, pitch);
         if (renderer != null) {
             renderer.setCameraRotation(yaw, pitch);
             Server.rotatePlayer(yaw, pitch);
@@ -460,7 +456,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         directionVector = new Vector3f(directionX, directionY, directionZ);
-        entity.setRotation(this.yaw, this.pitch);
+        entity.setRotation(this.yaw + 180, this.pitch);
     }
 
     // Creates weapons for the player according to their weaponId.

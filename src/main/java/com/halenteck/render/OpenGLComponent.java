@@ -238,7 +238,6 @@ public class OpenGLComponent extends AWTGLCanvas {
     }
 
     public void setCameraRotation(float yaw, float pitch) {
-        yaw = (yaw + 180) % 360;
         this.yaw = yaw;
         this.pitch = pitch;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));

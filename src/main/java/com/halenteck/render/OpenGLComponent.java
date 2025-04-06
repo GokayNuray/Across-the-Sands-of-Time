@@ -238,12 +238,13 @@ public class OpenGLComponent extends AWTGLCanvas {
     }
 
     public void setCameraRotation(float yaw, float pitch) {
+        yaw = (yaw + 180) % 360;
         this.yaw = yaw;
         this.pitch = pitch;
         float directionX = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         float directionY = (float) Math.sin(Math.toRadians(pitch));
         float directionZ = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-        directionVector.set(new Vector3f(directionX, directionY, directionZ), 400);
+        directionVector.set(new Vector3f(directionX, directionY, directionZ), 30);
     }
 
     public void setFpsCounter(JLabel fpsText) {

@@ -107,9 +107,10 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
             default -> throw new IllegalArgumentException("invalid character id: " + characterId);
         }
         this.entity = new Entity(modelId, startPosition.x, startPosition.y, startPosition.z, yaw, pitch, 1);
-        firstWeaponModelIndex = entity.addChild(Models.WEAPON1, -0.35f, 1.6f, 0.9f);
-        secondWeaponModelIndex = entity.addChild(Models.WEAPON2, -0.35f, 1.6f, 0.9f);
+        firstWeaponModelIndex = entity.addChild("Right Arm", Models.WEAPON1, 0.35f, 0.6f, -0.2f);
+        secondWeaponModelIndex = entity.addChild("Right Arm", Models.WEAPON2, 0.35f, 0.6f, -0.2f);
         entity.hideChild(secondWeaponModelIndex);
+        entity.doAnimation("holdGun");
         this.world = world;
     }
 
@@ -389,18 +390,21 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     // moveForward,Backward,Right,Left methods set the player velocity accordingly.
     public void moveForward() {
         Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize().mul(speed);
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(acceleration);
     }
 
     public void moveBackward() {
         Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize().mul(speed);
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(acceleration);
     }
 
     public void moveRight() {
         Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize();
         Vector3f right = acceleration.cross(new Vector3f(0, 1, 0));
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.add(right.mul(speed));
@@ -408,6 +412,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
 
     public void moveLeft() {
         Vector3f acceleration = new Vector3f(directionVector);
+        acceleration.rotateY((float) Math.toRadians(180));
         acceleration.set(acceleration.x, 0, acceleration.z).normalize();
         Vector3f right = acceleration.cross(new Vector3f(0, 1, 0));
         accelerationOfTheVelocityWhichWillEffectThePositionOfTheCurrentPlayer.sub(right.mul(speed));
@@ -463,6 +468,7 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     // Shooting method that informs the server.
     public void shoot() {
         if (currentWeapon.canFire()) {
+            entity.doAnimation("shoot");
             currentWeapon.fire();
             Server.shoot();
         } else {

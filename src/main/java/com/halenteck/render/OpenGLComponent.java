@@ -52,8 +52,8 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void initGL() {
         createCapabilities();
         glClearColor(0.3f, 0.4f, 0.5f, 1.0f);
-        width = (int) (getWidth() * 1.25f);
-        height = (int) (getHeight() * 1.25f);
+        width = getWidth();
+        height = getHeight();
         aspect = (float) width / height;
         glViewport(0, 0, width, height);
 
@@ -114,6 +114,45 @@ public class OpenGLComponent extends AWTGLCanvas {
         viewProjectionMatrix.get(vp);
         glUniformMatrix4fv(vPMatrixHandle, false, vp);
 
+        float[] crosshairCenter = {
+                cameraPosition.x + directionVector.get().x * 0.2f,
+                cameraPosition.y + directionVector.get().y * 0.2f,
+                cameraPosition.z + directionVector.get().z * 0.2f
+        };
+
+        Vector3f right = new Vector3f(directionVector.get()).cross(new Vector3f(0, 1, 0)).normalize();
+        Vector3f up = new Vector3f(right).cross(directionVector.get()).normalize();
+
+        float crosshairSize = 0.0025f;
+
+        float[] crosshairVertices = {
+                crosshairCenter[0] - right.x * crosshairSize - up.x * crosshairSize, crosshairCenter[1] - right.y * crosshairSize - up.y * crosshairSize, crosshairCenter[2] - right.z * crosshairSize - up.z * crosshairSize,
+                crosshairCenter[0] + right.x * crosshairSize - up.x * crosshairSize, crosshairCenter[1] + right.y * crosshairSize - up.y * crosshairSize, crosshairCenter[2] + right.z * crosshairSize - up.z * crosshairSize,
+                crosshairCenter[0] + right.x * crosshairSize + up.x * crosshairSize, crosshairCenter[1] + right.y * crosshairSize + up.y * crosshairSize, crosshairCenter[2] + right.z * crosshairSize + up.z * crosshairSize,
+                crosshairCenter[0] - right.x * crosshairSize + up.x * crosshairSize, crosshairCenter[1] - right.y * crosshairSize + up.y * crosshairSize, crosshairCenter[2] - right.z * crosshairSize + up.z * crosshairSize
+        };
+
+        float[] crosshairColors = {
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1
+        };
+
+        float[] crosshairTexCoords = {
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1
+        };
+
+        int[] crosshairIndices = {
+                0, 1, 2,
+                0, 2, 3
+        };
+
+        Renderable crosshair = new Renderable(crosshairVertices, crosshairColors, crosshairTexCoords, crosshairIndices, ModelLoader.getResourcePathOnDisk("/crosshair.png"));
+
         synchronized ("renderables") {
             for (Renderable renderable : renderables) {
                 if (!renderable.isBuilt()) renderable.build();
@@ -129,6 +168,9 @@ public class OpenGLComponent extends AWTGLCanvas {
                     renderRenderable(renderable);
                 }
             }
+            if (!crosshair.isBuilt()) crosshair.build();
+            if (crosshair.isUpdated()) crosshair.update();
+            if (!crosshair.isHidden()) renderRenderable(crosshair);
         }
 
         swapBuffers();

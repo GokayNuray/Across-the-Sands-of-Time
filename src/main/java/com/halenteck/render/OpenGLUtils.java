@@ -5,10 +5,14 @@ import org.lwjgl.stb.STBImage;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL30.*;
 
 public final class OpenGLUtils {
+
+    static final Map<String, Integer> textureCache = new HashMap<>();
 
     private OpenGLUtils() {
     }
@@ -38,6 +42,10 @@ public final class OpenGLUtils {
 
     static int loadTexture(String filePath) {
 
+        if (textureCache.containsKey(filePath)) {
+            return textureCache.get(filePath);
+        }
+
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
@@ -59,6 +67,9 @@ public final class OpenGLUtils {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(), height.get(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
         STBImage.stbi_image_free(image);
+
+        textureCache.put(filePath, textureHandle);
+
         return textureHandle;
 
     }

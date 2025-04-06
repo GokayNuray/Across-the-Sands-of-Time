@@ -173,15 +173,6 @@ public class FpsInGame extends JFrame {
         returnLabel.setBounds(10, (int) bounds.getHeight() - 55, 300, 20);
         layeredPane.add(returnLabel, JLayeredPane.PALETTE_LAYER);
 
-        // crosshair
-        ImageIcon crosshair = new ImageIcon(getClass().getClassLoader().getResource("crosshair.png"));
-        Image scaledCrosshair = crosshair.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon finalCrosshair = new ImageIcon(scaledCrosshair);
-        JLabel crosshairLabel = new JLabel(finalCrosshair);
-        crosshairLabel.setOpaque(false);
-        crosshairLabel.setBounds((int) (bounds.getWidth() / 2) - 10, (int) (bounds.getHeight() / 2) - 10, 20, 20);
-        layeredPane.add(crosshairLabel);
-
         // transparent cursor
         Image cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(

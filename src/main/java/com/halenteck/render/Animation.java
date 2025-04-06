@@ -116,6 +116,33 @@ public class Animation {
         }
     }
 
+    public void startOnce(double speed) {
+        if (started) {
+            continuing = true;
+            return;
+        }
+        started = true;
+
+        new Thread(() -> {
+            do {
+                time = System.currentTimeMillis();
+                continuing = false;
+                long deltaTime = 0;
+                while (deltaTime * speed <= duration) {
+                    try {
+                        Thread.sleep((long) (10 / speed));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    update(deltaTime * speed);
+                    deltaTime = System.currentTimeMillis() - time;
+                }
+            } while (continuing);
+            //applyTransformations(animationNode -> null);
+            started = false;
+        }).start();
+    }
+
     public void startOnce() {
         if (started) {
             continuing = true;
@@ -241,7 +268,7 @@ public class Animation {
         continuing = false;
     }
 
-    private void update(long time) {
+    private void update(double time) {
         applyTransformations(animationNode -> animationNode.getTransformation(time));
     }
 

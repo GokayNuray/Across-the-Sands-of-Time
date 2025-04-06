@@ -474,7 +474,8 @@ public class Player implements KeyListener, MouseListener, MouseMotionListener, 
     // Shooting method that informs the server.
     public void shoot() {
         if (currentWeapon.canFire()) {
-            entity.doAnimation("shoot");
+            float speed = currentWeapon.getFireRate();
+            entity.doAnimation("shoot", speed);
             currentWeapon.fire();
             Server.shoot();
         } else {

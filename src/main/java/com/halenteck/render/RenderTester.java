@@ -283,7 +283,7 @@ public class RenderTester {
                     animated.doAnimation("holdGun");//holdGun2 does this instantly and acts like a direct pose
                 }
                 if (e.getKeyCode() == KeyEvent.VK_Q) {
-                    animated.doAnimation("shoot");
+                    animated.doAnimation("shoot", 3);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_T) {
                     animated.stopAnimation("walkWithGun");

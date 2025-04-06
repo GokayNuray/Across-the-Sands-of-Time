@@ -94,6 +94,13 @@ public class Entity {
         }
     }
 
+    public void doAnimation(String name, double speed) {
+        Animation animation = animations.get(name);
+        if (animation != null) {
+            animation.startOnce(speed);
+        }
+    }
+
     public void undoAnimation(String name) {
         Animation animation = animations.get(name);
         if (animation != null) {

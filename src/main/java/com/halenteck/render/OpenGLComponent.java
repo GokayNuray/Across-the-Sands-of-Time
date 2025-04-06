@@ -24,11 +24,11 @@ public class OpenGLComponent extends AWTGLCanvas {
     private int fps = 0;
 
     public Vector3f getCameraPosition() {
-        return cameraPosition.get();
+        return cameraPosition;
     }
 
-    private CameraVector cameraPosition = new CameraVector(0, 0, 0);
-    private CameraVector directionVector = new CameraVector(0, 0, -1);
+    private final Vector3f cameraPosition = new Vector3f(0, 0, 0);
+    private final CameraVector directionVector = new CameraVector(0, 0, -1);
 
     private float yaw = -180;
     private float pitch = 0;
@@ -107,8 +107,8 @@ public class OpenGLComponent extends AWTGLCanvas {
     public void paintGL() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Matrix4f viewMatrix = new Matrix4f().setLookAt(cameraPosition.get(),
-                new Vector3f(directionVector.get()).add(cameraPosition.get()), new Vector3f(0, 1, 0));
+        Matrix4f viewMatrix = new Matrix4f().setLookAt(cameraPosition,
+                new Vector3f(directionVector.get()).add(cameraPosition), new Vector3f(0, 1, 0));
         Matrix4f viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
         FloatBuffer vp = BufferUtils.createFloatBuffer(16);
         viewProjectionMatrix.get(vp);
@@ -223,7 +223,7 @@ public class OpenGLComponent extends AWTGLCanvas {
     }
 
     public void moveCamera(Vector3f direction) {
-        cameraPosition.set(new Vector3f(direction), 100);
+        cameraPosition.set(new Vector3f(direction));
     }
 
     public void rotateCamera(float dYaw, float dPitch) {

@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 
 public final class Server {
-    private static final String SERVER_IP = "34.105.208.236";
+    private static final String SERVER_IP = "89.168.117.48";
     private static final int SERVER_PORT = 37923;
 
     //Client to server commands
@@ -61,6 +61,7 @@ public final class Server {
 
     public static void connect() {
         try {
+            System.out.println("Attempting to connect to the server...");
             socket = new Socket(SERVER_IP, SERVER_PORT);
             System.out.println("Connected to server");
             out = new DataOutputStream(socket.getOutputStream());
